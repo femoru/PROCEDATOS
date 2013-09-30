@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/SIO_PROCEDATOS">
+    <Resource 
+        GlobalNamingResources="myoracle" 
+        auth="Container"
+        driverClassName="oracle.jdbc.OracleDriver" 
+        initialSize="3" 
+        maxActive="60" 
+        maxIdle="10" 
+        maxWait="360000" 
+        minIdle="10" 
+        removeAbandoned="true"
+        name="jdbc/myoracle" 
+        password="nom2345" 
+        type="javax.sql.DataSource" 
+        url="jdbc:oracle:thin:@172.162.100.104:1521:SIONORTE" 
+        username="nomina"/>
+</Context>

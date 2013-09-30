@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="REPORTECONSOLIDADO" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e229a524-9d57-4080-9687-fbee62a14b37">
+	<property name="ireport.zoom" value="1.4641000000000015"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,
+         deslabor AS labor,
+         destipolabor || ' ' || NVL (deshoraextra, '') AS tipo,
+         identificacion,
+            pnombre
+         || ' '
+         || snombre
+         || ' '
+         || papellido
+         || ' '
+         || sapellido AS "NOMBRE",
+         CASE
+            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) <= 192
+               THEN SUM (TRUNC (mr.tiempolabor / 60, 2))
+            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) > 192
+               THEN 192
+         END AS cantidad,
+         CASE
+            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) <= 192
+               THEN 0
+            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) > 192
+               THEN SUM (TRUNC (mr.tiempolabor / 60, 2)) - 192
+         END AS cantidad2
+    FROM mregistros mr INNER JOIN plaborescontratos plc
+         ON plc.idlaborcontrato = mr.idlaborcontrato
+         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario
+         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor
+         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor
+         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra
+         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo
+         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea
+         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente
+         INNER JOIN rareas ra ON ra.codarea = dca.codarea
+   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)
+     AND idnomina = 5 and mr.anulado = 0
+	AND (mr.idusuario = 265 or mr.idusuario =288)
+GROUP BY nomcliente,
+         desarea,
+         desgrupo,
+         deslabor,
+         destipolabor,
+         deshoraextra,
+         identificacion,
+         pnombre,
+         snombre,
+         papellido,
+         sapellido
+ORDER BY desarea, grupo, labor, tipo, nombre]]>
+	</queryString>
+	<field name="CLIENTE" class="java.lang.String"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="GRUPO" class="java.lang.String"/>
+	<field name="LABOR" class="java.lang.String"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="IDENTIFICACION" class="java.lang.String"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="CANTIDAD2" class="java.math.BigDecimal"/>
+	<variable name="CANTIDAD_1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD}]]></variableExpression>
+	</variable>
+	<variable name="CANTIDAD2_1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD2}]]></variableExpression>
+	</variable>
+	<group name="CLIENTE">
+		<groupExpression><![CDATA[$F{CLIENTE}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="58108140-eb0b-4054-a57d-292e489ae5ee" x="53" y="0" width="519" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CLIENTE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="40995532-006b-4e5f-9228-943fbf4956b0" x="0" y="0" width="53" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CLIENTE: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="AREA">
+		<groupExpression><![CDATA[$F{AREA}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="becbbef8-b2e3-48cf-8665-abedef509137" x="34" y="0" width="538" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2e0cb75a-5111-4da8-90e0-b605869cc1f6" x="0" y="0" width="34" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AREA: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="GRUPO">
+		<groupExpression><![CDATA[$F{GRUPO}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="88085b5f-9d1c-4a0b-96f8-4fe12142e2a6" x="45" y="0" width="527" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GRUPO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2bf394a7-9644-435e-bfc9-0d0221be7bbf" x="0" y="0" width="45" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[GRUPO: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="10">
+				<textField>
+					<reportElement uuid="7985548c-8140-491c-8338-88ef8c8ef953" x="519" y="0" width="25" height="10"/>
+					<textElement textAlignment="Right">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{CANTIDAD_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="3ac1775b-9ab0-4038-b066-18ffd80e00a7" x="544" y="0" width="28" height="10"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{CANTIDAD2_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="LABOR">
+		<groupExpression><![CDATA[$F{LABOR}]]></groupExpression>
+	</group>
+	<title>
+		<band height="25">
+			<staticText>
+				<reportElement uuid="3dc6ddcf-df3e-4b64-98ef-3856c9c8c373" x="0" y="0" width="572" height="13"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[SOLUCIONES INTEGRALES DE OFICINA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="029ef855-aea7-45d7-a588-e3fb54f5fd6b" x="0" y="13" width="572" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[SOPORTE CONSOLIDADO DE FACTURACION]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="10">
+			<textField>
+				<reportElement uuid="f182a68c-8a12-4292-b4bf-f31ff2c6edb8" x="0" y="0" width="42" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDENTIFICACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="240fc1cb-89c5-4a17-8471-3fb222ca0510" x="42" y="0" width="159" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25564f5c-4dbc-4fa2-a8ce-722345c15b48" x="201" y="0" width="190" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LABOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e13da2c5-dbdf-4586-83a0-d3ad3f03d5e0" x="519" y="0" width="25" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6b312a8b-8a87-4ccc-9eff-77b869fd1589" x="391" y="0" width="128" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7759318c-7e58-4a82-8e9d-366226f80750" x="544" y="0" width="28" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTIDAD2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

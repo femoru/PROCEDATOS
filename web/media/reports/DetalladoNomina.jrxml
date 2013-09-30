@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NOMINA DETALLADO" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="87c3ff8c-dc62-4b66-b2a1-281826e25e89">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="46"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,
+         deslabor AS labor,
+         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,
+         identificacion,
+            pnombre
+         || ' '
+         || snombre
+         || ' '
+         || papellido
+         || ' '
+         || sapellido AS "NOMBRE",TO_CHAR(FECHAINICIO,'DD/MM/YYYY') FECHA,TO_CHAR(FECHAINICIO,'HH24:MI')H_INI,TO_CHAR(FECHAFIN,'HH24:MI')H_FIN,
+         plc.valor, mr.registroslabor AS cantidad,
+         TRUNC (mr.registroslabor * mr.valor, 2) produccion
+    FROM mregistros mr INNER JOIN plaborescontratos plc
+         ON plc.idlaborcontrato = mr.idlaborcontrato
+         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario
+         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor
+         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor
+         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra
+         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo
+         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea
+         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente
+         INNER JOIN rareas ra ON ra.codarea = dca.codarea
+   WHERE mc.idcliente = 2
+     AND (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5
+         )
+     AND idnomina = 1
+UNION ALL
+SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,
+         deslabor AS labor,
+         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,
+         identificacion,
+            pnombre
+         || ' '
+         || snombre
+         || ' '
+         || papellido
+         || ' '
+         || sapellido AS "NOMBRE",TO_CHAR(FECHAINICIO,'DD/MM/YYYY') FECHA,TO_CHAR(FECHAINICIO,'HH24:MI')H_INI,TO_CHAR(FECHAFIN,'HH24:MI')H_FIN,
+         plc.valor, TRUNC (mr.tiempolabor / 60, 2) AS cantidad,
+         TRUNC (TRUNC (mr.tiempolabor / 60, 2) * mr.valor, 2) produccion
+    FROM mregistros mr INNER JOIN plaborescontratos plc
+         ON plc.idlaborcontrato = mr.idlaborcontrato
+          INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario
+         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor
+         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor
+         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra
+         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo
+         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea
+         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente
+         INNER JOIN rareas ra ON ra.codarea = dca.codarea
+   WHERE mc.idcliente = 2
+     AND (plc.codtipolabor = 1 OR plc.codtipolabor = 2)
+     AND idnomina = 1
+ORDER BY AREA,GRUPO, LABOR,NOMBRE, TIPO,FECHA]]>
+	</queryString>
+	<field name="CLIENTE" class="java.lang.String"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="GRUPO" class="java.lang.String"/>
+	<field name="LABOR" class="java.lang.String"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="IDENTIFICACION" class="java.lang.String"/>
+	<field name="NOMBRE" class="java.lang.String"/>
+	<field name="FECHA" class="java.lang.String"/>
+	<field name="H_INI" class="java.lang.String"/>
+	<field name="H_FIN" class="java.lang.String"/>
+	<field name="VALOR" class="java.math.BigDecimal"/>
+	<field name="CANTIDAD" class="java.math.BigDecimal"/>
+	<field name="PRODUCCION" class="java.math.BigDecimal"/>
+	<variable name="PRODUCCION_1" class="java.math.BigDecimal" resetType="Group" resetGroup="GRUPO" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRODUCCION}]]></variableExpression>
+	</variable>
+	<variable name="PRODUCCION_2" class="java.math.BigDecimal" resetType="Group" resetGroup="LABOR" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRODUCCION}]]></variableExpression>
+	</variable>
+	<group name="AREA">
+		<groupExpression><![CDATA[$F{AREA}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="6107296c-eedb-44d6-a54f-639074ab082c" x="28" y="0" width="527" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e12fd8e7-b294-4a11-9812-288b7a3536ed" x="0" y="0" width="28" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AREA: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="GRUPO">
+		<groupExpression><![CDATA[$F{GRUPO}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="a1633e58-d88a-47f5-9978-899f91a95d26" x="28" y="0" width="527" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GRUPO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e103a802-7305-4716-94ea-df1f0292cd5f" x="0" y="0" width="28" height="10"/>
+					<textElement>
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[GRUPO:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="10">
+				<textField>
+					<reportElement uuid="c9f1c3d7-e45f-4d66-af6c-836e4df35f58" x="503" y="0" width="52" height="10"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PRODUCCION_1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="659b7243-d1a6-4e22-9cc8-612aa909a015" x="448" y="0" width="55" height="10"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL GRUPO:]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="LABOR">
+		<groupExpression><![CDATA[$F{LABOR}]]></groupExpression>
+		<groupHeader>
+			<band height="10">
+				<textField>
+					<reportElement uuid="825a59b4-e878-4427-969c-d4ecff668c05" x="28" y="0" width="527" height="10"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{LABOR}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="8606614a-2bad-4944-8abc-f7f7279a67c7" x="0" y="0" width="28" height="10"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[LABOR: ]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="10">
+				<textField>
+					<reportElement uuid="f98f06f8-ffd0-41f4-aa1a-a8ef5c0c8325" x="503" y="0" width="52" height="10"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PRODUCCION_2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e63041d2-c3a9-48cb-8ff5-6c9a6a23cb25" x="448" y="0" width="55" height="10"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TOTAL LABOR:]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="25">
+			<staticText>
+				<reportElement uuid="b4c427f3-2727-4126-a73f-9d5746e42df2" x="0" y="13" width="555" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[SOPORTE DETALLADO DE NOMINA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="49bf5875-f7d8-4607-8444-0e4dc9f49e3e" x="0" y="0" width="555" height="13"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[SOLUCIONES INTEGRALES DE OFICINA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7a3e8cde-8d0d-4390-8509-7637c8709716" x="183" y="0" width="120" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d91aec32-8604-47bb-b651-f7c407787905" x="0" y="0" width="53" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDENTIFICACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="95cc7142-66e7-48d0-b133-4190db8a9aae" x="53" y="0" width="130" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="606e053f-94af-499d-98c1-a33170787194" x="380" y="0" width="35" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a3a5de29-389d-44e6-82c8-052f8e1bb0a5" x="415" y="0" width="25" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{H_INI}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d39641fd-7fd7-49ab-94ce-97af1737f706" x="440" y="0" width="25" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{H_FIN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="60c0174c-c8bd-4326-b935-c5b4efa8d2c3" x="465" y="0" width="25" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fde7d208-7e73-4b5e-9fd9-21030f80b03f" x="490" y="0" width="25" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9f43e63c-c518-4fe9-8485-d04c6b22263d" x="515" y="0" width="40" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRODUCCION}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

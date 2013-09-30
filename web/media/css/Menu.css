@@ -1,0 +1,75 @@
+#menu{
+    background: url(../../media/images/gradient.png) repeat-x; 
+    border-image: none;
+    border: solid #7E7E7E;  
+    border-width: 0;
+    font-weight: normal;
+    text-align: center;
+}
+
+#menu li {
+    font-family: Arial, sans-serif; 
+    font-size: 12px;
+    border: solid #7E7E7E;  
+    border-width: 1px;
+    background: url(../../media/images/gradient.png) repeat-x; 
+    color: #0F0F0F;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: middle;
+    clear: none;
+    float: left;
+    font-weight: normal;
+}
+#menu li:hover{
+    background: url(../../media/images/gradient_hover.png) repeat-x;
+    font-weight: normal;
+}
+#menu li a {
+    display: block;
+    border: none;
+    background: none;
+    font-family: Arial, sans-serif; 
+    font-size: 11px;
+    text-decoration: none;
+    color: #0F0F0F;
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: middle;
+    font-weight: normal;
+}
+#menu li a:hover {
+    font-weight: normal;
+    border: none;
+    background: none;
+    -webkit-transition:All 0.5s ease;
+    -moz-transition:All 0.5s ease;
+    -o-transition:All 0.5s ease;
+}
+#menu li a span.ui-icon-carat-1-e {
+    float:right;
+    position:static;
+    margin-top:2px;
+    width:16px;
+    height:16px; 
+}
+#menu li ul {
+    display:block;
+    position:absolute;
+    z-index: 99999;
+}
+#menu li ul li {
+    height: 28px;
+    float:none;
+    width:200px;
+    font-weight: normal;
+}
+#menu li ul li a {
+    display: block;
+    font-size:11px;
+    font-weight: normal;
+    border: none;
+    background: none;
+}

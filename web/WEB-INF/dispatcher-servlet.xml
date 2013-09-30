@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <bean name="/home.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="home"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/index.htm" class="com.co.sio.java.controller.UsuarioController">
+        <property name="formView" value="Login"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/reject.htm" class="com.co.sio.java.controller.UsuarioController">
+        <property name="formView" value="reject"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <!-- Get -->
+    <bean name="/getSitioTrabajo.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getSitioTrabajo"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getAreas.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getAreas"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getAreasClientes.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getAreasClientes"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getClientes.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getClientes"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getCoordinadores.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getCoordinadores"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getEstadoCivil.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getEstadoCivil"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getGrupoCoordinador.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getGrupoCoordinador"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getGruposAreas.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getGruposAreas"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getLabores.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getLabores"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getLaboresUsuarios.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getLaboresUsuarios"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getPerfiles.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getPerfiles"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getSolicitudes.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getSolicitudes"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getUsuarioPerfil.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getUsuarioPerfil"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getUsuariosSitio.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getUsuariosSitio"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getGruposAuxiliar.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getGruposAuxiliar"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getTipoLabor.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getTipoLabor"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getHorasExtras.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getHorasExtras"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getNovedades.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getNovedades"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getAnulaciones.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getAnulaciones"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getContratos.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getContratos"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getLaboresContrato.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getLaboresContrato"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/getAuxiliaresCoordinador.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getAuxiliaresCoordinador"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    <bean name="/getNominas.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Get/getNominas"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <!-- Administración -->
+       
+    <bean name="/Parametros.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Administracion/frmParametros"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Novedad.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Administracion/frmNovedad"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Perfiles.htm" class="com.co.sio.java.controller.PerfilController">
+        <property name="formView" value="Administracion/frmPerfiles"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Referencias.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Administracion/frmReferencias"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Usuarios.htm" class="com.co.sio.java.controller.UsuarioController">
+        <property name="formView" value="Administracion/frmUsuarios"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+        
+    <!-- Facturación -->
+    
+    <bean name="/Clientes.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Facturacion/frmClientes"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Contratos.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Facturacion/frmContratos"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Labores.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Facturacion/frmLabores"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+        
+    <!-- Prenomina -->
+    
+    
+    <bean name="/ControlPrenomina.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Prenomina/frmModificacionesPrenomina"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Prenomina.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Prenomina/frmControlPrenomina"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    
+    <bean name="/Nomina.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Prenomina/frmConsultaNomina"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    <!-- Procesos -->
+    
+    <bean name="/RegistroES.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmRegistroES"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Planillas.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmIngresoPlanillas"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+   
+    
+    <bean name="/Solicitudes.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmSolicitudes"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/ValidaLabores.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmValidarLabores"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/RegistrarNovedad.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmRegistrarNovedad"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/ValidarNovedad.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmValidarNovedades"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Consolidar.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmConciliacionGuias"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+        
+    <!-- Datos -->
+
+    <bean name="/ActualizacionDatos.htm" class="com.co.sio.java.controller.ActualizarDatosController">
+        <property name="formView" value="Datos/frmActualizacionDatos"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/captcha.htm" class="com.co.sio.java.controller.ActualizarDatosController">
+        <property name="formView" value="Datos/Captcha"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/CambiarClave.htm" class="com.co.sio.java.controller.ActualizarDatosController">
+        <property name="formView" value="Datos/frmCambioClave"/>
+        <property name="sessionForm" value="true"/>
+    </bean>    
+    
+    <bean name="/OlvidoContrasena.htm" class="com.co.sio.java.controller.RecuperarContrasenaController">
+        <property name="formView" value="Datos/frmOlvidoContrasena"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <!-- Datos -->
+    
+    <bean name="/ReporteFacturacion.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Reportes/frmReporteFacturacion"/>
+        <property name="sessionForm" value="true"/>
+    </bean>   
+    
+    <bean name="/ConsultarProduccion.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Reportes/frmConsultaProduccion"/>
+        <property name="sessionForm" value="true"/>
+    </bean>        
+    
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp" />
+    
+</beans>
