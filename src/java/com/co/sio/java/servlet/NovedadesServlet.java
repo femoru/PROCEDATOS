@@ -191,7 +191,7 @@ public class NovedadesServlet extends HttpServlet {
         String clsInc = request.getParameter("clsInc") == null ? "0" : request.getParameter("clsInc");
         String dateAcc = request.getParameter("dateAcc");
         String indPro = request.getParameter("indPro") == null ? "0" : request.getParameter("indPro");
-        String incAnt = request.getParameter("incAnt") == null ? "0" : request.getParameter("incAnt");
+        String incAnt = request.getParameter("incAnt").equals("") ? "0" : request.getParameter("incAnt");
         String nroIncCg = request.getParameter("nroIncCg").equals("") ? "0" : request.getParameter("nroIncCg");
         String vlrEPS = request.getParameter("vlrEPS").equals("") ? "0" : request.getParameter("vlrEPS");
         String vlrSIO = request.getParameter("vlrSIO").equals("") ? "0" : request.getParameter("vlrSIO");

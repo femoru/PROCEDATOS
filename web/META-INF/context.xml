@@ -11,8 +11,8 @@
         minIdle="10" 
         removeAbandoned="true"
         name="jdbc/myoracle" 
-        password="nom2345" 
+        password="nomina" 
         type="javax.sql.DataSource" 
-        url="jdbc:oracle:thin:@172.162.100.104:1521:SIONORTE" 
+        url="jdbc:oracle:thin:@192.168.0.122:1521:SIOHS" 
         username="nomina"/>
 </Context>
