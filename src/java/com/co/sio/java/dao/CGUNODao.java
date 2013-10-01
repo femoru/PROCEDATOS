@@ -4,10 +4,13 @@
  */
 package com.co.sio.java.dao;
 
+import com.co.sio.java.JSON.JSONArray;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.CGUNORegistroBeans;
 import com.co.sio.java.mbeans.ConceptoBeans;
+import com.co.sio.java.utils.Utils;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,85 +37,104 @@ public class CGUNODao {
     public String cargarNovedades(int idnomina) throws Exception {
         try {
 
-            String horas = new ParametroDao().consultar(8).getValparametro().trim();
-            BD.conectar();
+            String cad = "";
 
-            String sql = "SELECT rpad(mp.identificacion,13,' ')identificacion, lpad(codconcepto,3,' ') codconcepto, mn.codnovedad, to_char(fechanovedad,'yyyyMMDD') fechanovedad, "
-                    + "to_char(fechainicio,'yyyyMMDD') fechainicio, to_char(fechafin,'yyyyMMDD') fechafin, "
-                    + "       to_char(round((fechafin-fechainicio)*" + horas + "),'0000.00') as tiempo, lpad(diasempresa,3,'0')diasempresa, "
-                    + "       lpad(diasotros,3,'0')diasotros, lpad(diascompensados,3,'0')diascompensados, to_char(valor,'00000000000.00')valor "
-                    + "  FROM mnovedades mn INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario "
-                    + "       INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad "
-                    + " WHERE idnomina = ? ";
+            ArrayList<JSONArray> novedades = new ArrayList<JSONArray>();
+            ArrayList<JSONArray> tnls = new ArrayList<JSONArray>();
+
+            int consecutivo = 1;
+
+            String sql = "SELECT rn.tiponovedad tipo,\n"
+                    + "       RPAD (mp.identificacion, 13) empl, '00' suc, '00' contr, '000' nrotnl,\n"
+                    + "       LPAD (rn.codconcepto, 3, 0) concp,\n"
+                    + "       TO_CHAR (mn.fechainicio, 'YYYYMMDD') finicio,\n"
+                    + "       TO_CHAR (mn.fechafin, 'YYYYMMDD') ffin, LPAD (mn.dias, 5, 0) dias,\n"
+                    + "       '0000' hinicio, '0000' hfin, LPAD ('0', 13, 0) || '+' vlrtnl,\n"
+                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (mn.observacion, 40) obsv\n"
+                    + "  FROM mnovedades mn INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad\n"
+                    + "       INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario\n"
+                    + " WHERE rn.tiponovedad = 1 AND mn.plano = 1 AND estado = 2 AND anulado = 0 AND idnomina = ?";
+            BD.conectar();
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(idnomina), 2);
-
             BD.consultar();
+
             ResultSet datoSql = BD.obtenerConsulta();
-            List<CGUNORegistroBeans> registros = new ArrayList<CGUNORegistroBeans>();
+            ResultSetMetaData rsmd = datoSql.getMetaData();
+            int colCount = rsmd.getColumnCount();
+            JSONArray jsona;
 
-            CGUNORegistroBeans bean;
             while (datoSql.next()) {
-                bean = new CGUNORegistroBeans();
-                bean.setSucursal(parametros.get(12));
-                bean.setCentroOperacion(parametros.get(13));
-                bean.setCentroCosto(parametros.get(14));
-
-                bean.setCodigo(datoSql.getString("identificacion"));
-                bean.setConcepto(datoSql.getString("codconcepto"));
-                bean.setFechaMovimiento(datoSql.getString("fechanovedad"));
-
-                if (conceptos.get(datoSql.getString("codconcepto").trim()).getTipo() == 0) {
-                    bean.setFechaInicialNoLaborado(datoSql.getString("fechainicio"));
-                    bean.setFechaFinalNoLaborado(datoSql.getString("fechafin"));
-                    bean.setDiasNoLaborado(datoSql.getString("diasempresa"));
-                } else {
-                    bean.setFechaInicialNoLaborado("        ");
-                    bean.setFechaFinalNoLaborado("        ");
-                    bean.setDiasNoLaborado("000");
+                jsona = new JSONArray();
+                jsona.put(0, Utils.padRight(Integer.toString(consecutivo++), '0', 9));
+                for (int i = 1; i <= colCount; i++) {
+                    jsona.put(i, datoSql.getString(i));
                 }
-                bean.setCantidadDestajo("        ");
-                bean.setUbicacionDestajo("        ");
-
-                bean.setHorasNovedad(datoSql.getString("tiempo").replace(".", "").trim() + "+");
-                bean.setValorNovedad(datoSql.getString("valor").replace(".", "").trim() + "+");
-
-                bean.setCantidadDestajo("0000000+");
-                bean.setCuota("   ");
-                bean.setFechaConceptosPrima("        ");
-                bean.setCedula(datoSql.getString("identificacion").replace(" ", "0"));
-                bean.setProyecto("          ");
-
-                registros.add(bean);
-
-                if (datoSql.getInt("codnovedad") == 2) {
-                    if (datoSql.getInt("diascompensados") > 0) {
-                        CGUNORegistroBeans bean2;
-                        bean2 = bean.clone();
-                        bean2.setConcepto(" 33");
-                        bean2.setDiasNoLaborado(datoSql.getString("diascompensados"));
-                        registros.add(bean2);
-                    }
-                    if (datoSql.getInt("diasotros") > 0) {
-                        CGUNORegistroBeans bean3;
-                        bean3 = bean.clone();
-                        bean3.setConcepto(" 34");
-                        bean3.setDiasNoLaborado(datoSql.getString("diasotros"));
-                        registros.add(bean3);
-                    }
-                }
-                if (datoSql.getInt("codnovedad") == 3) {
-                    CGUNORegistroBeans bean2;
-                    bean2 = bean.clone();
-                    bean2.setConcepto(parametros.get(17));
-                    bean2.setDiasNoLaborado(datoSql.getString("diasotros"));
-                    registros.add(bean2);
-                }
+                tnls.add(jsona);
             }
-            String cad = "";
-            for (CGUNORegistroBeans cGUNORegistroBeans : registros) {
-                cad += cGUNORegistroBeans.toString() + "\n";
+            novedades.addAll(tnls);
+            ArrayList<JSONArray> incapacidades = new ArrayList<JSONArray>();
 
+            sql = "SELECT     rn.tiponovedad tipo,\n"
+                    + "       RPAD (mp.identificacion, 13) empl, '00' suc, '00' contr, '000' nrotnl,\n"
+                    + "       LPAD (rn.codconcepto, 3, 0) concp,\n"
+                    + "       TO_CHAR (mn.fechainicio, 'YYYYMMDD') finicio,\n"
+                    + "       TO_CHAR (mn.fechafin, 'YYYYMMDD') ffin, LPAD (mn.dias, 5, 0) dias,\n"
+                    + "       LPAD (mn.vlreps, 11, 0) || '00+' vlrtnl,\n"
+                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (mn.observacion, 40) obsv,\n"
+                    + "       ' ' serie, RPAD (mn.nroincapacidad, 6, ' ') nroinc, 'A' tipoinc,\n"
+                    + "       RPAD (mn.coddiagnostico, 6, ' ') coddx, mn.claseincapacidad clsinc,\n"
+                    + "       RPAD (NVL (TO_CHAR (mn.fechaaccidente, 'YYYYMMDD'), ' '), 8) facc,\n"
+                    + "       mn.indprorroga indpro, LPAD (NVL (mn.idnovprorroga, 0), 9, 0) novpro,\n"
+                    + "       LPAD (mn.vlrempresa, 11, 0) || '00+' vlrsio,\n"
+                    + "       LPAD ('0', 13, 0) || '-' vlrotro,\n"
+                    + "       TO_CHAR (mn.fechainicio, 'YYYYMMDD') fexpd,\n"
+                    + "       LPAD ('0', 13, 0) || '+' vlribc, '00' msprom,\n"
+                    + "       LPAD (mn.nroprorrogacg, 3, 0) nrocg, mn.idnovedad \n"
+                    + "  FROM mnovedades mn INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad\n"
+                    + "       INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario\n"
+                    + " WHERE rn.tiponovedad = 2 AND mn.plano = 1 AND estado = 2 AND anulado = 0 AND idnomina = ?"
+                    + " ORDER BY mn.idnovedad";
+            BD.conectar();
+            BD.callableStatement(sql);
+            BD.AsignarParametro(1, Integer.toString(idnomina), 2);
+            BD.consultar();
+
+            datoSql = BD.obtenerConsulta();
+            rsmd = datoSql.getMetaData();
+            colCount = rsmd.getColumnCount();
+
+            while (datoSql.next()) {
+                jsona = new JSONArray();
+                jsona.put(0, Utils.padRight(Integer.toString(consecutivo++), '0', 9));
+                for (int i = 1; i <= colCount; i++) {
+                    if (i != 20) {
+                        jsona.put(i, datoSql.getString(i));
+                    } else {
+                        int idnov = datoSql.getInt(20);
+                        if (idnov == 0) {
+                            jsona.put(i, datoSql.getString(i));
+                        } else {
+                            for (JSONArray array : incapacidades) {
+                                if ((Integer.parseInt((String) array.get(27))) == idnov) {
+                                    jsona.put(20, (String) array.getString(0));
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+                incapacidades.add(jsona);
+            }
+
+            for (JSONArray array : incapacidades) {
+                array.remove(colCount);
+            }
+            novedades.addAll(incapacidades);
+
+            for (JSONArray array : novedades) {
+                cad += array.toString().replaceAll(",", "").replaceAll("\"", "").replace("[", "").replace("]", "") + "\n";
             }
 
             return cad;
