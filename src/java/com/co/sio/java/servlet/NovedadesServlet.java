@@ -163,6 +163,15 @@ public class NovedadesServlet extends HttpServlet {
                         response.getWriter().println(dao.anular(id, anulado));
 
                     }
+                    break;
+                    case 'h': {
+                        String fInicial = request.getParameter("fechaInicial");
+                        String fFinal = request.getParameter("fechaFinal");
+
+                        response.setContentType("application/json");
+                        response.setCharacterEncoding("utf-8");
+                        response.getWriter().print(dao.calcularLaborales(fInicial, fFinal));
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -188,13 +197,6 @@ public class NovedadesServlet extends HttpServlet {
         String fechafin = request.getParameter("dateFin");
         String nroInc = request.getParameter("nroInc");
         String codDx = request.getParameter("codDx");
-        String clsInc = request.getParameter("clsInc") == null ? "0" : request.getParameter("clsInc");
-        String dateAcc = request.getParameter("dateAcc");
-        String indPro = request.getParameter("indPro") == null ? "0" : request.getParameter("indPro");
-        String incAnt = request.getParameter("incAnt").equals("") ? "0" : request.getParameter("incAnt");
-        String nroIncCg = request.getParameter("nroIncCg").equals("") ? "0" : request.getParameter("nroIncCg");
-        String vlrEPS = request.getParameter("vlrEPS").equals("") ? "0" : request.getParameter("vlrEPS");
-        String vlrSIO = request.getParameter("vlrSIO").equals("") ? "0" : request.getParameter("vlrSIO");
         String observacion = request.getParameter("observacion");
         ApplicationPart p = (ApplicationPart) request.getPart("sopInc");
 
@@ -206,13 +208,6 @@ public class NovedadesServlet extends HttpServlet {
         beans.setDias(Integer.parseInt(dias));
         beans.setNroincapacidad(nroInc);
         beans.setCoddiagnostico(codDx);
-        beans.setClaseincapacidad(Integer.parseInt(clsInc));
-        beans.setFechaaccidente(dateAcc);
-        beans.setIndprorroga(Integer.parseInt(indPro));
-        beans.setIdnovprorroga(Integer.parseInt(incAnt));
-        beans.setNronovcg(Integer.parseInt(nroIncCg));
-        beans.setVlrempresa(Integer.parseInt(vlrSIO));
-        beans.setVlreps(Integer.parseInt(vlrEPS));
         beans.setObservacion(observacion);
         beans.setPlano(1);
         if (p.getSize() > 0) {

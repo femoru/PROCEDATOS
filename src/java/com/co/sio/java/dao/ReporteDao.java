@@ -379,6 +379,76 @@ public class ReporteDao {
         }
     }
 
+    public String detalladoNomina(String labores, String fechaInicial, String fechaFinal) throws Exception {
+        try {
+
+            String sql = "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
+                    + "         deslabor AS labor,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",TO_CHAR(FECHAINICIO,'DD/MM/YYYY') FECHA,TO_CHAR(FECHAINICIO,'HH24:MI')H_INI,TO_CHAR(FECHAFIN,'HH24:MI')H_FIN,\n"
+                    + "         plc.valor, mr.registroslabor AS cantidad,\n"
+                    + "         TRUNC (mr.registroslabor * mr.valor, 2) produccion\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
+                    + "	    AND plc.idlaborcontrato IN ( %s )\n"
+                    + "UNION ALL\n"
+                    + "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
+                    + "         deslabor AS labor,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",TO_CHAR(FECHAINICIO,'DD/MM/YYYY') FECHA,TO_CHAR(FECHAINICIO,'HH24:MI')H_INI,TO_CHAR(FECHAFIN,'HH24:MI')H_FIN,\n"
+                    + "         plc.valor, TRUNC (mr.tiempolabor / 60, 2) AS cantidad,\n"
+                    + "         TRUNC (TRUNC (mr.tiempolabor / 60, 2) * mr.valor, 2) produccion\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "          INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
+                    + "	    AND plc.idlaborcontrato IN ( %s )\n"
+                    + "ORDER BY AREA,GRUPO, LABOR,NOMBRE, TIPO,FECHA";
+            sql = String.format(sql, fechaInicial, fechaFinal, labores, fechaInicial, fechaFinal, labores);
+            System.out.println(sql);
+            String reporte = "DetalladoNomina";
+            JasperPrint generarReporte = generarReporte(reporte, sql);
+            return exportarExcel(generarReporte);
+
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
+    }
+
     private JasperPrint generarReporte(String nombreReporte, String consulta) throws Exception {
         try {
             Connection cox = ControllerPool.getDs().getConnection();
@@ -409,7 +479,7 @@ public class ReporteDao {
             JRXlsExporter exporter = new JRXlsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, directorio + jasperPrint.getName() + ".xls");
-           
+
             exporter.exportReport();
             return jasperPrint.getName() + ".xls";
         } catch (JRException ex) {
@@ -417,5 +487,4 @@ public class ReporteDao {
         }
 
     }
-    
 }

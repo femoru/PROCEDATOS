@@ -328,14 +328,23 @@ function paso2() {
         data: {
             oper: "mCalculo",
             usuario: 0,
-            nomina: datosnomina.id
+            nomina: datosnomina.id,
+            finicial:datosnomina.fechaInicio,
+            ffinal:datosnomina.fechaFin
         },
         success: function(data) {
-            $("#prenomina").fadeIn();
-            $("#progress2").find("li img").attr("src", OK);
-            $("#progress2").find("li img").fadeIn(1500);
-            datosnomina.estado = 2;
-            $("#progress2").removeAttr("onclick");
+            if (data === "true") {
+                $("#prenomina").fadeIn();
+                $("#progress2").find("li img").attr("src", OK);
+                $("#progress2").find("li img").fadeIn(1500);
+                datosnomina.estado = 2;
+                $("#progress2").removeAttr("onclick");
+            }
+            else {
+                alert("Ocurrio un error inesperado ");
+                $("#progress2").find("li img").attr("src", error);
+                $("#progress2").find("li img").fadeIn(1500);
+            }
         }, error: function(jqXHR, textStatus, errorThrown) {
             alert("Ocurrio un error inesperado, " + textStatus);
             $("#progress2").find("li img").attr("src", error);

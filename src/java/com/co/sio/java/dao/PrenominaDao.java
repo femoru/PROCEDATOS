@@ -175,16 +175,14 @@ public class PrenominaDao {
         try {
             String sql = "SELECT count(*)\n"
                     + "  FROM mregistros\n"
-                    + " WHERE fechainicio >= TO_DATE (?, 'dd/mm/yyyy')\n"
-                    + "   AND TRUNC(fechainicio) <= TO_DATE (?, 'dd/mm/yyyy') \n"
+                    + " WHERE TRUNC(fechainicio) <= TO_DATE (?, 'dd/mm/yyyy') \n"
                     + "   AND (   (estado < 2 AND anulado = 0)\n"
                     + "        OR (estado = 2 AND fechafin IS NULL AND anulado = 0)\n"
                     + "       )";
 
             BD.conectar();
             BD.callableStatement(sql);
-            BD.AsignarParametro(1, fechaInicio, 1);
-            BD.AsignarParametro(2, fechaFin, 1);
+            BD.AsignarParametro(1, fechaFin, 1);
             BD.consultar();
 
             ResultSet rsCuenta = BD.obtenerConsulta();
@@ -206,13 +204,11 @@ public class PrenominaDao {
         int resultado = -1;
         try {
             String sql = "SELECT count(*)  FROM mnovedades \n"
-                    + "WHERE fechainicio >= TO_DATE(?,'dd/mm/yyyy') \n"
-                    + "AND fechainicio <= TO_DATE(?,'dd/mm/yyyy') \n"
+                    + "WHERE trunc(fechainicio) <= TO_DATE(?,'dd/mm/yyyy') \n"
                     + "AND estado < 2 AND anulado = 0";
             BD.conectar();
             BD.callableStatement(sql);
-            BD.AsignarParametro(1, fechaInicio, 1);
-            BD.AsignarParametro(2, fechaFin, 1);
+            BD.AsignarParametro(1, fechaFin, 1);
             BD.consultar();
 
             ResultSet rsCuenta = BD.obtenerConsulta();
@@ -240,24 +236,20 @@ public class PrenominaDao {
             sql = "UPDATE mregistros SET idnomina = ?  "
                     + "WHERE idregistro IN "
                     + "(select idregistro from mregistros "
-                    + "WHERE fechainicio >= TO_DATE(?,'dd/mm/yyyy') "
-                    + "AND TRUNC(fechainicio) <= TO_DATE(?,'dd/mm/yyyy') "
-                    + "AND (estado = 2 OR anulado > 0)  )";
+                    + "WHERE TRUNC(fechainicio) <= TO_DATE(?,'dd/mm/yyyy') "
+                    + "AND (estado = 2 OR anulado > 0) AND (idnomina IS NULL OR idnomina = 0) )";
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(nomina.getId()), 2);
-            BD.AsignarParametro(2, nomina.getFechaInicio(), 1);
-            BD.AsignarParametro(3, nomina.getFechaFin(), 1);
+            BD.AsignarParametro(2, nomina.getFechaFin(), 1);
 
             confirmacion = BD.registrar();
 
             sql = "UPDATE mnovedades SET idnomina = ? "
-                    + "WHERE fechainicio >= TO_DATE(?,'dd/mm/yyyy') "
-                    + "AND TRUNC(fechainicio) <= TO_DATE(?,'dd/mm/yyyy') "
-                    + "AND (estado = 2 OR anulado > 0)   ";
+                    + "WHERE TRUNC(fechainicio) <= TO_DATE(?,'dd/mm/yyyy') "
+                    + "AND (estado = 2 OR anulado > 0) AND (idnomina IS NULL OR idnomina = 0)  ";
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(nomina.getId()), 2);
-            BD.AsignarParametro(2, nomina.getFechaInicio(), 1);
-            BD.AsignarParametro(3, nomina.getFechaFin(), 1);
+            BD.AsignarParametro(2, nomina.getFechaFin(), 1);
 
             confirmacion = BD.registrar();
 
@@ -488,15 +480,17 @@ public class PrenominaDao {
         }
     }
 
-    public boolean terminarModificaciones(String idusuario, String idnomina) throws Exception {
+    public boolean terminarModificaciones(String idusuario, String idnomina, String finicial, String ffinal) throws Exception {
         try {
 
-            String sql = "CALL  PKG_PRENOMINA.CALCULO ( ?, ? ) ";
+            String sql = "CALL  PKG_PRENOMINA.CALCULO ( ?, ?, ?, ? ) ";
 
             BD.conectar();
             BD.callableStatement(sql);
             BD.AsignarParametro(1, idusuario, 2);
-            BD.AsignarParametro(2, idnomina, 1);
+            BD.AsignarParametro(2, idnomina, 2);
+            BD.AsignarParametro(3, finicial, 1);
+            BD.AsignarParametro(4, ffinal, 1);
 
             return BD.registrar();
         } catch (Exception e) {

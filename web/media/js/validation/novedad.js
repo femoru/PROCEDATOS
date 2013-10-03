@@ -2,8 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-var prorroga;
-$("#incapacidad").hide();
+$("#incapacidad,#valores,#vacaciones").hide();
 $("#incAnt, #nroIncCg").attr("disabled", "");
 
 $("#formNov").ajaxForm({
@@ -12,6 +11,7 @@ $("#formNov").ajaxForm({
 
         var disableds = $(":disabled"), campo;
 
+        arr.push({name: 'tipo', value: nov.tipo});
         for (var i = 0; i < disableds.length; i++) {
             campo = {
                 name: disableds[i].name,
@@ -46,9 +46,9 @@ $(".numero").keydown(function(e) {
         return false;
     }
 });
-
+var nov;
 $("#novedad_cb").autocomplete({select: function(event, ui) {
-        var nov;
+
         $.ajax({
             dataType: "json",
             url: "RefNovedadServlet",
@@ -62,14 +62,20 @@ $("#novedad_cb").autocomplete({select: function(event, ui) {
                 nov = data.novedad;
             }
         });
-        if (nov.tipo === 2) {
-            $("#incapacidad").slideDown();
-        } else {
-            $("#incapacidad").slideUp();
+        $("#incapacidad,#valores,#vacaciones").slideUp();
+        switch (nov.tipo) {
+            case 0:
+                $("#vacaciones").slideDown();
+                break;
+            case 2:
+                $("#incapacidad").slideDown();
+                break;
+            case 3:
+                $("#valores").slideDown();
+                break;
         }
-    }});
 
-var vlrDia;
+    }});
 
 $('#dias').spinner({min: 1, max: 999, spin: fechaFin, change: fechaFin});
 $('.datepicker').datepicker();
@@ -105,21 +111,6 @@ function validar() {
             return false;
         }
     }
-    if (prorroga) {
-        if ($("#incAnt").val() === "0") {
-            $("#incAnt").focus().after("<span class='error' style='z-index:100;'>Selecciona una opción</span>");
-            $('.error').hover(function() {
-                $('.error').remove();
-            });
-            return false;
-        }
-    }
-    if ($("#obsv").val() === "") {
-        $("#obsv").focus().after("<span class='error' style='z-index:100;'>Escribe una pequeña descripción</span>");
-        $('.error').hover(function() {
-            $('.error').remove();
-        });
-        return false;
-    }
+
     return true;
 }

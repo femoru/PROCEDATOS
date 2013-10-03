@@ -5,7 +5,7 @@
 var prorroga;
 var selrow;
 var vlrDia = 19650;
-$("#incapacidad").hide();
+$("#incapacidad,#valores,#vacaciones").hide();
 $("#incAnt, #nroIncCg").attr("disabled", "");
 jQuery(document).ready(function($) {
     $('#clsInc').combobox();
@@ -54,6 +54,23 @@ jQuery(document).ready(function($) {
             $("#nroInc").val(rowdata.nroInc);
             $("#codDx").val(rowdata.codDx);
             $('#dlgvalidar').dialog("option", "title", rowdata.tipo + " DE " + rowdata.auxiliar);
+            switch (parseInt(rowdata.tipoNov)) {
+                case 0:
+                    $("#vacaciones").slideDown();
+                    $("#dateFin").change(function(){
+                       
+                        console.log( $("#dateFin").val());
+                        //$("#diasHab$").val(diasLaborales(rowdata.inicio, rowdata.fin));
+                    });
+                    
+                    break;
+                case 2:
+                    $("#incapacidad").slideDown();
+                    break;
+                case 3:
+                    $("#valores").slideDown();
+                    break;
+            }
             $.ajax({
                 dataType: "json",
                 url: "PersonaServlet",
@@ -120,6 +137,7 @@ jQuery(document).ready(function($) {
         ],
         close: function() {
             $('#dlgvalidar input').val("");
+            $("#incapacidad,#valores,#vacaciones").hide();
             refrescarGrilla();
         }
     });
@@ -169,7 +187,7 @@ function fechaFin(event, ui) {
     }
     if (fecha) {
         fecha.setDate(fecha.getDate() + number - 1);
-        $("#dateFin").val($.datepicker.formatDate("dd/mm/yy", fecha));
+        $("#dateFin").val($.datepicker.formatDate("dd/mm/yy", fecha)).trigger('change');;
     }
 
     calcularDias(number);
@@ -237,4 +255,24 @@ function validar() {
         return false;
     }
     return true;
+}
+function diasLaborales(d1, d2) {
+    var lab;
+    $.ajax({
+        type: "POST",
+        url: "NovedadesServlet",
+        async: false,
+        data: {
+            oper: "habiles",
+            fechaInicial: d1,
+            fechaFinal: d2
+        },
+        success: function(data) {
+            lab = data;
+        },
+        error: function() {
+            lab = 0;
+        }
+    });
+    return lab;
 }

@@ -60,11 +60,15 @@ public class ReportesServlet extends HttpServlet {
         try {
             ReporteDao reporteDao = new ReporteDao();
             String oper = request.getParameter("oper");
+
             int reporte = Integer.parseInt(request.getParameter("reporte"));
+            int clase = Integer.parseInt(request.getParameter("clase"));
             switch (oper.charAt(0)) {
                 case 'g': {
 
                     int idnomina = Integer.parseInt(request.getParameter("nomina"));
+                    String fini = request.getParameter("fini");
+                    String ffin = request.getParameter("ffin");
                     String labores = request.getParameter("labores");
                     String nombre = null;
 
@@ -79,7 +83,11 @@ public class ReportesServlet extends HttpServlet {
                             nombre = reporteDao.consolidadoNomina(labores, idnomina);
                             break;
                         case 3:
-                            nombre = reporteDao.detalladoNomina(labores, idnomina);
+                            if (clase == 0) {
+                                nombre = reporteDao.detalladoNomina(labores, idnomina);
+                            } else {
+                                nombre = reporteDao.detalladoNomina(labores, fini, ffin);
+                            }
                             break;
                     }
 

@@ -37,12 +37,11 @@
                     <label for="dias">Dias </label><input maxlength="3" id="dias" name="dias" >
                     <label>Fecha Fin <input id="dateFin" name="dateFin" disabled=""></label>
                 </div><br> 
-                <div>
+                <div id="incapacidad" class="ui-widget">
                     <label>Nro Incapacidad <input id="nroInc" name="nroInc" maxlength="6"></label>
                     <label>Cod Diagnostico <input id="codDx" name="codDx" maxlength="6"></label>
 
-                </div><br>
-                <div >
+                    <br><br>
                     <div>
                         <div>
                             <label for="clsInc">Clase Incapacidad</label><select id="clsInc" name="clsInc">
@@ -70,6 +69,16 @@
                         <label>Porcentaje EPS <input id="prc" name="prc" maxlength="5" size="6" class="numero"></label>
                         <label>Valor EPS 2/3<input id="vlrEPS" name="vlrEPS" maxlength="11" class="numero"></label>
                     </div>
+                </div>
+                <div id="vacaciones" class="ui-widget">
+                    <label>Dias Habiles<input id="diasHab" name="diasSio" class="numero" maxlength="3" disabled=""></label>
+                    <label>Dias No Habiles<input id="diasNoHab" name="diasComp" class="numero" maxlength="3" disabled=""></label>
+                    <label>Dias Compensados<input id="diasComp" name="diasComp" class="numero" maxlength="3"></label>
+                    <br>
+                </div>
+                <div id="valores" class="ui-widget">
+                    <label>Valor <input id="vlrNov" name="vlrNov" class="numero" maxlength="11" size="30"></label>
+                    <br>
                 </div>
             </div>
         </div>

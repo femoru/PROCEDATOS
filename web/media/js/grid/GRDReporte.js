@@ -11,7 +11,10 @@ $("#generar").click(function() {
         var lab = myGrid.jqGrid('getGridParam', 'selarrrow');
         var data = "oper=generar" +
                 "&reporte=" + $("input[name='tipo']:checked").val() +
+                "&clase=" + $("input[name='clase']:checked").val() +
                 "&labores=" + lab.toString() +
+                "&fini=" + $(".datepicker")[0].value +
+                "&ffin=" + $(".datepicker")[1].value +
                 "&nomina=" + $("#nomina").val();
 
         $('<form action="ReportesServlet?' + data + '" method="post"></form>').appendTo('body').submit();

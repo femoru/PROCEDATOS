@@ -51,40 +51,21 @@
                     </p><br>
 
                 </div>
-                <br>
                 <div id="incapacidad" class="ui-widget">
-                    <div>
-                        <label>Nro Incapacidad <input id="nroInc" name="nroInc" maxlength="6"></label>
-                        <label>Cod Diagnostico <input id="codDx" name="codDx" maxlength="6"></label>
-
-                    </div><br>
-                    <div style="display: none;">
-                        <div>
-                            <div>
-                                <label for="clsInc">Clase Incapacidad</label><select id="clsInc" name="clsInc">
-                                    <option value="0"></option>
-                                    <option value="1">ENFERMEDAD GENERAL</option>
-                                    <option value="2">MATERNIDAD / PATERNIDAD</option>
-                                    <option value="3">ACCIDENTE DE TRABAJO</option>
-                                    <option value="4">ENFERMEDAD PROFESINAL</option>
-                                </select>
-                            </div>
-                            <br>
-                            <div>
-                                <label >Fecha Accidente <input id="dateAcc" name="dateAcc" class="datepicker" disabled="" ></label>
-                            </div>
-                        </div><br><div>
-                            <input type="checkbox" id="indPro" name="indPro" value="1"><label for="indPro">Prorroga </label>
-                            <label for="clsInc">Incapacidades</label>
-                            <select id="incAnt" name="incAnt"><option value="0">Seleccione la incapacidad</option></select>
-                            <label>Nro Incapacidad CGUNO <input id="nroIncCg" name="nroIncCg" maxlength="3" class="numero"></label>
-                        </div><br><div>
-                            <label>Valor SIO 3 dias <input id="vlrSIO" name="vlrSIO" maxlength="11" class="numero"></label>
-                            <label>Valor EPS 2/3<input id="vlrEPS" name="vlrEPS" maxlength="11" class="numero"></label>
-                        </div>
-                    </div>
+                    <label>Nro Incapacidad <input id="nroInc" name="nroInc" maxlength="6"></label>
+                    <label>Cod Diagnostico <input id="codDx" name="codDx" maxlength="6"></label>
                     <br>
                 </div>
+                <div id="vacaciones" class="ui-widget">
+                    <label>Dias Habiles<input id="diasHab" name="diasSio" class="numero" maxlength="3" disabled=""></label>
+                    <label>Dias No Habiles<input id="diasNoHab" name="diasComp" class="numero" maxlength="3" disabled=""></label>
+                    <br>
+                </div>
+                <div id="valores" class="ui-widget">
+                    <label>Valor <input id="vlrNov" name="vlrNov" class="numero" maxlength="11" size="30"></label>
+                    <br>
+                </div>
+                <br>
                 <div class="ui-widget">
                     <label for="sopInc">Soporte Incapacidad <input id="sopInc" name="sopInc" type="file" accept="image/*"></label>
                 </div>

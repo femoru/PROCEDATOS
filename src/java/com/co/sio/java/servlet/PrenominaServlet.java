@@ -133,10 +133,14 @@ public class PrenominaServlet extends HttpServlet {
                 case 'm': {//lanza el calculo de prenomina para un usuario y nomina especifica
                     String idusuario = request.getParameter("usuario");
                     String idnomina = request.getParameter("nomina");
-                    if (oper.equals("mCalculo")) {
+                    String finicial = request.getParameter("finicial");
+                    String ffinal = request.getParameter("ffinal");
+                    
+                    boolean retorno = nominaDao.terminarModificaciones(idusuario, idnomina, finicial, ffinal);
+                    if (oper.equals("mCalculo") && retorno) {
                         nominaDao.actualizarNomina(Integer.parseInt(idnomina), 2);
                     }
-                    response.getWriter().print(nominaDao.terminarModificaciones(idusuario, idnomina));
+                    response.getWriter().print(retorno);
 
                 }
                 break;
@@ -255,6 +259,7 @@ public class PrenominaServlet extends HttpServlet {
             }
         } catch (Exception ex) {
             Logger.getLogger(PrenominaServlet.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

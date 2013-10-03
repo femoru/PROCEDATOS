@@ -59,7 +59,7 @@ public class NominaServlet extends HttpServlet {
 
                     String idnomina = request.getParameter("idnomina");
                     PrenominaDao preDao = new PrenominaDao();
-                    preDao.terminarModificaciones("0", idnomina);
+                  //  preDao.terminarModificaciones("0", idnomina);
 
                     // JSONArray datosNomina = preDao.datosNomina();
 
