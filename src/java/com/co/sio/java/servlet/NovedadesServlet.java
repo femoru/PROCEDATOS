@@ -392,6 +392,7 @@ public class NovedadesServlet extends HttpServlet {
         beans.setIdnovprorroga(beans.getIdnovedad());
         beans.setVlrempresa(0);
         beans.setVlreps(0);
+        beans.setDiasEPS(0);
 
         int diasSio = beans.getDiasSIO();
         int diasEps = beans.getDiasEPS();

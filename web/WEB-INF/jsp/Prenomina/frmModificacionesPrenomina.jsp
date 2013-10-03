@@ -26,10 +26,11 @@
         </style>
 
         <script src="media/js/grid/GRDPrenomina.js"></script>
+        <!-- 
         <script src="media/js/grid/GRDNovedades.js"></script>
         <script src="media/js/grid/GRDValidarLabores.js"></script>
         <script src="media/js/dlg/DLGPrenomina.js"></script>
-
+        -->
 
     </head>
     <body>
@@ -63,8 +64,9 @@
                 </div>
             </center>
         </div>
-
-        <div id="validar_Novedad" class="grilla"></div>
-        <div id="registrarNovedad" class="grilla"> </div>
+        <!--
+                <div id="validar_Novedad" class="grilla"></div>
+                <div id="registrarNovedad" class="grilla"> </div>
+        -->
     </body>
 </html>
