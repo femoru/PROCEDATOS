@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
         rownumbers: true,
         datatype: "local",
         colNames: ["idusuario", "codnovedad", "Auxiliar", "Fecha Inicio", "Fecha Fin", 
-            "Tipo", "Observacion", "Estado", "Dias TNL", "Dias SIO", "Dias EPS", "Anulado por","nroInc","codDx","tipoNovedad"],
+            "Tipo", "Observacion", "Estado", "Dias TNL", "Dias SIO", "Dias EPS", "Anulado por","nroInc","codDx","tipoNovedad","valorEmp"],
         colModel: [
             {
                 "name": "idusuario",
@@ -129,6 +129,12 @@ jQuery(document).ready(function($) {
             }, {
                 "name": "tipoNov",
                 "index": "tipoNov",
+                editable: true,
+                edittype: "text",
+                hidden: true
+            }, {
+                "name": "valorNov",
+                "index": "valorNov",
                 editable: true,
                 edittype: "text",
                 hidden: true

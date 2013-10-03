@@ -274,7 +274,7 @@ public class NovedadesDao {
                     + "       || ''\n"
                     + "       || mp.sapellido AS nombre,\n"
                     + "       to_char(mn.fechainicio,'dd/mm/yyyy'), to_char(mn.fechafin,'dd/mm/yyyy'), rn.desnovedad, mn.observacion,mn.estado, mn.dias,\n"
-                    + "       mn.diassio, mn.diaseps, rca.descausa,mn.nroincapacidad,mn.coddiagnostico,rn.tiponovedad \n"
+                    + "       mn.diassio, mn.diaseps, rca.descausa,mn.nroincapacidad,mn.coddiagnostico,rn.tiponovedad,mn.vlrempresa \n"
                     + "  FROM mnovedades mn INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario\n"
                     + "       INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad\n"
                     + "       INNER JOIN rcausasanulacion rca ON mn.anulado = rca.codcausa\n"

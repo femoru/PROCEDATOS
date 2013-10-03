@@ -47,7 +47,7 @@ jQuery(document).ready(function($) {
             $("#dateFin").attr("disabled", true);
             $("#dias").spinner("enable");
             $("#dateIni").val(rowdata.inicio);
-
+            $("#vlrNov").val("");
 
             switch (parseInt(rowdata.tipoNov)) {
                 case 0:
@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
                     break;
                 case 3:
                     $("#valores").slideDown();
+                    $("#vlrNov").val(rowdata.valorNov);
                     break;
             }
 
@@ -117,7 +118,7 @@ jQuery(document).ready(function($) {
                         diasSIO: parseInt(rowdata.tipoNov) === 2 ? $("#diasSIO").val() : $("#diasHab").val(),
                         diasEPS: parseInt(rowdata.tipoNov) === 2 ? $("#diasEPS").val() : $("#diasNoHab").val(),
                         diasComp: $("#diasComp").val() === "" ? 0 : parseInt($("#diasComp").val()),
-                        vlrSIO: $("#vlrSIO").val(),
+                        vlrSIO: parseInt(rowdata.tipoNov) === 3 ? $("#vlrNov").val() : ("#vlrSIO").val(),
                         prc: $("#prc").val(),
                         vlrEPS: $("#vlrEPS").val()
                     };

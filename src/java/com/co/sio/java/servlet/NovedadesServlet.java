@@ -141,11 +141,11 @@ public class NovedadesServlet extends HttpServlet {
                         beans.setVlrempresa(Integer.parseInt(request.getParameter("vlrSIO")));
                         beans.setVlreps(Integer.parseInt(request.getParameter("vlrEPS")));
                         if (Integer.parseInt(request.getParameter("tipo")) != 1) {
-                            beans.setDiasSIO(Integer.parseInt(request.getParameter("diasSIO")));
+                            beans.setDiasSIO(Integer.parseInt(request.getParameter("diasSIO").equals("") ? "0" : request.getParameter("diasSIO")));
                         } else {
                             beans.setDiasSIO(Integer.parseInt(request.getParameter("dias")));
                         }
-                        beans.setDiasEPS(Integer.parseInt(request.getParameter("diasEPS")));
+                        beans.setDiasEPS(Integer.parseInt(request.getParameter("diasEPS").equals("") ? "0" : request.getParameter("diasEPS")));
                         beans.setDiasComp(Integer.parseInt(request.getParameter("diasComp")));
                         beans.setPorcentaje(Double.parseDouble(request.getParameter("prc").equals("") ? "100" : request.getParameter("prc")));
 
@@ -204,6 +204,7 @@ public class NovedadesServlet extends HttpServlet {
         String fechafin = request.getParameter("dateFin");
         String nroInc = request.getParameter("nroInc");
         String codDx = request.getParameter("codDx");
+        String vlrNov = request.getParameter("vlrNov");
         String observacion = request.getParameter("observacion");
         ApplicationPart p = (ApplicationPart) request.getPart("sopInc");
 
@@ -216,6 +217,7 @@ public class NovedadesServlet extends HttpServlet {
         beans.setNroincapacidad(nroInc);
         beans.setCoddiagnostico(codDx);
         beans.setObservacion(observacion);
+        beans.setVlrempresa(vlrNov.equals("") ? 0 : Integer.parseInt(vlrNov));
         beans.setPlano(1);
         if (p.getSize() > 0) {
             String archivoNovedad = crearArchivoNovedad(beans, p);
