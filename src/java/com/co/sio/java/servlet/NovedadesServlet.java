@@ -140,18 +140,25 @@ public class NovedadesServlet extends HttpServlet {
                         beans.setNronovcg(Integer.parseInt(request.getParameter("nroIncCg").equals("") ? "0" : request.getParameter("nroIncCg")));
                         beans.setVlrempresa(Integer.parseInt(request.getParameter("vlrSIO")));
                         beans.setVlreps(Integer.parseInt(request.getParameter("vlrEPS")));
-                        beans.setDiasSIO(Integer.parseInt(request.getParameter("diasSIO")));
+                        if (Integer.parseInt(request.getParameter("tipo")) != 1) {
+                            beans.setDiasSIO(Integer.parseInt(request.getParameter("diasSIO")));
+                        } else {
+                            beans.setDiasSIO(Integer.parseInt(request.getParameter("dias")));
+                        }
                         beans.setDiasEPS(Integer.parseInt(request.getParameter("diasEPS")));
+                        beans.setDiasComp(Integer.parseInt(request.getParameter("diasComp")));
                         beans.setPorcentaje(Double.parseDouble(request.getParameter("prc").equals("") ? "100" : request.getParameter("prc")));
 
                         response.setContentType("application/json");
                         response.setCharacterEncoding("utf-8");
                         response.setHeader("Pragma", "no-cache");
                         beans.setEstado(2);
-                        response.getWriter().println(dao.actualizar(beans));
+                        boolean actualizar = dao.actualizar(beans);
+                        response.getWriter().println(actualizar);
 
-
-                        registrosCalculoNomina(beans, dao);
+                        if (actualizar) {
+                            registrosCalculoNomina(beans, dao);
+                        }
                     }
                     break;
                     case 'd': {

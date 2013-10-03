@@ -34,6 +34,7 @@ public class NovedadBeans {
     private int plano;
     private int diasSIO;
     private int diasEPS;
+    private int diasComp;
     private double porcentaje;
 
     public int getIdnovedad() {
@@ -228,6 +229,14 @@ public class NovedadBeans {
         this.diasEPS = diasEPS;
     }
 
+    public int getDiasComp() {
+        return diasComp;
+    }
+
+    public void setDiasComp(int diasComp) {
+        this.diasComp = diasComp;
+    }
+
     public double getPorcentaje() {
         return porcentaje;
     }
@@ -235,5 +244,4 @@ public class NovedadBeans {
     public void setPorcentaje(double porcentaje) {
         this.porcentaje = porcentaje;
     }
-    
 }

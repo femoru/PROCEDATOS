@@ -42,27 +42,21 @@ jQuery(document).ready(function($) {
         modal: true,
         dialogClass: "no-close",
         open: function(event, ui) {
-            $("#nroInc").focus();
-            $('.datepicker').datepicker();
-            $("#prc").val(100);
             selrow = jQuery('#gridNov').jqGrid('getGridParam', 'selrow');
             var rowdata = $('#gridNov').jqGrid('getRowData', selrow);
-            $('#incAnt').load('NovedadesServlet?oper=l&idusuario=' + rowdata.idusuario + "&idnovedad=" + selrow);
+            $("#dateFin").attr("disabled", true);
+            $("#dias").spinner("enable");
             $("#dateIni").val(rowdata.inicio);
-            $("#dias").val(rowdata.diasTNL);
-            $("#dateFin").val(rowdata.fin);
-            $("#nroInc").val(rowdata.nroInc);
-            $("#codDx").val(rowdata.codDx);
-            $('#dlgvalidar').dialog("option", "title", rowdata.tipo + " DE " + rowdata.auxiliar);
+
+
             switch (parseInt(rowdata.tipoNov)) {
                 case 0:
                     $("#vacaciones").slideDown();
-                    $("#dateFin").change(function(){
-                       
-                        console.log( $("#dateFin").val());
-                        //$("#diasHab$").val(diasLaborales(rowdata.inicio, rowdata.fin));
-                    });
-                    
+                    $("#dateFin").addClass("datepicker").removeAttr("disabled").datepicker({onSelect: function(dateText) {
+                            diasLaborales($("#dateIni").val(), dateText);
+                        }});
+                    diasLaborales($("#dateIni").val(), rowdata.fin);
+                    $("#dias").spinner("disable");
                     break;
                 case 2:
                     $("#incapacidad").slideDown();
@@ -71,6 +65,19 @@ jQuery(document).ready(function($) {
                     $("#valores").slideDown();
                     break;
             }
+
+
+
+            $("#nroInc").focus();
+            $('.datepicker').datepicker();
+            $("#prc").val(100);
+            $('#incAnt').load('NovedadesServlet?oper=l&idusuario=' + rowdata.idusuario + "&idnovedad=" + selrow);
+
+            $("#dias").val(rowdata.diasTNL);
+            $("#dateFin").val(rowdata.fin);
+            $("#nroInc").val(rowdata.nroInc);
+            $("#codDx").val(rowdata.codDx);
+            $('#dlgvalidar').dialog("option", "title", rowdata.tipo + " DE " + rowdata.auxiliar);
             $.ajax({
                 dataType: "json",
                 url: "PersonaServlet",
@@ -94,6 +101,7 @@ jQuery(document).ready(function($) {
                     var rowdata = $('#gridNov').jqGrid('getRowData', selrow);
                     var enviar = {
                         oper: "validar",
+                        tipo: rowdata.tipoNov,
                         idnovedad: selrow,
                         idusuario: rowdata.idusuario,
                         dateIni: $("#dateIni").val(),
@@ -106,8 +114,9 @@ jQuery(document).ready(function($) {
                         indPro: $("#indPro").is(':checked') ? 1 : 0,
                         incAnt: $("#incAnt").val(),
                         nroIncCg: $("#nroIncCg").val(),
-                        diasSIO: $("#diasSIO").val(),
-                        diasEPS: $("#diasEPS").val(),
+                        diasSIO: parseInt(rowdata.tipoNov) === 2 ? $("#diasSIO").val() : $("#diasHab").val(),
+                        diasEPS: parseInt(rowdata.tipoNov) === 2 ? $("#diasEPS").val() : $("#diasNoHab").val(),
+                        diasComp: $("#diasComp").val() === "" ? 0 : parseInt($("#diasComp").val()),
                         vlrSIO: $("#vlrSIO").val(),
                         prc: $("#prc").val(),
                         vlrEPS: $("#vlrEPS").val()
@@ -137,13 +146,12 @@ jQuery(document).ready(function($) {
         ],
         close: function() {
             $('#dlgvalidar input').val("");
+            $("#indPro").attr('checked', false).change();
             $("#incapacidad,#valores,#vacaciones").hide();
             refrescarGrilla();
         }
     });
 });
-
-
 $("#prc").change(function() {
 
     $("#vlrEPS").val((($("#diasEPS").val()) * ((vlrDia * $("#prc").val()) / 100)).toFixed(0));
@@ -187,9 +195,12 @@ function fechaFin(event, ui) {
     }
     if (fecha) {
         fecha.setDate(fecha.getDate() + number - 1);
-        $("#dateFin").val($.datepicker.formatDate("dd/mm/yy", fecha)).trigger('change');;
+        $("#dateFin").val($.datepicker.formatDate("dd/mm/yy", fecha))
+                ;
     }
-
+    var dias = diasLaborales($("#dateIni").val(), $("#dateFin").val());
+    $("#diasHab").val(dias);
+    $("#diasNoHab").val($("#dias").val() - dias);
     calcularDias(number);
 }
 function calcularDias(dias) {
@@ -238,7 +249,7 @@ function validar() {
     }
 
     var cantDias = (parseInt($(".dias")[0].value) + parseInt($(".dias")[1].value));
-    if (cantDias !== parseInt($('#dias').val())) {
+    if (cantDias !== parseInt($('#dias').val()) && $(".dias").is(':visible')) {
         $($(".dias")[1]).focus().after("<span class='error' style='z-index:100;'>Suma de dias diferente</span>");
         $('.error').hover(function() {
             $('.error').remove();
@@ -274,5 +285,21 @@ function diasLaborales(d1, d2) {
             lab = 0;
         }
     });
+    $("#diasHab").val(lab);
+    var dias = $.datepicker.parseDate('dd/mm/yy', d2) - $.datepicker.parseDate('dd/mm/yy', d1);
+    dias = (dias / 24 / 60 / 60 / 1000) + 1;
+    $("#dias").val(dias);
+    $("#diasNoHab").val(dias - lab);
+    activarCompensados();
     return lab;
+}
+
+function activarCompensados() {
+    if (parseInt($("#diasHab").val()) === 15) {
+        $("#diasComp").removeAttr("disabled");
+        $("#diasComp").val(0);
+    } else {
+        $("#diasComp").attr("disabled", true);
+        $("#diasComp").val("");
+    }
 }

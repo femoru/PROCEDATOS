@@ -185,13 +185,13 @@ public class NovedadesDao {
                     + "             dias, observacion, nroincapacidad, coddiagnostico,\n"
                     + "             claseincapacidad, fechaaccidente, indprorroga, idnovprorroga,\n"
                     + "             nroprorrogacg, vlrempresa, vlreps, archivo, plano,\n"
-                    + "             diassio,diaseps,porcentaje,estado\n"
+                    + "             diassio,diaseps,porcentaje,estado,diascompensados\n"
                     + "            )\n"
                     + "     VALUES (?, ?, TO_DATE(?,'DD/MM/YYYY'), TO_DATE(?,'DD/MM/YYYY'),\n"
                     + "             ?, ?, ?, ?,\n"
                     + "             ?, TO_DATE(?,'DD/MM/YYYY'), ?, ?,\n"
                     + "             ?, ?, ?, ?, ?,\n"
-                    + "             ?, ?, ?, ?\n"
+                    + "             ?, ?, ?, ?, ?\n"
                     + "            )";
 
             BD.conectar();
@@ -217,6 +217,8 @@ public class NovedadesDao {
             BD.AsignarParametro(19, Integer.toString(beans.getDiasEPS()), 2);
             BD.AsignarParametro(20, Double.toString(beans.getPorcentaje()), 5);
             BD.AsignarParametro(21, Integer.toString(beans.getEstado()), 2);
+            BD.AsignarParametro(22, Integer.toString(beans.getDiasComp()), 2);
+
 
             return BD.registrar();
         } catch (Exception e) {
@@ -337,6 +339,7 @@ public class NovedadesDao {
                     + "       estado = ?,\n"
                     + "       diassio = ?,\n"
                     + "       diaseps = ?,\n"
+                    + "       diascompensados = ?,\n"
                     + "       porcentaje = ?\n"
                     + " WHERE idnovedad = ?";
 
@@ -357,8 +360,9 @@ public class NovedadesDao {
             BD.AsignarParametro(13, Integer.toString(beans.getEstado()), 2);
             BD.AsignarParametro(14, Integer.toString(beans.getDiasSIO()), 2);
             BD.AsignarParametro(15, Integer.toString(beans.getDiasEPS()), 2);
-            BD.AsignarParametro(16, Double.toString(beans.getPorcentaje()), 5);
-            BD.AsignarParametro(17, Integer.toString(beans.getIdnovedad()), 2);
+            BD.AsignarParametro(16, Integer.toString(beans.getDiasComp()), 2);
+            BD.AsignarParametro(17, Double.toString(beans.getPorcentaje()), 5);
+            BD.AsignarParametro(18, Integer.toString(beans.getIdnovedad()), 2);
 
             return BD.actualizar();
         } catch (Exception e) {
