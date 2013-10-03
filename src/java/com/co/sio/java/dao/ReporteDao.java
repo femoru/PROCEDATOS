@@ -117,8 +117,6 @@ public class ReporteDao {
     public String consolidadoFacturacion(String labores, int idnomina) throws Exception {
         try {
 
-            Connection cox = ControllerPool.getDs().getConnection();
-
             String sql = "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
                     + "         deslabor AS labor,\n"
                     + "         destipolabor || ' ' || NVL (deshoraextra, '') AS tipo,\n"
@@ -180,8 +178,6 @@ public class ReporteDao {
 
     public String detalladoFacturacion(String labores, int idnomina) throws Exception {
         try {
-
-            Connection cox = ControllerPool.getDs().getConnection();
 
             String sql = "SELECT   nomcliente as CLIENTE, desarea AS AREA, desgrupo AS GRUPO, deslabor AS LABOR,\n"
                     + "         destipolabor || ' ' || NVL (deshoraextra, '') AS TIPO, identificacion,\n"
@@ -486,5 +482,74 @@ public class ReporteDao {
             throw new Exception(ex.getMessage());
         }
 
+    }
+
+    public String consolidadoFacturacion(String labores, String fini, String ffin) throws Exception {
+        try {
+            String sql = "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
+                    + "         deslabor AS labor,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, '') AS tipo,\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",\n"
+                    + "         CASE\n"
+                    + "            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) <= 192\n"
+                    + "               THEN SUM (TRUNC (mr.tiempolabor / 60, 2))\n"
+                    + "            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) > 192\n"
+                    + "               THEN 192\n"
+                    + "         END AS cantidad,\n"
+                    + "         CASE\n"
+                    + "            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) <= 192\n"
+                    + "               THEN 0\n"
+                    + "            WHEN SUM (TRUNC (mr.tiempolabor / 60, 2)) > 192\n"
+                    + "               THEN SUM (TRUNC (mr.tiempolabor / 60, 2)) - 192\n"
+                    + "         END AS cantidad2\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY')  and mr.anulado = 0\n"
+                    + "	AND plc.idlaborcontrato IN ( %s )\n"
+                    + "GROUP BY nomcliente,\n"
+                    + "         desarea,\n"
+                    + "         desgrupo,\n"
+                    + "         deslabor,\n"
+                    + "         destipolabor,\n"
+                    + "         deshoraextra,\n"
+                    + "         identificacion,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         papellido,\n"
+                    + "         sapellido\n"
+                    + "ORDER BY desarea, grupo, labor, tipo, nombre";
+            sql = String.format(sql, ffin,ffin, labores);
+            String reporte = "ConsolidadoFacturacion";
+            JasperPrint generarReporte = generarReporte(reporte, sql);
+
+            return exportarExcel(generarReporte);
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
+    }
+
+    public String detalladoFacturacion(String labores, String fini, String ffin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String consolidadoNomina(String labores, String fini, String ffin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

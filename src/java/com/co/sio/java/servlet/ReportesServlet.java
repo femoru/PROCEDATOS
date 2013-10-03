@@ -74,13 +74,25 @@ public class ReportesServlet extends HttpServlet {
 
                     switch (reporte) {
                         case 0:
-                            nombre = reporteDao.consolidadoFacturacion(labores, idnomina);
+                            if (clase == 0) {
+                                nombre = reporteDao.consolidadoFacturacion(labores, idnomina);
+                            } else {
+                                nombre = reporteDao.consolidadoFacturacion(labores, fini, ffin);
+                            }
                             break;
                         case 1:
-                            nombre = reporteDao.detalladoFacturacion(labores, idnomina);
+                            if (clase == 0) {
+                                nombre = reporteDao.detalladoFacturacion(labores, idnomina);
+                            } else {
+                                nombre = reporteDao.detalladoFacturacion(labores, fini, ffin);
+                            }
                             break;
                         case 2:
-                            nombre = reporteDao.consolidadoNomina(labores, idnomina);
+                            if (clase == 0) {
+                                nombre = reporteDao.consolidadoNomina(labores, idnomina);
+                            } else {
+                                nombre = reporteDao.consolidadoNomina(labores, fini, ffin);
+                            }
                             break;
                         case 3:
                             if (clase == 0) {

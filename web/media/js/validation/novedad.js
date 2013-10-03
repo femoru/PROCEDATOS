@@ -63,9 +63,16 @@ $("#novedad_cb").autocomplete({select: function(event, ui) {
             }
         });
         $("#incapacidad,#valores,#vacaciones").slideUp();
+        $("#dateFin").attr("disabled", true);
+        $("#dias").spinner("enable");
         switch (nov.tipo) {
             case 0:
                 $("#vacaciones").slideDown();
+                $("#dateFin").addClass("datepicker").removeAttr("disabled").datepicker({onSelect: function(dateText) {
+                        diasLaborales($("#dateIni").val(), dateText);
+                    }});
+                diasLaborales($("#dateIni").val(), $("#dateFin").val());
+                $("#dias").spinner("disable");
                 break;
             case 2:
                 $("#incapacidad").slideDown();
@@ -113,4 +120,30 @@ function validar() {
     }
 
     return true;
+}
+
+function diasLaborales(d1, d2) {
+    var lab;
+    $.ajax({
+        type: "POST",
+        url: "NovedadesServlet",
+        async: false,
+        data: {
+            oper: "habiles",
+            fechaInicial: d1,
+            fechaFinal: d2
+        },
+        success: function(data) {
+            lab = data;
+        },
+        error: function() {
+            lab = 0;
+        }
+    });
+    $("#diasHab").val(lab);
+    var dias = $.datepicker.parseDate('dd/mm/yy', d2) - $.datepicker.parseDate('dd/mm/yy', d1);
+    dias = (dias / 24 / 60 / 60 / 1000) + 1;
+    $("#dias").val(dias);
+    $("#diasNoHab").val(dias - lab);
+    return lab;
 }

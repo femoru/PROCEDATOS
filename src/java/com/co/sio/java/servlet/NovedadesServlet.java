@@ -157,7 +157,11 @@ public class NovedadesServlet extends HttpServlet {
                         response.getWriter().println(actualizar);
 
                         if (actualizar) {
-                            registrosCalculoNomina(beans, dao);
+                            if (Integer.parseInt(request.getParameter("tipo")) != 0) {
+                                registrosCalculoNomina(beans, dao);
+                            } else {
+                                registrosVacaciones(beans, dao);
+                            }
                         }
                     }
                     break;
@@ -254,7 +258,6 @@ public class NovedadesServlet extends HttpServlet {
 
         int diasSio = beans.getDiasSIO();
         int diasEps = beans.getDiasEPS();
-        int diasNovedad = beans.getDias();
         String fechainicio = beans.getFechainicio();
         String fechafin = beans.getFechafin();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -382,5 +385,97 @@ public class NovedadesServlet extends HttpServlet {
 
         }
         return directorio.getName();
+    }
+
+    private void registrosVacaciones(NovedadBeans beans, NovedadesDao dao) throws Exception {
+        beans.setPlano(0);
+        beans.setIdnovprorroga(beans.getIdnovedad());
+        beans.setVlrempresa(0);
+        beans.setVlreps(0);
+
+        int diasSio = beans.getDiasSIO();
+        int diasEps = beans.getDiasEPS();
+        String fechainicio = beans.getFechainicio();
+        String fechafin = beans.getFechafin();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        int contadorMeses, contadorAño;
+
+        Calendar inicio = Calendar.getInstance();
+        Calendar fin = Calendar.getInstance();
+        inicio.setTime(sdf.parse(fechainicio));
+        fin.setTime(sdf.parse(fechainicio));
+
+        String[] fechaI = fechainicio.split("/");
+        String[] fechaF = fechafin.split("/");
+        contadorMeses = Integer.parseInt(fechaF[1]) - Integer.parseInt(fechaI[1]);
+        contadorAño = Integer.parseInt(fechaF[2]) - Integer.parseInt(fechaI[2]);
+        contadorMeses += contadorAño * 12;
+        if (contadorMeses < 0 && contadorAño > 0) {
+            contadorMeses *= -1;
+            contadorMeses -= 1;
+        }
+        System.out.println("Meses " + contadorMeses);
+        int dias;
+        if (contadorMeses == 0) {
+            fin.setTime(sdf.parse(fechafin));
+            dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+            beans.setFechainicio(sdf.format(inicio.getTime()));
+            beans.setFechafin(sdf.format(fin.getTime()));
+
+            System.out.println("dias sio " + beans.getDiasSIO());
+            System.out.println("dias eps " + beans.getDiasEPS());
+            beans.setDias(dias);
+            dao.Guardar(beans);
+            System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
+            System.out.println("dias ingresados " + dias);
+        } else {
+            fin.set(Calendar.DATE, inicio.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+            dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+            
+
+            dao.Guardar(beans);
+            System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
+            System.out.println("dias ingresados " + dias);
+            contadorMeses--;
+            beans.setCodnovedad(8);
+            for (int i = contadorMeses; i >= 0; i--) {
+
+                inicio.set(Calendar.DATE, 1);
+                inicio.set(Calendar.MONTH, inicio.get(Calendar.MONTH) + 1);
+
+                fin.set(Calendar.MONTH, inicio.get(Calendar.MONTH));
+                fin.set(Calendar.YEAR, inicio.get(Calendar.YEAR));
+                if (i >= 1) {
+                    fin.set(Calendar.DATE, inicio.getActualMaximum(Calendar.DAY_OF_MONTH));
+                } else {
+                    fin.set(Calendar.DATE, Integer.parseInt(fechaF[0]));
+                }
+                dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+                beans.setFechainicio(sdf.format(inicio.getTime()));
+                beans.setFechafin(sdf.format(fin.getTime()));
+                if (dias < diasSio) {
+                    diasSio -= dias;
+                    beans.setDiasSIO(dias);
+                    beans.setDiasEPS(0);
+                } else {
+                    beans.setDiasSIO(diasSio);
+                    int diasRestantes = dias - diasSio;
+                    if (diasRestantes > diasEps) {
+                        diasEps = 0;
+                        beans.setDiasEPS(diasEps);
+                    } else {
+                        diasEps -= diasRestantes;
+                        beans.setDiasEPS(diasRestantes);
+                    }
+
+                }
+                beans.setDias(dias);
+                dao.Guardar(beans);
+                System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
+                System.out.println("dias ingresados " + dias);
+            }
+
+        }
     }
 }

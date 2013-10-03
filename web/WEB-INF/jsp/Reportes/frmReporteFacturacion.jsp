@@ -35,9 +35,11 @@
                     </div>
                 </div>
                 <div style="float: left;margin-left: 30px">
-                    <div style="display: none">
-                        <input type="radio" name="clase" value="0" checked onchange="$('#rango').hide();$('#idnomina').show();">Nomina 
-                        <input type="radio" name="clase" value="1" onchange="$('#idnomina').hide();$('#rango').show();" >Fechas 
+                    <div>
+                        <input type="radio" name="clase" value="0" checked onchange="$('#rango').hide();
+                                $('#idnomina').show();">Nomina 
+                        <input type="radio" name="clase" value="1" onchange="$('#idnomina').hide();
+                                $('#rango').show();" >Fechas 
                     </div>
                     <div id="idnomina">
                         <select id="nomina" style="margin: 0"></select>

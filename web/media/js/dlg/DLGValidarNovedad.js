@@ -118,7 +118,7 @@ jQuery(document).ready(function($) {
                         diasSIO: parseInt(rowdata.tipoNov) === 2 ? $("#diasSIO").val() : $("#diasHab").val(),
                         diasEPS: parseInt(rowdata.tipoNov) === 2 ? $("#diasEPS").val() : $("#diasNoHab").val(),
                         diasComp: $("#diasComp").val() === "" ? 0 : parseInt($("#diasComp").val()),
-                        vlrSIO: parseInt(rowdata.tipoNov) === 3 ? $("#vlrNov").val() : ("#vlrSIO").val(),
+                        vlrSIO: parseInt(rowdata.tipoNov) === 3 ? $("#vlrNov").val() : $("#vlrSIO").val(),
                         prc: $("#prc").val(),
                         vlrEPS: $("#vlrEPS").val()
                     };
