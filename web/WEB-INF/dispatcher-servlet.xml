@@ -262,6 +262,11 @@
     
     <!-- Datos -->
     
+    <bean name="/ReporteUsuarios.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Reportes/frmReporteUsuarios"/>
+        <property name="sessionForm" value="true"/>
+    </bean> 
+    
     <bean name="/ReporteFacturacion.htm" class="com.co.sio.java.controller.PersonaController">
         <property name="formView" value="Reportes/frmReporteFacturacion"/>
         <property name="sessionForm" value="true"/>

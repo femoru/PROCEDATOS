@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Estado Usuarios" pageWidth="555" pageHeight="7200" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1fa506a4-8a47-45db-bb46-ed324cea272a">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT IDENTIFICACION,PAPELLIDO ||' '||SAPELLIDO ||' '||PNOMBRE ||' '||SNOMBRE AS NOMBRES, DECODE(CU.ACTIVO,1,'ACTIVO','INACTIVO') AS ESTADO FROM MPERSONAS INNER JOIN CUSUARIOS CU ON IDPERSONA = CU.IDUSUARIO WHERE CODPERFIL = 4 ORDER BY ACTIVO DESC, TRIM(PAPELLIDO)]]>
+	</queryString>
+	<field name="IDENTIFICACION" class="java.lang.String"/>
+	<field name="NOMBRES" class="java.lang.String"/>
+	<field name="ESTADO" class="java.lang.String"/>
+	<title>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="74a71b24-cb61-4e63-974d-23405aeb9520" x="0" y="40" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[IDENTIFICACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82c1b319-5789-46c0-be88-b53eee38bd83" x="455" y="40" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fcd3f1be-7ed7-4a03-9b70-1a96c580bca7" x="114" y="40" width="341" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[NOMBRES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da7a2019-464c-402b-bff2-d87949e1e1ac" x="0" y="0" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[SOLUCIONES INTEGRALES DE OFICINA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7697e478-f3a6-42c9-b38f-4c7f870ddf9f" x="0" y="20" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Reporte de Estado de Usuarios]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="45f821ed-c709-4a36-836d-400a92c8ab11" x="0" y="0" width="100" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IDENTIFICACION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6e3e79b0-27a2-43dd-a67d-8f77447471b6" x="114" y="0" width="341" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NOMBRES}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fee66b26-48aa-43aa-ab6c-9e311ba0cafd" x="455" y="0" width="100" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ESTADO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

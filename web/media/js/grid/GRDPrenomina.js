@@ -92,8 +92,8 @@ jQuery(document).ready(function($) {
         id: "btn_export",
         onClickButton: function() {
 
-        $('<form action="PrenominaServlet?oper=x" method="post"></form>').appendTo('body').submit();
-        
+            $('<form action="PrenominaServlet?oper=x" method="post"></form>').appendTo('body').submit();
+
         }
     });
     jQuery('#gridNom').jqGrid('navButtonAdd', "#pagerNom", {
@@ -112,32 +112,78 @@ jQuery(document).ready(function($) {
         title: "Terminar Revision",
         buttonicon: "ui-icon-close",
         position: "first",
-        id: "btn_terminar"
-    });
-    jQuery('#gridNom').jqGrid('navButtonAdd', "#pagerNom", {
-        caption: "Modificar",
-        title: "Modificar Registro",
-        buttonicon: "ui-icon-pencil",
-        position: "first",
-        id: "btn_modificar",
+        id: "btn_terminar",
         onClickButton: function() {
+            terminarMod(0, datosnomina.id);
 
-            $("#validar_Novedad").load("ValidarNovedad.htm #dlgvalidar", function() {
-                $.getScript("media/js/dlg/DLGValidarNovedad.js", function() {
+            if (confirm('¿Esta seguro que desea finalizar la revision?')) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'PrenominaServlet',
+                    data: {
+                        oper: 'updNomina',
+                        nomina: sessionStorage.getItem('nm'),
+                        estado: parseInt(sessionStorage.getItem('st')) + 1
+                    }, success: function(data) {
+                        if (data) {
+                            sessionStorage.setItem('st', parseInt(sessionStorage.getItem('st')) + 1);
+//                        window.location = 'Prenomina.htm';
+                            loadNewPage('Prenomina.htm');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert("Ocurrio un error inesperado, " + textStatus);
+                    }
                 });
-            });
-            $("#registrarNovedad").load("RegistrarNovedad.htm #bodyLeft", function() {
-                $.getScript("media/js/validation/validateNovedad.js", function() {
-                });
-            });
-            var selectedRow = $("#gridNom").getGridParam("selrow");
-            var rowData = $('#gridNom').jqGrid('getRowData', selectedRow);
-            if (selectedRow === null) {
-                jQuery.jgrid.info_dialog(jQuery.jgrid.nav.alertcap, jQuery.jgrid.nav.alerttext);
-            } else {
-                $("#dlg_detalle").data({selectRow: selectedRow}).dialog("option", "title", "Detalle Prenomina " + rowData.col2).dialog("open");
             }
+
         }
+
+
     });
+    /*
+     jQuery('#gridNom').jqGrid('navButtonAdd', "#pagerNom", {
+     caption: "Modificar",
+     title: "Modificar Registro",
+     buttonicon: "ui-icon-pencil",
+     position: "first",
+     id: "btn_modificar",
+     onClickButton: function() {
+     
+     $("#validar_Novedad").load("ValidarNovedad.htm #dlgvalidar", function() {
+     $.getScript("media/js/dlg/DLGValidarNovedad.js", function() {
+     });
+     });
+     $("#registrarNovedad").load("RegistrarNovedad.htm #bodyLeft", function() {
+     $.getScript("media/js/validation/validateNovedad.js", function() {
+     });
+     });
+     var selectedRow = $("#gridNom").getGridParam("selrow");
+     var rowData = $('#gridNom').jqGrid('getRowData', selectedRow);
+     if (selectedRow === null) {
+     jQuery.jgrid.info_dialog(jQuery.jgrid.nav.alertcap, jQuery.jgrid.nav.alerttext);
+     } else {
+     $("#dlg_detalle").data({selectRow: selectedRow}).dialog("option", "title", "Detalle Prenomina " + rowData.col2).dialog("open");
+     }
+     }
+     });
+     */
 });
 
+function terminarMod(u, n) {
+    $.ajax({
+        url: "PrenominaServlet",
+        type: "POST",
+        async: false,
+        data: {
+            oper: "modificar",
+            usuario: u,
+            nomina: n
+        },
+        success: function(data) {
+            console.log("complete");
+        }, error: function(jqXHR, textStatus, errorThrown) {
+            alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+        }
+    });
+}

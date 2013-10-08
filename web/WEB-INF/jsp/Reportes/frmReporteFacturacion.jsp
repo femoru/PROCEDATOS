@@ -28,6 +28,7 @@
                     <div>Facturacion:
                         <input type="radio" name="tipo" value="0" checked>Consolidado 
                         <input type="radio" name="tipo" value="1" >Detallado 
+                        <input type="radio" name="tipo" value="4" >PTMS y PTDS 
                     </div>
                     <div>Nomina:
                         <input type="radio" name="tipo" value="2" >Consolidado 
