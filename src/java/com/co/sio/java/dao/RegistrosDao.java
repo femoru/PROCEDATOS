@@ -335,7 +335,7 @@ public class RegistrosDao {
         }
     }
 
-    public String getListReferencias(int page, int rows, String sidx, String sord, int idgrupo, String fecha, int filtro) throws Exception {
+    public String getListReferencias(int page, int rows, String sidx, String sord, int idgrupo, String fecha, int filtro, int periodo) throws Exception {
         String sql;
         String strQuery;
         String json;
@@ -1194,7 +1194,7 @@ public class RegistrosDao {
         }
     }
 
-    public String getListRegistrosSitio(int page, int rows, String sidx, String sord, int sitio, String fecha, int filtro) throws Exception {
+    public String getListRegistrosSitio(int page, int rows, String sidx, String sord, int sitio, String fecha, int filtro, int periodo) throws Exception {
         String sql;
         String strQuery;
         String json;
@@ -1236,12 +1236,17 @@ public class RegistrosDao {
             } else {
                 total_pages = 0;
             }
-            String anulados = "";
+            String anulados = "", periodos;
             if (filtro == 0) {
                 anulados = "mr.estado = ? AND ANULADO = 0 ";
             }
             if (filtro == 2) {
-                anulados = " (mr.estado = ? OR anulado <> 0 )";
+                anulados = " (mr.estado = ? OR anulado <> 0 ) ";
+            }
+            if (periodo != 0) {
+                periodos = "TO_CHAR(mr.fechainicio, 'mm/yyyy') = ? ";
+            } else {
+                periodos = "TO_CHAR(mr.fechainicio, 'dd/mm/yyyy') = ? ";
             }
             strQuery = "SELECT mr.idregistro, mr.idlaborcontrato, mr.idusuario, pnombre || ' ' || papellido AS usuario, rl.deslabor, NVL(rhe.deshoraextra,' '), rtl.destipolabor ,TO_CHAR(mr.fechainicio, 'dd/MM/yyyy') AS fecha, TO_CHAR(mr.fechainicio, 'HH24:MI') AS fechainicio,  "
                     + "TO_CHAR(mr.fechafin, 'HH24:MI') AS fechafin, mr.tiempolabor, mr.registroslabor, mr.costo, mr.observacion, NVL(mr.datolabor,'0'), plc.datolabor, rca.descausa "
@@ -1253,7 +1258,7 @@ public class RegistrosDao {
                     + "INNER JOIN rtipolabor rtl ON plc.codtipolabor = rtl.codtipolabor  "
                     + "INNER JOIN rcausasanulacion rca ON rca.codcausa = mr.anulado  "
                     + "WHERE mp.sitiotrabajo = ?  "
-                    + "AND TO_CHAR(mr.fechainicio, 'dd/mm/yyyy') = ? "
+                    + "AND " + periodos
                     + "AND " + anulados
                     + "ORDER BY 1 ";
 

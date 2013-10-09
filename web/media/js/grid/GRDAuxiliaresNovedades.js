@@ -15,12 +15,9 @@ jQuery(document).ready(function($) {
     };
 
 
-    jQuery('#gridJust').jqGrid(
-            {
-                height: 135,
-                hoverrows: false,
-                hidegrid: false,
-                gridview: true,
+    jQuery('#gridJust').jqGrid({
+                
+                shrinkToFit: false,
                 ignoreCase: true,
                 caption: "Auxiliares con Permiso o Incapacidad",
                 url: "UsuarioServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val(),
@@ -100,17 +97,6 @@ jQuery(document).ready(function($) {
                 },
                 pager: "#pagerJust"
             });
-
-    jQuery('#gridJust').jqGrid('navGrid', '#pagerJust',
-            {
-                edit: false,
-                add: false,
-                search: true,
-                del: false,
-                refresh: true,
-                beforeRefresh: refrescarGrilla
-            }, {/*Edit*/}, {/*Add*/}, {/*del*/}, {/*search*/}, {/*reload*/}
-    );
 
 
 });

@@ -90,18 +90,24 @@ public class RegistrosServlet extends HttpServlet {
 
                 if (id == null && nomina == null) {
                     String fecha = request.getParameter("fecha");
+
                     if (fecha.equals("undefined")) {
                         json = "{}";
                     } else {
                         int filtro = Integer.parseInt(request.getParameter("filtro"));
                         int estado = Integer.parseInt(request.getParameter("estado"));
+                        int periodo = Integer.parseInt(request.getParameter("periodo"));
+
+                        if (periodo != 0) {
+                            fecha = request.getParameter("mes");
+                        }
 
                         if (filtro == 0) {
                             int idgrupo = Integer.parseInt(request.getParameter("grupo"));
-                            json = registrodao.getListReferencias(intpage, limit, sidx, sord, idgrupo, fecha, estado);
+                            json = registrodao.getListReferencias(intpage, limit, sidx, sord, idgrupo, fecha, estado, periodo);
                         } else {
                             int sitio = Integer.parseInt(request.getParameter("sitio"));
-                            json = registrodao.getListRegistrosSitio(intpage, limit, sidx, sord, sitio, fecha, estado);
+                            json = registrodao.getListRegistrosSitio(intpage, limit, sidx, sord, sitio, fecha, estado, periodo);
                         }
                     }
                 } else {
@@ -124,7 +130,8 @@ public class RegistrosServlet extends HttpServlet {
             response.getWriter().print(json);
             response.getWriter().close();
         } catch (Exception ex) {
-            Logger.getLogger("Error").warn(ex.getMessage());
+            Logger.getLogger("Error").warn("Error al cargar", ex);
+            ex.printStackTrace();
         }
 
     }

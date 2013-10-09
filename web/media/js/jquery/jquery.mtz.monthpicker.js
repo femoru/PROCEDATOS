@@ -68,7 +68,7 @@
                     selectedYear: year,
                     startYear: year - 10,
                     finalYear: year + 10,
-                    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    monthNames: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
                     id: "monthpicker_" + (Math.random() * Math.random()).toString().replace('.', ''),
                     openOnFocus: true,
                     disabledMonths: []

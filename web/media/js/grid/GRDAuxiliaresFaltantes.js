@@ -8,20 +8,17 @@ jQuery(document).ready(function($) {
     var refrescarGrilla = function(response, postdata) {
         jQuery("#gridAux").jqGrid('setGridParam', {
             datatype: "json"
-        })
+        });
         jQuery("#gridAux").trigger("reloadGrid");
 
-        return [true, ""]
-    }
+        return [true, ""];
+    };
 
 
     jQuery('#gridAux').jqGrid(
             {
-                height: 130,
-                width: 360,
-                hoverrows: false,
-                hidegrid: false,
-                gridview: true,
+                
+                shrinkToFit: true,
                 ignoreCase: true,
                 caption: "Auxiliares Ausentes Hoy",
                 url: "UsuarioServlet?grupo=" + $("#grupo").val(),
@@ -31,9 +28,7 @@ jQuery(document).ready(function($) {
                 datatype: "json",
                 colNames: ["Id", "Auxiliar", "Login"],
                 colModel: [
-                    {
-                        "name": "Id",
-                        "index": "Id",
+                    {"name": "Id", "index": "Id",
                         editable: true,
                         edittype: "text",
                         hidden: true
@@ -42,7 +37,9 @@ jQuery(document).ready(function($) {
                         "name": "nombres",
                         "index": "nombres",
                         editable: true,
-                        edittype: "text"
+                        edittype: "text",
+                        width: 343
+
                     },
                     {
                         "name": "login",
@@ -85,17 +82,5 @@ jQuery(document).ready(function($) {
                 },
                 pager: "#pagerAux"
             });
-
-    jQuery('#gridAux').jqGrid('navGrid', '#pagerAux',
-            {
-                edit: false,
-                add: false,
-                search: false,
-                del: false,
-                refresh: false,
-                beforeRefresh: refrescarGrilla
-            }, {/*Edit*/}, {/*Add*/}, {/*del*/}, {/*search*/}, {/*reload*/}
-    );
-
 
 });

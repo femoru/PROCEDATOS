@@ -2,22 +2,41 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+var lastSel, selIdUsuario, rdb_flt, rdb_filtro, rdb_fechas;
+var now = new Date();
 $(document).ready(function($) {
+
+    $("#expand").button({
+        icons: {
+            primary: "ui-icon-triangle-1-w"
+        },
+        text: false
+    });
+    $("#expand").mouseenter(function() {
+        $("#grid").toggle("slide", {direction: 'right'});
+    }).click(function() {
+        $("#grid").toggle("slide", {direction: 'right'});
+    });
+    $(document).bind("contextmenu", function(e) {
+        return false;
+    });
+    $("#dateMon").monthpicker({
+        selectedMonth: $.datepicker.formatDate("mm", new Date())
+    }).val($.datepicker.formatDate("mm/yy", new Date())).bind('monthpicker-click-month', function() {
+        prepararGrid();
+        refrescarGrilla();
+    });
+
+    $("#grid").hide();
     $("#tr_filtros").hide();
-    if (consultaPerfil() === "1" || consultaPerfil() === "3") {
+    var perfil = consultaPerfil();
+    if (perfil === "1" || perfil === "3") {
         $("#tr_filtros").show();
     }
-    $("#consulta").click(function() {
-        $("#dlgRegistros").dialog("open");
-    });
+
     $("#grupo").load("getGrupoCoordinador.htm");
     $("#grupo").change(function(e) {
-        jQuery("#gridLbr").jqGrid('setGridParam', {
-            url: "RegistrosServlet?grupo=" + $(e.target).val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            editurl: "RegistrosServlet?grupo=" + $(e.target).val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            datatype: "json",
-            pager: "#pagerLbr"
-        });
+        prepararGrid();
         refrescarGrilla();
     });
     $("#vTodos").click(function() {
@@ -44,18 +63,19 @@ $(document).ready(function($) {
 
         refrescarGrilla();
     });
-    var rdb_filtro = $("input[name='rdio']").val();
+    rdb_filtro = $("input[name='rdio']").val();
     $("input[name='rdio']").change(function(e) {
         rdb_filtro = $(e.target).val();
-        jQuery("#gridLbr").jqGrid('setGridParam', {
-            url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            editurl: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            datatype: "json",
-            pager: "#pagerLbr"
-        });
+        prepararGrid();
         refrescarGrilla();
     });
-    var rdb_flt = $("input[name='flt']:checked").val();
+    rdb_fechas = $("input[name='fechas']").val();
+    $("input[name='fechas']").change(function(e) {
+        rdb_fechas = $(e.target).val();
+        prepararGrid();
+        refrescarGrilla();
+    });
+    rdb_flt = $("input[name='flt']:checked").val();
     $("input[name='flt']").change(function(e) {
         rdb_flt = $(e.target).val();
         if (rdb_flt === "1") {
@@ -65,76 +85,28 @@ $(document).ready(function($) {
             $("#flt_sitio").hide();
             $("#flt_grp").show();
         }
-        jQuery("#gridLbr").jqGrid('setGridParam', {
-            url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            editurl: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-            datatype: "json",
-            pager: "#pagerLbr"
-        });
+        prepararGrid();
         refrescarGrilla();
     });
     $("#sitio").load("getSitioTrabajo.htm");
     $("#sitio").change(function(e) {
-        jQuery("#gridLbr").jqGrid('setGridParam', {
-            url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $(e.target).val() + "&filtro=" + rdb_flt,
-            editurl: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $(e.target).val() + "&filtro=" + rdb_flt,
-            datatype: "json",
-            pager: "#pagerLbr"
-        });
+        prepararGrid();
         refrescarGrilla();
     });
     var resp;
 
-    var datePickerGrid = function(element) {
-        $(element).val($.datepicker.formatDate("dd/mm/yy", new Date()));
-        $(element).datepicker({
-            dateFormat: 'dd/mm/yy'
-        }
-        );
-    };
-    var now = new Date();
     $("#dateIni").val($.datepicker.formatDate("dd/mm/yy", now));
     $("#dateIni").datepicker({
-        showOn: "both",
         maxDate: 0,
         dateFormat: 'dd/mm/yy',
         onSelect: function() {
-
-            jQuery("#gridLbr").jqGrid('setGridParam', {
-                url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-                editurl: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-                datatype: "json",
-                pager: "#pagerLbr"
-            });
+            prepararGrid();
             refrescarGrilla();
         },
-        beforeShowDay: function(date) {
-            if (date > now) {
-                return [false, '', "Sin registros"];
-            }
-            var validados = $.ajax({
-                type: "POST",
-                async: false,
-                url: "RegistrosServlet",
-                data: {
-                    oper: "dia",
-                    filtro: rdb_flt,
-                    grupo: $("#grupo").val(),
-                    sitio: $("#sitio").val(),
-                    dia: $.datepicker.formatDate("dd/mm/yy", date)
-                }
-
-            }).responseText;
-            if (validados === "1") {
-                return [true, 'validados', "Todos los registros estan validados"];
-            }
-            if (validados === "0") {
-                return [true, 'sinValidar', "Faltan registros por validar"];
-            }
-            return [true, '', "Sin registros"];
-        }
+        beforeShowDay: cargarDias
 
     });
+
     function laborvalida(e) {
         var aux = $(e.target).val();
         var editUrl = jQuery('#gridLbr').jqGrid("getGridParam", "editurl");
@@ -285,282 +257,297 @@ $(document).ready(function($) {
         return true;
     }
 
-
-    jQuery('#gridLbr').jqGrid(
+    jQuery('#gridLbr').jqGrid({
+        height: 350,
+        rownumWidth: 20,
+        autowidth: true,
+        viewrecords: true,
+        ignoreCase: true,
+        caption: "Registro de Labores",
+        url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val()
+                + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt
+                + "&periodo=" + rdb_fechas + "&mes=" + $("#dateMon").val(),
+        editurl: "RegistrosServlet",
+        loadonce: true,
+        rowNum: 15,
+        shrinkToFit: false,
+        multiSort: true,
+        subGrid: true,
+        prmNames: {deloper: "cancelar"},
+        rownumbers: true,
+        datatype: "json",
+        colNames: ["id", "idlaborcontrato", "idusuario", "Auxiliar", "Labor", "Descripcion Extra", "Tipo", "Fecha",
+            "Hora Inicio", "Hora Fin", "Tiempo", "Registros", "Costo", "Observación", "Dato Labor", "datovalida", "Anulado"],
+        colModel: [
             {
-                height: 350,
-                width: $('#grilla').width(),
-                ignoreCase: true,
-                caption: "Registro de Labores",
-                url: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-                editurl: "RegistrosServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val() + "&estado=" + rdb_filtro + "&sitio=" + $("#sitio").val() + "&filtro=" + rdb_flt,
-                loadonce: true,
-                rowNum: 15,
-                shrinkToFit: false,
-                multiSort: true,
-                subGrid: true,
-                prmNames: {deloper: "cancelar"},
-                rownumbers: true,
+                "name": "id",
+                "index": "id",
+                editable: true,
+                edittype: "text",
+                hidden: true
+            },
+            {
+                "name": "idlaborcontrato",
+                "index": "idlaborcontrato",
+                editable: true,
+                edittype: "text",
+                hidden: true
+            },
+            {
+                "name": "idusuario",
+                "index": "idusuario",
+                editable: true,
+                edittype: "text",
+                hidden: true
+            },
+            {
+                "name": "auxiliar",
+                "index": "auxiliar",
+                editable: false,
+                edittype: "select",
+                width: 150
+            },
+            {
+                "name": "labor",
+                "index": "labor",
+                editable: true,
+                edittype: "select",
+                width: 300
+            },
+            {
+                name: "extra",
+                index: "extra",
+                editable: false,
+                edittype: "text",
+                width: 70
+            },
+            {
+                "name": "tipo",
+                "index": "tipo",
+                editable: false,
+                align: 'center',
+                width: 60
+            },
+            {
+                name: "fechas",
+                index: "fechas",
+                editable: true,
+                edittype: "text",
+                align: 'center',
+                editrules: {
+                    date: true,
+                    required: true},
+                editoptions: {
+                    dataInit: function(element) {
+                        $(element).datepicker({dateFormat: "dd/mm/yy", maxDate: 0}
+                        );
+                    }
+                },
+                datefmt: "dd/mm/yyyy",
+                width: 65
+            },
+            {
+                "name": "inicio",
+                "index": "inicio",
+                editable: true,
+                edittype: "text",
+                editoptions: {
+                    maxlength: 5
+                },
+                editrules: {
+                    required: true,
+                    custom: true,
+                    custom_func: checkHoras
+                },
+                align: 'center',
+                width: 35
+            },
+            {
+                "name": "fin",
+                "index": "fin",
+                editable: true,
+                edittype: "text",
+                editoptions: {
+                    maxlength: 5
+                },
+                editrules: {
+                    required: true,
+                    custom: true,
+                    custom_func: checkHoras
+                },
+                align: 'center',
+                width: 35
+            },
+            {
+                "name": "tiempo",
+                "index": "tiempo",
+                editable: false,
+                edittype: "text",
+                align: 'center',
+                width: 50
+            },
+            {
+                "name": "registros",
+                "index": "registros",
+                editable: true,
+                edittype: "text",
+                align: 'center',
+                width: 60
+            },
+            {
+                "name": "costo",
+                "index": "costo",
+                editable: false,
+                edittype: "text",
+                hidden: true,
+                width: 80
+            },
+            {
+                "name": "observacion",
+                "index": "observacion",
+                editable: true,
+                edittype: "text",
+                editrules: {
+                    edithidden: true
+                },
+                hidden: true
+            },
+            {
+                "name": "dato",
+                "index": "dato",
+                editable: true,
+                edittype: "text",
+                width: 80
+            },
+            {
+                "name": "valida",
+                "index": "valida",
+                editable: true,
+                edittype: "text",
+                width: 80,
+                hidden: true
+            },
+            {
+                "name": "anulacion",
+                "index": "anulacion",
+                editable: false,
+                edittype: "text",
+                width: 120
+            }
+        ],
+        subGridRowExpanded: function(subgrid_id, row_id) {
+
+            var subgrid_table_id, pager_id;
+            subgrid_table_id = subgrid_id + "_t";
+            pager_id = "p_" + subgrid_table_id;
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+            jQuery("#" + subgrid_table_id).jqGrid({
+                url: "RegistrosServlet?id=" + row_id,
+                editurl: "RegistrosServlet?reg=" + row_id,
                 datatype: "json",
-                colNames: ["id", "idlaborcontrato", "idusuario", "Auxiliar", "Labor", "Descripcion Extra", "Tipo", "Fecha",
-                    "Hora Inicio", "Hora Fin", "Tiempo", "Registros", "Costo", "Observación", "Dato Labor", "datovalida", "Anulado"],
+                loadonce: true,
+                prmNames: {editoper: "linea", addoper: "jnsertardato"},
+                rowNum: 4,
+                rownumbers: true,
+                gridview: true,
+                pager: pager_id,
+                height: '100%',
+                colNames: ['Registro', 'Dato Labor'],
                 colModel: [
                     {
-                        "name": "id",
-                        "index": "id",
-                        editable: true,
-                        edittype: "text",
+                        name: "registro",
+                        index: "registro",
+                        align: "center",
                         hidden: true
-                    },
-                    {
-                        "name": "idlaborcontrato",
-                        "index": "idlaborcontrato",
+                    }, {
+                        name: "dato",
+                        index: "dato",
                         editable: true,
-                        edittype: "text",
-                        hidden: true
-                    },
-                    {
-                        "name": "idusuario",
-                        "index": "idusuario",
-                        editable: true,
-                        edittype: "text",
-                        hidden: true
-                    },
-                    {
-                        "name": "auxiliar",
-                        "index": "auxiliar",
-                        editable: true,
-                        edittype: "select",
-                        width: 150
-                    },
-                    {
-                        "name": "labor",
-                        "index": "labor",
-                        editable: true,
-                        edittype: "select",
-                        width: 300
-                    },
-                    {
-                        name: "extra",
-                        index: "extra",
-                        editable: false,
-                        edittype: "text",
-                        width: 70
-                    },
-                    {
-                        "name": "tipo",
-                        "index": "tipo",
-                        editable: false,
-                        align: 'center',
-                        width: 60
-                    },
-                    {
-                        name: "fechas",
-                        index: "fechas",
-                        editable: true,
-                        edittype: "text",
-                        align: 'center',
-                        editrules: {
-                            date: true,
-                            required: true},
-                        editoptions: {
-                            dataInit: function(element) {
-                                $(element).datepicker({dateFormat: "dd/mm/yy", maxDate: 0}
-                                );
-                            }
-                        },
-                        datefmt: "dd/mm/yyyy",
-                        width: 65
-                    },
-                    {
-                        "name": "inicio",
-                        "index": "inicio",
-                        editable: true,
-                        edittype: "text",
-                        editoptions: {
-                            maxlength: 5
-                        },
-                        editrules: {
-                            required: true,
-                            custom: true,
-                            custom_func: checkHoras
-                        },
-                        align: 'center',
-                        width: 35
-                    },
-                    {
-                        "name": "fin",
-                        "index": "fin",
-                        editable: true,
-                        edittype: "text",
-                        editoptions: {
-                            maxlength: 5
-                        },
-                        editrules: {
-                            required: true,
-                            custom: true,
-                            custom_func: checkHoras
-                        },
-                        align: 'center',
-                        width: 35
-                    },
-                    {
-                        "name": "tiempo",
-                        "index": "tiempo",
-                        editable: false,
-                        edittype: "text",
-                        align: 'center',
-                        width: 50
-                    },
-                    {
-                        "name": "registros",
-                        "index": "registros",
-                        editable: true,
-                        edittype: "text",
-                        align: 'center',
-                        width: 60
-                    },
-                    {
-                        "name": "costo",
-                        "index": "costo",
-                        editable: false,
-                        edittype: "text",
-                        hidden: true,
-                        width: 80
-                    },
-                    {
-                        "name": "observacion",
-                        "index": "observacion",
-                        editable: true,
-                        edittype: "text",
-                        editrules: {
-                            edithidden: true
-                        },
-                        hidden: true
-                    },
-                    {
-                        "name": "dato",
-                        "index": "dato",
-                        editable: true,
-                        edittype: "text",
-                        width: 80
-                    },
-                    {
-                        "name": "valida",
-                        "index": "valida",
-                        editable: true,
-                        edittype: "text",
-                        width: 80,
-                        hidden: true
-                    },
-                    {
-                        "name": "anulacion",
-                        "index": "anulacion",
-                        editable: false,
-                        edittype: "text"
+                        align: "center",
+                        width: 250
                     }
-                ],
-                subGridRowExpanded: function(subgrid_id, row_id) {
-// we pass two parameters
-// subgrid_id is a id of the div tag created whitin a table data
-// the id of this elemenet is a combination of the "sg_" + id of the row
-// the row_id is the id of the row
-// If we wan to pass additinal parameters to the url we can use
-// a method getRowData(row_id) - which returns associative array in type name-value
-// here we can easy construct the flowing
-                    var subgrid_table_id, pager_id;
-                    subgrid_table_id = subgrid_id + "_t";
-                    pager_id = "p_" + subgrid_table_id;
-                    $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
-                    jQuery("#" + subgrid_table_id).jqGrid({
-                        url: "RegistrosServlet?id=" + row_id,
-                        editurl: "RegistrosServlet?reg=" + row_id,
-                        datatype: "json",
-                        loadonce: true,
-                        prmNames: {editoper: "linea", addoper: "jnsertardato"},
-                        rowNum: 4,
-                        rownumbers: true,
-                        gridview: true,
-                        pager: pager_id,
-                        height: '100%',
-                        colNames: ['Registro', 'Dato Labor'],
-                        colModel: [
-                            {
-                                name: "registro",
-                                index: "registro",
-                                align: "center",
-                                hidden: true
-                            }, {
-                                name: "dato",
-                                index: "dato",
-                                editable: true,
-                                align: "center",
-                                width: 250
-                            }
-                        ]
+                ]
 
-                    });
-                    jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {
-                        edit: true,
-                        add: true,
-                        del: false},
-                    {afterSubmit: refrescarGrilla,
-                        closeAfterEdit: true},
-                    {afterSubmit: refrescarGrilla,
-                        closeAfterAdd: true}
-                    );
-                },
-                subGridRowColapsed: function(subgrid_id, row_id) {
+            });
+            jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {
+                edit: true,
+                add: true,
+                del: false},
+            {afterSubmit: refrescarGrilla,
+                closeAfterEdit: true},
+            {afterSubmit: refrescarGrilla,
+                closeAfterAdd: true}
+            );
+        },
+        subGridRowColapsed: function(subgrid_id, row_id) {
 //// this function is called before removing the data
-                    var subgrid_table_id;
-                    subgrid_table_id = subgrid_id + "_t";
-                    jQuery("#" + subgrid_table_id).remove();
-                },
-                ondblClickRow: function(id) {
-                    if (rdb_filtro === "0") {
-                        validarLabores(id);
-                    }
-                },
-                loadComplete: function(data) {
-                    setTimeout(function() {
-                        if (data.rows) {
-                            for (var i = 0; i < data.rows.length; i++) {
-                                if (data.rows[i].tipo !== "HORAS") {
-                                    $("#" + data.rows[i].id).find("td.ui-sgcollapsed").removeClass("ui-sgcollapsed sgcollapsed").find("span").removeClass("ui-icon ui-icon-plus");
-                                } else {
-                                    if (data.rows[i].valida === "0") {
-                                        $("#" + data.rows[i].id).find("td.ui-sgcollapsed").removeClass("ui-sgcollapsed sgcollapsed").find("span").removeClass("ui-icon ui-icon-plus");
-                                    }
-                                }
+            var subgrid_table_id;
+            subgrid_table_id = subgrid_id + "_t";
+            jQuery("#" + subgrid_table_id).remove();
+        },
+        ondblClickRow: function(id) {
+            if (rdb_filtro === "0") {
+                validarLabores(id);
+            }
+        },
+        onRightClickRow: function(rowid, iRow, iCol, e) {
+            if (rowid && rowid !== lastSel) {
+                jQuery('#gridLbr').restoreRow(lastSel);
+                lastSel = rowid;
+            }
+            var rowData = $('#gridLbr').jqGrid('getRowData', rowid);
+            selIdUsuario = rowData.idusuario;
+            $("#gridLbr").jqGrid('setColProp', 'labor',
+                    {editoptions: {dataUrl: "getLaboresUsuarios.htm?grid=si&usuario=" + selIdUsuario}});
+            jQuery('#gridLbr').setColProp('auxiliar', {
+                editable: false
+            });
+            jQuery('#gridLbr').editRow(rowid, true, null, refrescarGrilla);
+        },
+        onSelectRow: function(id) {
+
+            jQuery('#gridLbr').restoreRow(lastSel);
+        },
+        loadComplete: function(data) {
+            setTimeout(function() {
+                if (data.rows) {
+                    for (var i = 0; i < data.rows.length; i++) {
+                        if (data.rows[i].tipo !== "HORAS") {
+                            $("#" + data.rows[i].id).find("td.ui-sgcollapsed").removeClass("ui-sgcollapsed sgcollapsed").find("span").removeClass("ui-icon ui-icon-plus");
+                        } else {
+                            if (data.rows[i].valida === "0") {
+                                $("#" + data.rows[i].id).find("td.ui-sgcollapsed").removeClass("ui-sgcollapsed sgcollapsed").find("span").removeClass("ui-icon ui-icon-plus");
                             }
                         }
-                    }, 1);
-                    if (this.p.datatype === 'json') {
-                        setTimeout(function() {
+                    }
+                }
+            }, 1);
+            if (this.p.datatype === 'json') {
+                setTimeout(function() {
 
-                            $('#gridLbr').trigger("reloadGrid", [{
-                                    page: 1
-                                }]);
-                        }, 1);
-                    }
-                },
-                postData: {
-                    oper: "oper"
-                },
-                loadError: function(xhr, status, err) {
-                    try {
-                        jQuery.jgrid.info_dialog(jQuery.jgrid.errors.errcap,
-                                '<div class="ui-state-error">' + xhr.responseText + err + 'Val</div>',
-                                jQuery.jgrid.edit.bClose,
-                                {
-                                    buttonalign: 'right'
-                                });
-                    } catch (e) {
-                        alert(xhr.responseText);
-                    }
-                },
-                pager: "#pagerLbr"
-            });
+                    $('#gridLbr').trigger("reloadGrid", [{
+                            page: 1
+                        }]);
+                }, 1);
+            }
+        },
+        postData: {
+            oper: "oper"
+        },
+        loadError: function(xhr, status, err) {
+            try {
+                jQuery.jgrid.info_dialog(jQuery.jgrid.errors.errcap,
+                        '<div class="ui-state-error">' + xhr.responseText + err + 'Val</div>',
+                        jQuery.jgrid.edit.bClose,
+                        {
+                            buttonalign: 'right'
+                        });
+            } catch (e) {
+                alert(xhr.responseText);
+            }
+        },
+        pager: "#pagerLbr"
+    });
     jQuery("#gridLbr").jqGrid('filterToolbar', {searchOnEnter: false, defaultSearch: 'cn'});
     jQuery("#gridLbr").jqGrid('bindKeys');
     jQuery('#gridLbr').jqGrid('navGrid', '#pagerLbr',
@@ -791,7 +778,6 @@ $(document).ready(function($) {
     }
     );
 });
-
 function checkHoras(value) {
     var patt = /^(([0-9]|0[0-9])|1[0-9]|2[0-3]):([0-5][0-9])?$/;
     var resp = patt.test(value);
@@ -800,4 +786,48 @@ function checkHoras(value) {
     } else {
         return [resp, ""];
     }
+}
+function cargarDias(date) {
+    if (date > now) {
+        return [false, '', "Sin registros"];
+    }
+    var validados = $.ajax({
+        type: "POST",
+        async: false,
+        url: "RegistrosServlet",
+        data: {
+            oper: "dia",
+            filtro: rdb_flt,
+            grupo: $("#grupo").val(),
+            sitio: $("#sitio").val(),
+            dia: $.datepicker.formatDate("dd/mm/yy", date)
+        }
+
+    }).responseText;
+    if (validados === "1") {
+        return [true, 'validados', "Todos los registros estan validados"];
+    }
+    if (validados === "0") {
+        return [true, 'sinValidar', "Faltan registros por validar"];
+    }
+    return [true, '', "Sin registros"];
+}
+
+function prepararGrid() {
+    jQuery("#gridLbr").jqGrid('setGridParam', {
+        url: "RegistrosServlet",
+        editurl: "RegistrosServlet",
+        datatype: "json",
+        pager: "#pagerLbr",
+        postData: {
+            grupo: $("#grupo").val(),
+            fecha: $("#dateIni").val(),
+            estado: rdb_filtro,
+            sitio: $("#sitio").val(),
+            filtro: rdb_flt,
+            mes: $("#dateMon").val(),
+            periodo: rdb_fechas
+
+        }
+    });
 }

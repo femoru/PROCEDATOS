@@ -2,13 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-var meses = $.datepicker.regional['es'].monthNamesShort;
-
 jQuery(document).ready(function($) {
 
     $('#periodo').monthpicker({
-        pattern: 'mmm / yyyy',
-        monthNames: meses
+        pattern: 'mmm / yyyy'
     }).bind('monthpicker-click-month', refrescarGrilla);
 
 
@@ -22,8 +19,8 @@ jQuery(document).ready(function($) {
         rowNum: 10,
         rownumbers: true,
         datatype: "local",
-        colNames: ["idusuario", "codnovedad", "Auxiliar", "Fecha Inicio", "Fecha Fin", 
-            "Tipo", "Observacion", "Estado", "Dias TNL", "Dias SIO", "Dias EPS", "Anulado por","nroInc","codDx","tipoNovedad","valorEmp"],
+        colNames: ["idusuario", "codnovedad", "Auxiliar", "Fecha Inicio", "Fecha Fin",
+            "Tipo", "Observacion", "Estado", "Dias TNL", "Dias SIO", "Dias EPS", "Anulado por", "nroInc", "codDx", "tipoNovedad", "valorEmp"],
         colModel: [
             {
                 "name": "idusuario",

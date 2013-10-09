@@ -18,8 +18,9 @@
     UsuarioLaboresDao usuarioLaboresDao = new UsuarioLaboresDao();
     ReferenciasDao referenciasDao = new ReferenciasDao();
 
-    String usuario = "";
+    String usuario = "", option = "", grid;
 
+    grid = request.getParameter("grid");
     if ((usuario = request.getParameter("idusuario")) == null) {
         usuario = request.getParameter("usuario");
 
@@ -43,6 +44,11 @@
     }
 
     ReferenciasBeans tipolabor, labor, extra;
+    System.out.print(grid);
+    if (grid != null && !grid.equals("")) {
+        response.getWriter().printf("<select>");
+    }
+
 
     response.getWriter().printf("<option value=\"" + "0" + "\">" + "Seleccione Labor" + "</option>");
     for (UsuarioLaboresBeans usuarioLaboresBeans : list) {
@@ -50,7 +56,7 @@
         tipolabor = referenciasDao.consultar(usuarioLaboresBeans.getLabor().getTipolabor(), "RTIPOLABOR");
         extra = referenciasDao.consultar(usuarioLaboresBeans.getLabor().getHoraextra(), "RHORASEXTRAS");
 
-        String option = "<option value=\"" + usuarioLaboresBeans.getLabor().getIdlaborcontrato() + "\">"
+        option = "<option value=\"" + usuarioLaboresBeans.getLabor().getIdlaborcontrato() + "\">"
                 + usuarioLaboresBeans.getLabor().getContrato().getCliente().getNomcliente() + " \t- "
                 + usuarioLaboresBeans.getLabor().getGrupo().getDesgrupo() + " \t- "
                 + labor.getDescripcion() + " \t- " + tipolabor.getDescripcion() + (extra != null ? " \t- " + extra.getDescripcion() : "");
@@ -61,7 +67,9 @@
 
         response.getWriter().printf(option);
     }
-
+    if (grid != null && !grid.equals("")) {
+        response.getWriter().printf("</select>");
+    }
 
     out.close();
 %>
