@@ -17,7 +17,8 @@ $(document).ready(function($) {
     }).click(function() {
         $("#grid").toggle("slide", {direction: 'right'});
     });
-    $(document).bind("contextmenu", function(e) {
+
+$(document).bind("contextmenu", function(e) {
         return false;
     });
     $("#dateMon").monthpicker({
@@ -497,10 +498,25 @@ $(document).ready(function($) {
             }
             var rowData = $('#gridLbr').jqGrid('getRowData', rowid);
             selIdUsuario = rowData.idusuario;
-            $("#gridLbr").jqGrid('setColProp', 'labor',
-                    {editoptions: {dataUrl: "getLaboresUsuarios.htm?grid=si&usuario=" + selIdUsuario}});
+            $("#gridLbr").jqGrid('setColProp', 'labor', {
+                editoptions: {
+                    dataUrl: "getLaboresUsuarios.htm?grid=si&usuario=" + selIdUsuario
+                }
+            });
+
             jQuery('#gridLbr').setColProp('auxiliar', {
                 editable: false
+            });
+            jQuery('#gridLbr').setColProp('registros', {
+                editrules: {
+                    number: true,
+                    required: true
+                }
+            });
+            jQuery('#gridLbr').setColProp('dato', {
+                editrules: {
+                    required: true
+                }
             });
             jQuery('#gridLbr').editRow(rowid, true, null, refrescarGrilla);
         },
