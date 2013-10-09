@@ -392,7 +392,7 @@ public class NovedadesServlet extends HttpServlet {
         beans.setIdnovprorroga(beans.getIdnovedad());
         beans.setVlrempresa(0);
         beans.setVlreps(0);
-        beans.setDiasEPS(0);
+        //beans.setDiasEPS(0);
 
         int diasSio = beans.getDiasSIO();
         int diasEps = beans.getDiasEPS();
@@ -433,7 +433,14 @@ public class NovedadesServlet extends HttpServlet {
             fin.set(Calendar.DATE, inicio.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
-            
+            int laborales = dao.calcularLaborales(sdf.format(inicio.getTime()), sdf.format(fin.getTime()));
+            int nHabiles = dias - laborales;
+            System.out.println("Dias No Habiles Mes " + nHabiles);
+
+            diasEps -= nHabiles;
+
+
+            beans.setDiasEPS(nHabiles);
 
             dao.Guardar(beans);
             System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
@@ -463,16 +470,19 @@ public class NovedadesServlet extends HttpServlet {
                     beans.setDiasSIO(diasSio);
                     int diasRestantes = dias - diasSio;
                     if (diasRestantes > diasEps) {
+                        System.out.println("diasEps 1" + diasEps);
                         diasEps = 0;
                         beans.setDiasEPS(diasEps);
                     } else {
+                        System.out.println("diasEps 2" + diasEps + "-" + diasRestantes);
                         diasEps -= diasRestantes;
-                        beans.setDiasEPS(diasRestantes);
+                        beans.setDiasEPS(diasEps);
                     }
 
                 }
                 beans.setDias(dias);
                 dao.Guardar(beans);
+                System.out.println("diasEps " + diasEps);
                 System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
                 System.out.println("dias ingresados " + dias);
             }
