@@ -415,7 +415,7 @@ public class NovedadesServlet extends HttpServlet {
             contadorMeses *= -1;
             contadorMeses -= 1;
         }
-        System.out.println("Meses " + contadorMeses);
+
         int dias;
         if (contadorMeses == 0) {
             fin.setTime(sdf.parse(fechafin));
@@ -427,15 +427,13 @@ public class NovedadesServlet extends HttpServlet {
             System.out.println("dias eps " + beans.getDiasEPS());
             beans.setDias(dias);
             dao.Guardar(beans);
-            System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
-            System.out.println("dias ingresados " + dias);
+
         } else {
             fin.set(Calendar.DATE, inicio.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
             int laborales = dao.calcularLaborales(sdf.format(inicio.getTime()), sdf.format(fin.getTime()));
             int nHabiles = dias - laborales;
-            System.out.println("Dias No Habiles Mes " + nHabiles);
 
             diasEps -= nHabiles;
 
@@ -443,8 +441,6 @@ public class NovedadesServlet extends HttpServlet {
             beans.setDiasEPS(nHabiles);
 
             dao.Guardar(beans);
-            System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
-            System.out.println("dias ingresados " + dias);
             contadorMeses--;
             beans.setCodnovedad(8);
             for (int i = contadorMeses; i >= 0; i--) {
@@ -470,11 +466,9 @@ public class NovedadesServlet extends HttpServlet {
                     beans.setDiasSIO(diasSio);
                     int diasRestantes = dias - diasSio;
                     if (diasRestantes > diasEps) {
-                        System.out.println("diasEps 1" + diasEps);
                         diasEps = 0;
                         beans.setDiasEPS(diasEps);
                     } else {
-                        System.out.println("diasEps 2" + diasEps + "-" + diasRestantes);
                         diasEps -= diasRestantes;
                         beans.setDiasEPS(diasEps);
                     }
@@ -482,9 +476,7 @@ public class NovedadesServlet extends HttpServlet {
                 }
                 beans.setDias(dias);
                 dao.Guardar(beans);
-                System.out.println("diasEps " + diasEps);
-                System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
-                System.out.println("dias ingresados " + dias);
+
             }
 
         }
