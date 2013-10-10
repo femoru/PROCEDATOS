@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-var lastSel, selIdUsuario, rdb_flt, rdb_filtro, rdb_fechas;
+var lastSel, selIdUsuario, rdb_flt, rdb_filtro, rdb_fechas, editMode;
 var now = new Date();
 $(document).ready(function($) {
 
@@ -489,13 +489,15 @@ $(document).ready(function($) {
             jQuery("#" + subgrid_table_id).remove();
         },
         ondblClickRow: function(id) {
-            if (rdb_filtro === "0") {
+            if (rdb_filtro === "0" && !editMode) {
                 validarLabores(id);
             }
         },
         onRightClickRow: function(rowid, iRow, iCol, e) {
             if (rowid && rowid !== lastSel) {
-                jQuery('#gridLbr').restoreRow(lastSel);
+                jQuery('#gridLbr').restoreRow(lastSel, function() {
+                    editMode = false;
+                });
                 lastSel = rowid;
             }
             var rowData = $('#gridLbr').jqGrid('getRowData', rowid);
@@ -520,11 +522,15 @@ $(document).ready(function($) {
                     required: true
                 }
             });
-            jQuery('#gridLbr').editRow(rowid, true, null, refrescarGrilla);
+            jQuery('#gridLbr').editRow(rowid, true, function() {
+                editMode = true;
+            }, refrescarGrilla);
         },
         onSelectRow: function(id) {
 
-            jQuery('#gridLbr').restoreRow(lastSel);
+            jQuery('#gridLbr').restoreRow(lastSel, function() {
+                editMode = false;
+            });
         },
         loadComplete: function(data) {
             setTimeout(function() {
