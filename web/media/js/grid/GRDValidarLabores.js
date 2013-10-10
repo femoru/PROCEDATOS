@@ -18,7 +18,7 @@ $(document).ready(function($) {
         $("#grid").toggle("slide", {direction: 'right'});
     });
 
-$(document).bind("contextmenu", function(e) {
+    $(document).bind("contextmenu", function(e) {
         return false;
     });
     $("#dateMon").monthpicker({
@@ -213,8 +213,8 @@ $(document).bind("contextmenu", function(e) {
         if ($("#fin").val() === "") {
             return[false, "Seleccione la hora de fin de la labor"];
         }
-        var checkInicio = checkHoras($("#inicio").val());
-        var checkFin = checkHoras($("#fin").val());
+        var checkInicio = checkHoras($("#inicio").val(), false);
+        var checkFin = checkHoras($("#fin").val(), false);
         if (!checkInicio[0]) {
             return checkInicio;
         }
@@ -228,8 +228,10 @@ $(document).bind("contextmenu", function(e) {
         if (ini > fin) {
             return[false, "La hora de inicio debe ser menor que la hora de salida"];
         }
-        var editUrl = jQuery('#gridLbr').jqGrid("getGridParam", "editurl");
+
         var idregistro = $('#gridLbr').jqGrid('getGridParam', 'selrow');
+
+        var editUrl = jQuery('#gridLbr').jqGrid("getGridParam", "editurl");
         var condicionHora = $.ajax({
             type: "POST",
             async: false,
@@ -794,13 +796,47 @@ $(document).bind("contextmenu", function(e) {
     }
     );
 });
-function checkHoras(value) {
+function checkHoras(value, grid) {
     var patt = /^(([0-9]|0[0-9])|1[0-9]|2[0-3]):([0-5][0-9])?$/;
     var resp = patt.test(value);
     if (!resp) {
         return [resp, value + " No corresponde a un formato de hora valido, ingrese HH:MM"];
     } else {
-        return [resp, ""];
+
+        if (!grid) {
+            return [resp, ""];
+        } else {
+            var myGrid = $('#gridLbr'),
+                    selRowId = myGrid.jqGrid('getGridParam', 'selrow');
+            console.log($('#' + selRowId + '_fechas').val());
+            var editUrl = jQuery('#gridLbr').jqGrid("getGridParam", "editurl");
+            var condicionHora = $.ajax({
+                type: "POST",
+                async: false,
+                url: editUrl,
+                data: {
+                    oper: "horaValidar",
+                    id: selRowId,
+                    idusuario: $('#' + selRowId + '_auxiliar').val(),
+                    fechas: $('#' + selRowId + '_fechas').val(),
+                    inicio: $('#' + selRowId + '_inicio').val(),
+                    fin: $('#' + selRowId + '_fin').val()
+                }
+            }).responseText;
+            if (condicionHora === "1") {
+                return [false, "La hora de inicio se cruza con una labor existente"];
+            }
+            if (condicionHora === "2") {
+                return [false, "La hora de fin se cruza con una labor existente"];
+            }
+            if (condicionHora === "3") {
+                return [false, "La hora de fin no debe ser mayor a hora actual"];
+            }
+            if (condicionHora === "4") {
+                return [false, "Existe una labor anterior sin registrar salida"];
+            }
+            return [resp, ""];
+        }
     }
 }
 function cargarDias(date) {
