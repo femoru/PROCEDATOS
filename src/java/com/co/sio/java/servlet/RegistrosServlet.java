@@ -191,8 +191,11 @@ public class RegistrosServlet extends HttpServlet {
                     registroBeans = registrosDao.consultar(request.getParameter("id"));
                     //Log
                     Logger.getLogger("REGISTROS").info(String.format("%s va a actualizar el registro \n%s", userName, registroBeans.toString()));
-
-                    registroBeans.setLabor(labor);
+                    if (labor != null) {
+                        registroBeans.setLabor(labor);
+                    } else {
+                        labor = registroBeans.getLabor();
+                    }
                     registroBeans.setFechaInicio(request.getParameter("fechas") + " " + request.getParameter("inicio"));
 
                     registroBeans.setFechaFin(request.getParameter("fechas") + " " + request.getParameter("fin"));
@@ -398,6 +401,7 @@ public class RegistrosServlet extends HttpServlet {
             }
         } catch (Exception ex) {
             Logger.getLogger("Error").warn("Error", ex);
+            ex.printStackTrace();
         }
     }
 }
