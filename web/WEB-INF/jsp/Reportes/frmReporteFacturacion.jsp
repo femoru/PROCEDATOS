@@ -35,7 +35,7 @@
                         <input type="radio" name="tipo" value="3" >Detallado 
                     </div>
                 </div>
-                <div style="float: left;margin-left: 30px">
+                <div id="validar" style="float: left;margin-left: 30px">
                     <div>
                         <input type="radio" name="clase" value="0" checked onchange="$('#rango').hide();
                                 $('#idnomina').show();">Nomina 
@@ -46,8 +46,8 @@
                         <select id="nomina" style="margin: 0"></select>
                     </div>
                     <div id="rango" style="display: none;">
-                        Fecha Inicial<input class="datepicker">
-                        Fecha Final<input class="datepicker">
+                        Fecha Inicial<input class="datepicker" id="dateIni">
+                        Fecha Final<input class="datepicker" id="dateFin">
                     </div>
                 </div>
 

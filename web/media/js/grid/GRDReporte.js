@@ -4,6 +4,7 @@
  */
 var myGrid = $("#gridRep");
 
+$(".datepicker").datepicker();
 $(".ui-button").button();
 $("#nomina").load('getNominas.htm');
 $("#generar").click(function() {
@@ -37,14 +38,24 @@ function validar() {
     });
 
     var lab = myGrid.jqGrid('getGridParam', 'selarrrow');
-    if ($("#nomina").val() === '0') {
-        $("#nomina").focus().after("<span class='error'>Seleccione una Nomina</span>");
+    if ($("#nomina").val() === '0' && $("#nomina").is(':visible')) {
+        $("#validar").focus().after("<span class='error'>Seleccione una Nomina</span>");
         return false;
     }
     if (lab <= 0) {
-        $("#nomina").after("<span class='error'>Seleccione labores para generar reporte</span>");
+        $("#validar").after("<span class='error'>Seleccione labores para generar reporte</span>");
         return false;
     }
+
+    if ($("#dateIni").val() === "" && $("#dateIni").is(':visible')) {
+        $('#dateIni').after("<span class='error'>llenar este campo para continuar</span>");
+        return false;
+    }
+    if ($("#dateFin").val() === "" && $("#dateFin").is(':visible')) {
+        $('#dateFin').after("<span class='error'>llenar este campo para continuar</span>");
+        return false;
+    }
+
     return true;
 
 }
@@ -54,6 +65,8 @@ myGrid.jqGrid({
     autowidth: true,
     height: 500,
     rowNum: 100,
+    ignoreCase: true,
+    loadonce: true,
     viewrecords: true,
     datatype: "json",
     colNames: ['Cliente', 'Area', 'Grupo', 'Labor', 'Tipo', 'Extras'],
@@ -80,3 +93,4 @@ myGrid.jqGrid({
     caption: "Labores Incluidas en el Reporte"
 });
 
+myGrid.jqGrid('filterToolbar', {searchOnEnter: false, defaultSearch: 'cn'});

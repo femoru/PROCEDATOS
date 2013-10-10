@@ -7,7 +7,6 @@ package com.co.sio.java.dao;
 import com.co.sio.java.JSON.JSONArray;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
-import com.co.sio.java.utils.Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -24,7 +23,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -572,12 +570,137 @@ public class ReporteDao {
         }
     }
 
-    public String detalladoFacturacion(String labores, String fini, String ffin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String detalladoFacturacion(String labores, String fini, String ffin) throws Exception {
+        try {
+
+            String sql = "SELECT   nomcliente as CLIENTE, desarea AS AREA, desgrupo AS GRUPO, deslabor AS LABOR,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, '') AS TIPO, identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",TO_CHAR(FECHAINICIO,'DD/MM/YYYY') FECHA,TO_CHAR(FECHAINICIO,'HH24:MI')H_INI,TO_CHAR(FECHAFIN,'HH24:MI')H_FIN,\n"
+                    + "         TRUNC (mr.tiempolabor / 60, 2) AS cantidad\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2 )\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
+                    + "	    AND plc.idlaborcontrato IN ( %s )\n"
+                    + "ORDER BY desarea,deslabor,TIPO,NOMBRE,FECHAINICIO";
+            sql = String.format(sql, fini, ffin, labores, fini, ffin, labores);
+            String reporte = "DetalladoFacturacion";
+            JasperPrint generarReporte = generarReporte(reporte, sql);
+
+            return exportarExcel(generarReporte);
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
     }
 
-    public String consolidadoNomina(String labores, String fini, String ffin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String consolidadoNomina(String labores, String fini, String ffin) throws Exception {
+        try {
+
+            String sql = "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
+                    + "         deslabor AS labor,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",\n"
+                    + "         plc.valor, SUM(mr.registroslabor) AS cantidad,\n"
+                    + "         SUM(TRUNC (mr.registroslabor * mr.valor, 2)) produccion\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
+                    + "	    AND plc.idlaborcontrato IN ( %s )\n"
+                    + "     GROUP BY nomcliente,\n"
+                    + "         desarea,\n"
+                    + "         desgrupo,\n"
+                    + "         deslabor,\n"
+                    + "         destipolabor,\n"
+                    + "         deshoraextra,\n"
+                    + "         identificacion,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         papellido,\n"
+                    + "         sapellido,\n"
+                    + "         plc.valor\n"
+                    + "UNION ALL\n"
+                    + "SELECT   nomcliente AS cliente, desarea AS area, desgrupo AS grupo,\n"
+                    + "         deslabor AS labor,\n"
+                    + "         destipolabor || ' ' || NVL (deshoraextra, ' ') AS tipo,\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS \"NOMBRE\",\n"
+                    + "         plc.valor, SUM(TRUNC (mr.tiempolabor / 60, 2)) AS cantidad,\n"
+                    + "         SUM(TRUNC (TRUNC (mr.tiempolabor / 60, 2) * mr.valor, 2)) produccion\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "          INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
+                    + "	    AND plc.idlaborcontrato IN ( %s )\n"
+                    + "     GROUP BY nomcliente,\n"
+                    + "         desarea,\n"
+                    + "         desgrupo,\n"
+                    + "         deslabor,\n"
+                    + "         destipolabor,\n"
+                    + "         deshoraextra,\n"
+                    + "         identificacion,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         papellido,\n"
+                    + "         sapellido,\n"
+                    + "         plc.valor\n"
+                    + "ORDER BY AREA,GRUPO, LABOR,NOMBRE,TIPO";
+            sql = String.format(sql, fini, ffin, labores, fini, ffin, labores);
+
+            String reporte = "ConsolidadoNomina";
+            JasperPrint generarReporte = generarReporte(reporte, sql);
+
+            return exportarExcel(generarReporte);
+
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
     }
 
     public String estadoUsuarios() throws Exception {
@@ -722,7 +845,7 @@ public class ReporteDao {
                     + "         papellido,\n"
                     + "         sapellido\n"
                     + "ORDER BY desarea";
-            sql = String.format(sql, idnomina,labores);
+            sql = String.format(sql, idnomina, labores);
             BD.conectar();
             BD.callableStatement(sql);
             BD.consultar();
@@ -793,25 +916,6 @@ public class ReporteDao {
 
                 rownum++;
             }
-//
-//            while (rs.next()) {
-//                fila = hoja.createRow(rownum);
-//
-//                for (int i = 1; i <= colTotal; i++) {
-//                    if (rsmd.getColumnType(i) == java.sql.Types.VARCHAR) {
-//                        fila.createCell(i - 1).setCellValue(rs.getString(i));
-//                    } else if (rsmd.getColumnType(i) == java.sql.Types.NVARCHAR) {
-//                        fila.createCell(i - 1).setCellValue(rs.getString(i));
-//                    } else if (rsmd.getColumnType(i) == java.sql.Types.DATE) {
-//                        fila.createCell(i - 1).setCellValue(rs.getString(i));
-//                    } else if (rsmd.getColumnType(i) == java.sql.Types.NUMERIC) {
-//                        fila.createCell(i - 1).setCellValue(rs.getDouble(i));
-//                    }
-//                }
-//
-//                rownum++;
-//            }
-
             FileOutputStream archivo = new FileOutputStream(nomArchivo);
             libro.write(archivo);
             archivo.close();
