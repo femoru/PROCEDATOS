@@ -396,6 +396,7 @@ public class NovedadesServlet extends HttpServlet {
 
         int diasSio = beans.getDiasSIO();
         int diasEps = beans.getDiasEPS();
+        int compensados = beans.getDiasComp();
         String fechainicio = beans.getFechainicio();
         String fechafin = beans.getFechafin();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -419,9 +420,23 @@ public class NovedadesServlet extends HttpServlet {
         int dias;
         if (contadorMeses == 0) {
             fin.setTime(sdf.parse(fechafin));
-            dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+
             beans.setFechainicio(sdf.format(inicio.getTime()));
+            int laborales;
+            if (compensados > 0) {
+                fin.set(Calendar.DATE, fin.get(Calendar.DATE) - compensados);
+                laborales = dao.calcularLaborales(fechainicio, sdf.format(fin.getTime()));
+                while (laborales <= compensados) {
+                    fin.set(Calendar.DATE, fin.get(Calendar.DATE) - 1);
+                    laborales = dao.calcularLaborales(sdf.format(fin.getTime()), beans.getFechafin());
+                }
+            }
+            dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+
             beans.setFechafin(sdf.format(fin.getTime()));
+            laborales = dao.calcularLaborales(beans.getFechainicio(), beans.getFechafin());
+            beans.setDiasSIO(laborales);
+            beans.setDiasEPS(dias - laborales);
 
             System.out.println("dias sio " + beans.getDiasSIO());
             System.out.println("dias eps " + beans.getDiasEPS());
@@ -429,18 +444,38 @@ public class NovedadesServlet extends HttpServlet {
             dao.Guardar(beans);
 
         } else {
+            fin.setTime(sdf.parse(fechafin));
+
+            beans.setFechainicio(sdf.format(inicio.getTime()));
+            int laborales;
+            if (compensados > 0) {
+                fin.set(Calendar.DATE, fin.get(Calendar.DATE) - compensados);
+                laborales = dao.calcularLaborales(fechainicio, sdf.format(fin.getTime()));
+                while (laborales <= compensados) {
+                    fin.set(Calendar.DATE, fin.get(Calendar.DATE) - 1);
+                    laborales = dao.calcularLaborales(sdf.format(fin.getTime()), beans.getFechafin());
+                }
+            }
+            dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+
+            beans.setFechafin(sdf.format(fin.getTime()));
+            laborales = dao.calcularLaborales(beans.getFechainicio(), beans.getFechafin());
+            beans.setDiasSIO(laborales);
+            diasEps = (dias - laborales);
+            beans.setDiasEPS(diasEps);
+
+            fin.setTime(sdf.parse(fechainicio));
             fin.set(Calendar.DATE, inicio.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
-            int laborales = dao.calcularLaborales(sdf.format(inicio.getTime()), sdf.format(fin.getTime()));
+            laborales = dao.calcularLaborales(sdf.format(inicio.getTime()), sdf.format(fin.getTime()));
             int nHabiles = dias - laborales;
 
             diasEps -= nHabiles;
 
 
-            beans.setDiasEPS(nHabiles);
-
             dao.Guardar(beans);
+
             contadorMeses--;
             beans.setCodnovedad(8);
             for (int i = contadorMeses; i >= 0; i--) {
