@@ -414,11 +414,13 @@ public class NovedadesServlet extends HttpServlet {
             fin.setTime(sdf.parse(fechafin));
 
             fin.set(Calendar.DATE, fin.get(Calendar.DATE) - compensados);
-            laborales = dao.calcularLaborales(fechainicio, sdf.format(fin.getTime()));
+            laborales = dao.calcularLaborales(sdf.format(fin.getTime()), beans.getFechafin());
             while (laborales <= compensados) {
                 fin.set(Calendar.DATE, fin.get(Calendar.DATE) - 1);
                 laborales = dao.calcularLaborales(sdf.format(fin.getTime()), beans.getFechafin());
             }
+            dias = (int) (1 + (sdf.parse(fechafin).getTime() - fin.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
+            beans.setDiasncomp((dias - laborales));
             beans.setFechafin(sdf.format(fin.getTime()));
             dias = (int) (1 + (fin.getTime().getTime() - inicio.getTime().getTime()) / 1000 / 60 / 60 / 24/*segEndia*/);
             laborales = dao.calcularLaborales(sdf.format(inicio.getTime()), beans.getFechafin());
