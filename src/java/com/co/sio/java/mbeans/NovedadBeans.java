@@ -37,6 +37,7 @@ public class NovedadBeans {
     private int diasComp;
     private int diasncomp;
     private double porcentaje;
+    private int adicional;
 
     public int getIdnovedad() {
         return idnovedad;
@@ -252,5 +253,13 @@ public class NovedadBeans {
 
     public void setPorcentaje(double porcentaje) {
         this.porcentaje = porcentaje;
+    }
+
+    public int getAdicional() {
+        return adicional;
+    }
+
+    public void setAdicional(int adicional) {
+        this.adicional = adicional;
     }
 }

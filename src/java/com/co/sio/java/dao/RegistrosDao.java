@@ -152,8 +152,7 @@ public class RegistrosDao {
             if (datoSql.next()) {
                 registroBeans.setIdregistro(datoSql.getInt(1));
 
-                UsuarioBeans usuarioBeans = new UsuarioBeans();
-                usuarioBeans.setIdusuario(datoSql.getInt(2));
+                UsuarioBeans usuarioBeans = new UsuarioDao().consultar(datoSql.getInt(2));
                 registroBeans.setUsuario(usuarioBeans);
 
                 LaborBeans laborBeans = new LaboresDao().consultar(datoSql.getInt(3));

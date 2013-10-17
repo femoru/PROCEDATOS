@@ -36,6 +36,8 @@ import org.apache.catalina.core.ApplicationPart;
 @MultipartConfig()
 public class NovedadesServlet extends HttpServlet {
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -260,7 +262,7 @@ public class NovedadesServlet extends HttpServlet {
         int diasEps = beans.getDiasEPS();
         String fechainicio = beans.getFechainicio();
         String fechafin = beans.getFechafin();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf = new SimpleDateFormat("dd/MM/yyyy");
         int contadorMeses, contadorAño;
 
         Calendar inicio = Calendar.getInstance();
@@ -277,6 +279,7 @@ public class NovedadesServlet extends HttpServlet {
             contadorMeses *= -1;
             contadorMeses -= 1;
         }
+        adicional(beans);
         System.out.println("Meses " + contadorMeses);
         int dias;
         if (contadorMeses == 0) {
@@ -401,7 +404,7 @@ public class NovedadesServlet extends HttpServlet {
 
         String fechainicio = beans.getFechainicio();
         String fechafin = beans.getFechafin();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf = new SimpleDateFormat("dd/MM/yyyy");
         int contadorMeses, contadorAño;
 
         Calendar inicio = Calendar.getInstance();
@@ -433,6 +436,7 @@ public class NovedadesServlet extends HttpServlet {
         fechainicio = beans.getFechainicio();
         fechafin = beans.getFechafin();
 
+        adicional(beans);
         String[] fechaI = fechainicio.split("/");
         String[] fechaF = fechafin.split("/");
         contadorMeses = Integer.parseInt(fechaF[1]) - Integer.parseInt(fechaI[1]);
@@ -506,6 +510,22 @@ public class NovedadesServlet extends HttpServlet {
 
             }
 
+        }
+    }
+
+    private void adicional(NovedadBeans beans) throws Exception {
+        Calendar calMes = Calendar.getInstance();
+
+        Calendar inicio = Calendar.getInstance();
+        Calendar fin = Calendar.getInstance();
+        inicio.setTime(sdf.parse(beans.getFechainicio()));
+        fin.setTime(sdf.parse(beans.getFechafin()));
+        calMes.setTime(sdf.parse(beans.getFechainicio()));
+        if (calMes.getActualMaximum(Calendar.DATE) == 31) {
+            calMes.set(Calendar.DATE, 31);
+            if (calMes.after(inicio) && (calMes.before(fin) || calMes.equals(fin))) {
+                beans.setAdicional(1);
+            }
         }
     }
 }

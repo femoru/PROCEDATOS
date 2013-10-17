@@ -185,14 +185,14 @@ public class NovedadesDao {
                     + "             dias, observacion, nroincapacidad, coddiagnostico,\n"
                     + "             claseincapacidad, fechaaccidente, indprorroga, idnovprorroga,\n"
                     + "             nroprorrogacg, vlrempresa, vlreps, archivo, plano,\n"
-                    + "             diassio,diaseps,porcentaje,estado,diascompensados,diasncomp\n"
-                    + "            )\n"
+                    + "             diassio,diaseps,porcentaje,estado,diascompensados,diasncomp,\n"
+                    + "             adicional)\n"
                     + "     VALUES (?, ?, TO_DATE(?,'DD/MM/YYYY'), TO_DATE(?,'DD/MM/YYYY'),\n"
                     + "             ?, ?, ?, ?,\n"
                     + "             ?, TO_DATE(?,'DD/MM/YYYY'), ?, ?,\n"
                     + "             ?, ?, ?, ?, ?,\n"
-                    + "             ?, ?, ?, ?, ?, ?\n"
-                    + "            )";
+                    + "             ?, ?, ?, ?, ?, ?,\n"
+                    + "             ?)";
 
             BD.conectar();
             BD.callableStatement(sql);
@@ -219,6 +219,7 @@ public class NovedadesDao {
             BD.AsignarParametro(21, Integer.toString(beans.getEstado()), 2);
             BD.AsignarParametro(22, Integer.toString(beans.getDiasComp()), 2);
             BD.AsignarParametro(23, Integer.toString(beans.getDiasncomp()), 2);
+            BD.AsignarParametro(24, Integer.toString(beans.getAdicional()), 2);
 
 
             return BD.registrar();
