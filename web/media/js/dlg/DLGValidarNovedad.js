@@ -229,7 +229,7 @@ function calcularDias(dias) {
 }
 function validar() {
     $('.error').slideDown().remove();
-    var inputs = $(':text:visible:enabled');
+    var inputs = $('#dlgvalidar  :text:visible:enabled');
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].value === "") {
             $(inputs[i]).focus().after("<span class='error' style='z-index:100;'>Por favor llena este campo</span>");

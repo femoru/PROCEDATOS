@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 
     jQuery('#gridNov').jqGrid({
         autowidth: true,
+        height: 255,
         ignoreCase: true,
         caption: "Novedades",
         url: "NovedadesServlet?mes=" + $.datepicker.formatDate('mm/yy', $('#periodo').monthpicker('getDate')),
@@ -82,7 +83,8 @@ jQuery(document).ready(function($) {
                     value: {
                         0: 'Sin validar',
                         2: 'Validada'
-                    }},
+                    },
+                    defaultValue: 2},
                 width: 50
             }, {
                 "name": "diasTNL",
@@ -176,6 +178,9 @@ jQuery(document).ready(function($) {
         pager: "#pagerNov"
 
     });
+    jQuery('#gridNov').jqGrid('filterToolbar', {searchOnEnter: false, defaultSearch: 'cn'});
+    jQuery('#gridNov').jqGrid('bindKeys');
+
     jQuery('#gridNov').jqGrid('navGrid', '#pagerNov', {
         edit: false, add: false, view: true, search: true, del: true,
         deltitle: "Anular novedad seleccionada",

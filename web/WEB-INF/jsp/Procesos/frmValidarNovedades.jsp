@@ -24,7 +24,7 @@
         <div id="bodyLeft">
             <br>
             <h2><span>Validar Novedades</span> </h2>
-            <br><br>
+            <br>
             <label>Mes a validar: </label><input id="periodo">
             <br><br>
             <div id="grilla" class="grilla" >

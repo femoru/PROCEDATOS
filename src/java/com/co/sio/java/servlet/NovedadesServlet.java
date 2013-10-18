@@ -279,7 +279,7 @@ public class NovedadesServlet extends HttpServlet {
             contadorMeses *= -1;
             contadorMeses -= 1;
         }
-        adicional(beans);
+
         System.out.println("Meses " + contadorMeses);
         int dias;
         if (contadorMeses == 0) {
@@ -291,6 +291,7 @@ public class NovedadesServlet extends HttpServlet {
             System.out.println("dias sio " + beans.getDiasSIO());
             System.out.println("dias eps " + beans.getDiasEPS());
             beans.setDias(dias);
+            adicional(beans);
             dao.Guardar(beans);
             System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
             System.out.println("dias ingresados " + dias);
@@ -318,6 +319,7 @@ public class NovedadesServlet extends HttpServlet {
 
             }
             beans.setDias(dias);
+            adicional(beans);
             dao.Guardar(beans);
             System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
             System.out.println("dias ingresados " + dias);
@@ -354,6 +356,7 @@ public class NovedadesServlet extends HttpServlet {
 
                 }
                 beans.setDias(dias);
+                adicional(beans);
                 dao.Guardar(beans);
                 System.out.println("rango ingresado " + sdf.format(inicio.getTime()) + " - " + sdf.format(fin.getTime()));
                 System.out.println("dias ingresados " + dias);
@@ -525,7 +528,11 @@ public class NovedadesServlet extends HttpServlet {
             calMes.set(Calendar.DATE, 31);
             if (calMes.after(inicio) && (calMes.before(fin) || calMes.equals(fin))) {
                 beans.setAdicional(1);
+            } else {
+                beans.setAdicional(0);
             }
+        } else {
+            beans.setAdicional(0);
         }
     }
 }
