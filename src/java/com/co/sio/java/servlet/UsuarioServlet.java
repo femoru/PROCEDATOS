@@ -31,8 +31,6 @@ public class UsuarioServlet extends HttpServlet {
             String sidx = request.getParameter("sidx");
             String sord = request.getParameter("sord");
 
-            String search = request.getParameter("_search");
-
             String json;
             UsuarioDao usuarioDao;
             usuarioDao = new UsuarioDao();
@@ -41,9 +39,9 @@ public class UsuarioServlet extends HttpServlet {
             if (sGrupo != null) {
                 int grupo = Integer.parseInt(sGrupo);
                 if (fecha != null) {
-                    json = usuarioDao.getListUsuario(intpage, limit, sidx, sord, grupo,fecha);
+                    json = usuarioDao.getListUsuario(intpage, limit, grupo,fecha);
                 } else {
-                    json = usuarioDao.getListUsuario(intpage, limit, sidx, sord, grupo);
+                    json = usuarioDao.getListUsuario(intpage, limit, grupo);
                 }
             } else {
                 json = usuarioDao.getListUsuario(intpage, limit, sidx, sord);

@@ -8,6 +8,7 @@ import com.co.sio.java.JSON.JSONArray;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.NovedadBeans;
+import com.co.sio.java.utils.Utils;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -287,30 +288,12 @@ public class NovedadesDao {
             datoSql = BD.obtenerConsulta();
             total = total1;
 
-            int totalColumnas = datoSql.getMetaData().getColumnCount();
-
             JSONObject jsonData = new JSONObject();
 
             jsonData.put("page", page);
             jsonData.put("total", total_pages);
             jsonData.put("records", total);
-            JSONArray jsonRows = new JSONArray();
-
-            int countColumn = 2;
-            JSONObject jsono;
-            JSONArray jsona;
-            while (datoSql.next()) {
-                jsono = new JSONObject();
-                jsona = new JSONArray();
-                jsono.put("id", datoSql.getString(1));
-                while (countColumn <= totalColumnas) {
-                    jsona.put(datoSql.getString(countColumn++));
-                }
-                jsono.put("cell", jsona);
-                jsonRows.put(jsono);
-                countColumn = 2;
-            }
-
+            JSONArray jsonRows = Utils.llenarGrilla(datoSql);
             jsonData.put("rows", jsonRows);
 
             return jsonData.toString();

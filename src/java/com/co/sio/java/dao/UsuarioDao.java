@@ -4,10 +4,13 @@
  */
 package com.co.sio.java.dao;
 
+import com.co.sio.java.JSON.JSONArray;
+import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.PerfilBeans;
 import com.co.sio.java.mbeans.UsuarioBeans;
 import com.co.sio.java.utils.SeguridadUtils;
+import com.co.sio.java.utils.Utils;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -186,14 +189,10 @@ public class UsuarioDao {
     public String getListUsuario(int page, int rows, String sidx, String sord) throws Exception {
         String sql;
         String strQuery;
-        String json;
-
-        int start;
+       
         int total = 0;
         int total1 = 0;
         int total_pages;
-
-        boolean rc;
 
         ResultSet rsCuenta;
         ResultSet datoSql;
@@ -221,10 +220,9 @@ public class UsuarioDao {
                 total_pages = 0;
             }
 
-            start = ((rows * page) - rows) + 1;
-
-            strQuery = "SELECT cu.idusuario, cu.login, mp.pnombre, mp.papellido, "
-                    + "nvl(mp.snombre,' ') snombre, nvl(mp.sapellido,' ') sapellido "
+        
+            strQuery = "SELECT cu.idusuario n1, cu.idusuario n2, cu.login, mp.pnombre||' '|| mp.papellido||' '|| "
+                    + "nvl(mp.snombre,' ') ||' '|| nvl(mp.sapellido,' ') NOMBRES "
                     + "FROM cusuarios cu, mpersonas mp "
                     + "WHERE cu.idusuario = mp.idpersona AND cu.activo = 1 AND cu.codperfil = 4";
 
@@ -234,31 +232,15 @@ public class UsuarioDao {
             datoSql = BD.obtenerConsulta();
             total = total1;
 
-            json = "";
-            json = json + "{\n";
-            json = json + "\"page\":" + page + ",\n";
-            json = json + "\"total\":" + total_pages + ",\n";
-            json = json + "\"records\":" + total + ",\n";
-            json = json + "\"rows\": [";
-            rc = false;
+            JSONObject jsonData = new JSONObject();
 
-            while (datoSql.next()) {
-                if (rc) {
-                    json = json + ",";
-                }
-                json = json + "\n{";
-                json = json + "\"id\":\"" + datoSql.getString("idusuario") + "\",";
-                json = json + "\"cell\":[\"" + datoSql.getString("idusuario") + "\"";
-                json = json + ",\"" + datoSql.getString("login") + "\"";
-                json = json + ",\"" + datoSql.getString("pnombre") + " " + datoSql.getString("snombre") + " "
-                        + datoSql.getString("papellido") + " " + datoSql.getString("sapellido") + "\"]";
-                json = json + "}";
-                rc = true;
-            }
-            json = json + "]\n";
-            json = json + "}";
+            jsonData.put("page", page);
+            jsonData.put("total", total_pages);
+            jsonData.put("records", total);
+            JSONArray jsonRows = Utils.llenarGrilla(datoSql);
+            jsonData.put("rows", jsonRows);
 
-            return json;
+            return jsonData.toString();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         } finally {
@@ -266,17 +248,14 @@ public class UsuarioDao {
         }
     }
 
-    public String getListUsuario(int page, int rows, String sidx, String sord, int grupo) throws Exception {
+    public String getListUsuario(int page, int rows, int grupo) throws Exception {
         String sql;
         String strQuery;
-        String json;
 
-        int start;
         int total = 0;
         int total1 = 0;
         int total_pages;
 
-        boolean rc;
 
         ResultSet rsCuenta;
         ResultSet datoSql;
@@ -304,9 +283,7 @@ public class UsuarioDao {
                 total_pages = 0;
             }
 
-            start = ((rows * page) - rows) + 1;
-
-            strQuery = "SELECT   plu.idusuario, pnombre || ' ' || papellido auxiliar, login "
+            strQuery = "SELECT   plu.idusuario ni, plu.idusuario no, pnombre || ' ' || papellido auxiliar, login "
                     + "    FROM plaboresusuarios plu, "
                     + "         plaborescontratos plc, "
                     + "         mpersonas mp, "
@@ -332,30 +309,16 @@ public class UsuarioDao {
             datoSql = BD.obtenerConsulta();
             total = total1;
 
-            json = "";
-            json = json + "{\n";
-            json = json + "\"page\":" + page + ",\n";
-            json = json + "\"total\":" + total_pages + ",\n";
-            json = json + "\"records\":" + total + ",\n";
-            json = json + "\"rows\": [";
-            rc = false;
+            JSONObject jsonData = new JSONObject();
 
-            while (datoSql.next()) {
-                if (rc) {
-                    json = json + ",";
-                }
-                json = json + "\n{";
-                json = json + "\"id\":\"" + datoSql.getString(1) + "\",";
-                json = json + "\"cell\":[\"" + datoSql.getString(1) + "\"";
-                json = json + ",\"" + datoSql.getString(2) + "\"";
-                json = json + ",\"" + datoSql.getString(3) + "\"]";
-                json = json + "}";
-                rc = true;
-            }
-            json = json + "]\n";
-            json = json + "}";
+            jsonData.put("page", page);
+            jsonData.put("total", total_pages);
+            jsonData.put("records", total);
+            JSONArray jsonRows = Utils.llenarGrilla(datoSql);
+            jsonData.put("rows", jsonRows);
 
-            return json;
+            return jsonData.toString();
+
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         } finally {
@@ -363,17 +326,13 @@ public class UsuarioDao {
         }
     }
 
-    public String getListUsuario(int page, int rows, String sidx, String sord, int grupo, String fecha) throws Exception {
+    public String getListUsuario(int page, int rows, int grupo, String fecha) throws Exception {
         String sql;
         String strQuery;
-        String json;
-
-        int start;
+        
         int total = 0;
         int total1 = 0;
         int total_pages;
-
-        boolean rc;
 
         ResultSet rsCuenta;
         ResultSet datoSql;
@@ -401,9 +360,7 @@ public class UsuarioDao {
                 total_pages = 0;
             }
 
-            start = ((rows * page) - rows) + 1;
-
-            strQuery = "SELECT idnovedad, desnovedad, pnombre || ' ' || papellido auxiliar, "
+            strQuery = "SELECT idnovedad, idnovedad, desnovedad, pnombre || ' ' || papellido auxiliar, "
                     + "       TO_CHAR (fechainicio, 'dd/mm/yyyy hh24:mi'), TO_CHAR (fechafin, 'dd/mm/yyyy hh24:mi') "
                     + "  FROM mnovedades mn "
                     + "     INNER JOIN mpersonas ON idpersona = mn.idusuario "
@@ -425,32 +382,17 @@ public class UsuarioDao {
             datoSql = BD.obtenerConsulta();
             total = total1;
 
-            json = "";
-            json = json + "{\n";
-            json = json + "\"page\":" + page + ",\n";
-            json = json + "\"total\":" + total_pages + ",\n";
-            json = json + "\"records\":" + total + ",\n";
-            json = json + "\"rows\": [";
-            rc = false;
 
-            while (datoSql.next()) {
-                if (rc) {
-                    json = json + ",";
-                }
-                json = json + "\n{";
-                json = json + "\"id\":\"" + datoSql.getString(1) + "\",";
-                json = json + "\"cell\":[\"" + datoSql.getString(1) + "\"";
-                json = json + ",\"" + datoSql.getString(2) + "\"";
-                json = json + ",\"" + datoSql.getString(3) + "\"";
-                json = json + ",\"" + datoSql.getString(4) + "\"";
-                json = json + ",\"" + datoSql.getString(5) + "\"]";
-                json = json + "}";
-                rc = true;
-            }
-            json = json + "]\n";
-            json = json + "}";
+            JSONObject jsonData = new JSONObject();
 
-            return json;
+            jsonData.put("page", page);
+            jsonData.put("total", total_pages);
+            jsonData.put("records", total);
+            JSONArray jsonRows = Utils.llenarGrilla(datoSql);
+            jsonData.put("rows", jsonRows);
+
+            return jsonData.toString();
+
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         } finally {
@@ -502,7 +444,7 @@ public class UsuarioDao {
             String sql = "SELECT cu.idusuario, login, clave, activo, idusuariodigita, cu.fechadigita, fechaultimoacceso, codperfil "
                     + "FROM cusuarios cu INNER JOIN mpersonas mp ON mp.idpersona = cu.idusuario "
                     + "WHERE codperfil = ? ORDER BY pnombre";
-            BD.callableStatement(sql); 
+            BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(codperfil), 2);
             BD.consultar();
 
@@ -525,7 +467,7 @@ public class UsuarioDao {
                 usuarioBeans.setPerfil(perfilBeans);
 
                 list.add(usuarioBeans);
-                
+
             }
             return list;
         } catch (Exception e) {
@@ -534,14 +476,15 @@ public class UsuarioDao {
             BD.desconectar();
         }
     }
-        public List<UsuarioBeans> listarPorSitio(int sitio) throws Exception {
+
+    public List<UsuarioBeans> listarPorSitio(int sitio) throws Exception {
         ArrayList<UsuarioBeans> list = new ArrayList<UsuarioBeans>();
         try {
             BD.conectar();
             String sql = "SELECT cu.idusuario, login, clave, activo, idusuariodigita, cu.fechadigita, fechaultimoacceso, codperfil "
                     + "FROM cusuarios cu INNER JOIN mpersonas mp ON mp.idpersona = cu.idusuario "
                     + "WHERE sitiotrabajo = ? ORDER BY pnombre";
-            BD.callableStatement(sql); 
+            BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(sitio), 2);
             BD.consultar();
 
@@ -564,7 +507,7 @@ public class UsuarioDao {
                 usuarioBeans.setPerfil(perfilBeans);
 
                 list.add(usuarioBeans);
-                
+
             }
             return list;
         } catch (Exception e) {
@@ -573,5 +516,4 @@ public class UsuarioDao {
             BD.desconectar();
         }
     }
-    
 }

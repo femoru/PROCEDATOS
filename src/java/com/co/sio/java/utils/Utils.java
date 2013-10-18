@@ -187,6 +187,27 @@ public class Utils {
 
         return null;
     }
+
+    public static JSONArray llenarGrilla(ResultSet datoSql) throws Exception {
+        JSONArray jsonRows = new JSONArray();
+
+        int countColumn = 2;
+        JSONObject jsono;
+        JSONArray jsona;
+        int totalColumnas = datoSql.getMetaData().getColumnCount();
+        while (datoSql.next()) {
+            jsono = new JSONObject();
+            jsona = new JSONArray();
+            jsono.put("id", datoSql.getString(1));
+            while (countColumn <= totalColumnas) {
+                jsona.put(datoSql.getString(countColumn++));
+            }
+            jsono.put("cell", jsona);
+            jsonRows.put(jsono);
+            countColumn = 2;
+        }
+        return jsonRows;
+    }
     /*
      public static void subirArchivo(SolicitudHCBeans Archivos) throws Exception {
      CommonsMultipartFile formato = Archivos.getFormato();
