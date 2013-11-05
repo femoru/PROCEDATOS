@@ -9,6 +9,7 @@ import com.co.sio.java.dao.*;
 import com.co.sio.java.mbeans.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -146,7 +147,7 @@ public class RegistrosServlet extends HttpServlet {
 
             RegistrosDao registrosDao = new RegistrosDao();
             RegistroBeans registroBeans = new RegistroBeans();
-
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             switch (oper.charAt(0)) {
                 case 'r': {//edicion en fila
                     registroBeans = registrosDao.consultar(request.getParameter("id"));
@@ -196,9 +197,20 @@ public class RegistrosServlet extends HttpServlet {
                     } else {
                         labor = registroBeans.getLabor();
                     }
-                    registroBeans.setFechaInicio(request.getParameter("fechas") + " " + request.getParameter("inicio"));
-
-                    registroBeans.setFechaFin(request.getParameter("fechas") + " " + request.getParameter("fin"));
+                    
+                    Date inicio = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("inicio"));
+                    Date fin = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("fin"));
+                    
+                    if(fin.compareTo(inicio) < 0){
+                        Calendar cFin = Calendar.getInstance();
+                        cFin.setTime(fin);
+                        cFin.set(Calendar.DATE, cFin.get(Calendar.DATE)+1);
+                        fin = cFin.getTime();
+                    }
+                    
+                    
+                    registroBeans.setFechaInicio(sdf.format(inicio));
+                    registroBeans.setFechaFin(sdf.format(fin));
                     registroBeans.setValor(Integer.parseInt(labor.getValor()));
                     registroBeans.setCosto(Integer.parseInt(labor.getCosto()));
 
@@ -280,8 +292,6 @@ public class RegistrosServlet extends HttpServlet {
                 }
                 break;
                 case 'h': {//Validar horas
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
                     String idregistro = request.getParameter("id");
 

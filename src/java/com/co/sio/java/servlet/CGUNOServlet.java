@@ -101,7 +101,7 @@ public class CGUNOServlet extends HttpServlet {
             out.close();
             baos.close();
 
-////            (new PrenominaDao()).cerrarRegistrosNomina(Integer.parseInt(idnomina));
+           (new PrenominaDao()).cerrarRegistrosNomina(Integer.parseInt(idnomina));
 
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + "NOMINA.ZIP" + "\"");

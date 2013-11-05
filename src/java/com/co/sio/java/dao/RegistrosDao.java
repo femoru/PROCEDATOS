@@ -380,7 +380,7 @@ public class RegistrosDao {
                 anulados = "mr.estado = ? AND ANULADO = 0 ";
             }
             if (filtro == 2) {
-                anulados = "(mr.estado = ? OR anulado <> 0) ";
+                anulados = "(mr.estado = ? OR (anulado <> 0 AND mr.estado <> 3) ";
             }
             strQuery = "SELECT mr.idregistro, mr.idlaborcontrato, mr.idusuario, pnombre || ' ' || papellido AS usuario, rl.deslabor, NVL(rhe.deshoraextra,' '), rtl.destipolabor ,TO_CHAR(mr.fechainicio, 'dd/MM/yyyy') AS fecha, TO_CHAR(mr.fechainicio, 'HH24:MI') AS fechainicio,  "
                     + "TO_CHAR(mr.fechafin, 'HH24:MI') AS fechafin, mr.tiempolabor, mr.registroslabor, mr.costo, mr.observacion, mr.datolabor, plc.datolabor, rca.descausa "
@@ -1240,7 +1240,7 @@ public class RegistrosDao {
                 anulados = "mr.estado = ? AND ANULADO = 0 ";
             }
             if (filtro == 2) {
-                anulados = " (mr.estado = ? OR anulado <> 0 ) ";
+                anulados = " (mr.estado = ? OR (anulado <> 0 AND mr.estado <> 3) ) ";
             }
             if (periodo != 0) {
                 periodos = "TO_CHAR(mr.fechainicio, 'mm/yyyy') = ? ";

@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
         }
     });
     jQuery('#gridNom').jqGrid({
-        height: 340,
+        height: 'auto',
         width: $('#grilla').width(),
         shrinkToFit: false,
         ignoreCase: true,
