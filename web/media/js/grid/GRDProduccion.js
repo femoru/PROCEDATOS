@@ -43,8 +43,9 @@ $(document).ready(function($) {
                 groupingView: {
                     groupField: ['grupoarea'],
                     groupColumnShow: [false],
-                    groupText: ['<b>{0}</b>'],
-                    groupCollapse: true
+                    groupText: ['<b>{0} --> Tiempo: {tiempolabor} min , Registros: {registroslabor} </b>'],
+                    groupCollapse: true,
+                    groupSummary:[true] 
                 },
                 colNames: ["Id", "Grupo - Area", "Labor", "Tipo Labor", 'Extra', "Fecha Inicio", "Fecha Fin",
                     "Observación", "Dato Labor", "Total Tiempo", "Total Registros", "Estado"],
@@ -120,7 +121,9 @@ $(document).ready(function($) {
                         editable: false,
                         edittype: "text",
                         align: "center",
-                        width: 50
+                        summaryType:'sum',
+                        summaryTpl:'<b>{0} min</b>',
+                        width: 70
                     },
                     {
                         "name": "registroslabor",
@@ -129,7 +132,8 @@ $(document).ready(function($) {
                         editable: false,
                         edittype: "text",
                         align: "center",
-                        width: 50
+                        summaryType:'sum',
+                        width: 70
                     },
                     {
                         "name": "estado",
