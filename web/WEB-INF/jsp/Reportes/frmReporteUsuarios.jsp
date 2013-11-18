@@ -23,6 +23,10 @@
             <br>
             <h2><span>Reporte Estado de Usuarios</span> </h2>
             <br>
+            <div>
+                <label for="month">Mes de Consulta Producci&oacute;n</label><input class="months" id="month">
+            </div>
+            <br>
             <div id="grilla" class="grilla">
                 <table id='gridAux'> </table>
                 <div id='pagerAux'></div>

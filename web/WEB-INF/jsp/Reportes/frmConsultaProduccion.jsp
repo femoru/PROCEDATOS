@@ -25,13 +25,18 @@
             <br>
             <table><tr><td id="tr_documento">Documento: <input id="documento"><input type="button" value="Consultar" id="consulta"></td><td>
                         <div id="dateFilter">
-                            Fecha Inicial: <input type="text" id="dateIni"  readonly/> - Fecha Final: <input type="text" id="dateFin" readonly /></div>
+                            Fecha Inicial: <input type="text" id="dateIni"  readonly/> - Fecha Final: <input type="text" id="dateFin" readonly />
+                        </div>
+                        <div id="nomina_enc">
+                            <label for="nomina">Nomina: </label><select id="nomina" style="margin: 0"></select>
+                        </div>
                     </td>                        
                     <td style="text-align: right">
                         <div><label>Estado de registro </label><select id="comboEstado" >
                                 <option value="0">Sin Validar</option>
                                 <option value="2" selected="selected">Validado</option>  
-                                <option value="3" >Anulados</option>                                   
+                                <option value="3" >Pagados</option>
+                                <option value="4" >Anulados</option>                                   
                             </select></div>
                     </td></tr>
                 <tr><td colspan="3">

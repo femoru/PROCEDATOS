@@ -42,7 +42,7 @@ public class ReportesServlet extends HttpServlet {
                 case 'u': {
                     int intpage = new Integer(request.getParameter("page"));
                     int limit = new Integer(request.getParameter("rows"));
-                    json = reporteDao.getListUsuario(intpage, limit);
+                    json = reporteDao.getListUsuario(intpage, limit, request.getParameter("mes"));
                 }
                 break;
 
@@ -76,7 +76,7 @@ public class ReportesServlet extends HttpServlet {
                 }
                 break;
                 case 'u': {
-                    generarReporteUsuarios(response, reporteDao);
+                    generarReporteUsuarios(response, reporteDao, request.getParameter("mes"));
                 }
                 break;
 
@@ -152,8 +152,8 @@ public class ReportesServlet extends HttpServlet {
 
     }
 
-    private void generarReporteUsuarios(HttpServletResponse response, ReporteDao reporteDao) throws Exception {
-        String nombre = reporteDao.estadoUsuarios();
+    private void generarReporteUsuarios(HttpServletResponse response, ReporteDao reporteDao, String mes) throws Exception {
+        String nombre = reporteDao.estadoUsuarios(mes);
 
         if (nombre != null) {
             OutputStream out = response.getOutputStream();

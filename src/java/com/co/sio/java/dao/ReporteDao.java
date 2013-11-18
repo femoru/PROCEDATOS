@@ -7,6 +7,7 @@ package com.co.sio.java.dao;
 import com.co.sio.java.JSON.JSONArray;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
+import com.co.sio.java.utils.Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -247,7 +248,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 )\n"
                     + "     AND idnomina = %s and mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
                     + "     GROUP BY nomcliente,\n"
@@ -286,7 +287,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2 OR plc.codtipolabor = 5 )\n"
                     + "     AND idnomina = %s and mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
                     + "     GROUP BY nomcliente,\n"
@@ -340,7 +341,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 )\n"
                     + "     AND idnomina = %s and mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
                     + "UNION ALL\n"
@@ -367,7 +368,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2 OR plc.codtipolabor = 5 )\n"
                     + "     AND idnomina = %s and mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
                     + "ORDER BY AREA,GRUPO, LABOR,NOMBRE, TIPO,FECHA";
@@ -408,7 +409,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4)\n"
                     + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
                     + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
@@ -436,7 +437,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2 OR plc.codtipolabor = 5 )\n"
                     + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
                     + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
@@ -634,7 +635,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 OR plc.codtipolabor = 5 )\n"
+                    + "   WHERE (plc.codtipolabor = 3 OR plc.codtipolabor = 4 )\n"
                     + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
                     + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
@@ -674,7 +675,7 @@ public class ReporteDao {
                     + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
                     + "         INNER JOIN mclientes mc ON mc.idcliente = dca.idcliente\n"
                     + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
-                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2 OR plc.codtipolabor = 5 )\n"
                     + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
                     + "     AND TO_DATE('%s','DD/MM/YYYY') AND mr.anulado = 0\n"
                     + "	    AND plc.idlaborcontrato IN ( %s )\n"
@@ -703,20 +704,35 @@ public class ReporteDao {
         }
     }
 
-    public String estadoUsuarios() throws Exception {
+    public String estadoUsuarios(String mes) throws Exception {
 
-        String sql = "SELECT   identificacion,\n"
-                + "            papellido\n"
-                + "         || ' '\n"
-                + "         || sapellido\n"
-                + "         || ' '\n"
-                + "         || pnombre\n"
-                + "         || ' '\n"
-                + "         || snombre AS nombres,\n"
-                + "         DECODE (cu.activo, 1, 'ACTIVO', 'INACTIVO') AS estado\n"
-                + "    FROM mpersonas INNER JOIN cusuarios cu ON idpersona = cu.idusuario\n"
-                + "   WHERE codperfil = 4\n"
-                + "ORDER BY activo DESC, TRIM (papellido)";
+        String sql = "SELECT   mp.idpersona, identificacion,\n"
+                    + "            papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido\n"
+                    + "         || ' '\n"
+                    + "         || pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre AS nombres,\n"
+                    + "         DECODE (cu.activo, 1, 'ACTIVO', 'INACTIVO') AS estado,\n"
+                    + "         COUNT (DISTINCT (TRUNC (fechainicio))) trabajados,\n"
+                    + "         NVL (TO_CHAR(fechaingreso,'DD/MM/YYYY'), ' ') ingreso,\n"
+                    + "         NVL (TO_CHAR(fecharetiro,'DD/MM/YYYY'), ' ') retiro\n"
+                    + "    FROM mpersonas mp INNER JOIN cusuarios cu\n"
+                    + "         ON cu.idusuario = mp.idpersona AND cu.codperfil = 4\n"
+                    + "         LEFT OUTER JOIN mregistros mr\n"
+                    + "         ON mr.idusuario = mp.idpersona AND mr.anulado = 0 \n"
+                    + "       AND TO_CHAR (fechainicio, 'mm/yyyy') = '"+mes+"'\n"
+                    + " GROUP BY mp.idpersona,\n"
+                    + "         identificacion,\n"
+                    + "         papellido,\n"
+                    + "         sapellido,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         activo,\n"
+                    + "         fechaingreso,\n"
+                    + "         fecharetiro"
+                    + " ORDER BY activo DESC, TRIM (papellido) ";
 
         String reporte = "EstadoUsuarios";
         JasperPrint generarReporte = generarReporte(reporte, sql);
@@ -724,7 +740,7 @@ public class ReporteDao {
         return exportarExcel(generarReporte);
     }
 
-    public String getListUsuario(int page, int rows) throws Exception {
+    public String getListUsuario(int page, int rows, String mes) throws Exception {
         try {
 
             String sql = "SELECT COUNT(*) AS valor "
@@ -752,24 +768,40 @@ public class ReporteDao {
                 total_pages = 0;
             }
 
-            sql = "SELECT   idpersona, identificacion,\n"
+            sql = "SELECT   mp.idpersona, identificacion,\n"
                     + "            papellido\n"
                     + "         || ' '\n"
                     + "         || sapellido\n"
                     + "         || ' '\n"
                     + "         || pnombre\n"
                     + "         || ' '\n"
-                    + "         || snombre AS nombres,\n"
-                    + "         DECODE (cu.activo, 1, 'ACTIVO', 'INACTIVO') AS estado\n"
-                    + "    FROM mpersonas INNER JOIN cusuarios cu ON idpersona = cu.idusuario\n"
-                    + "   WHERE codperfil = 4\n"
-                    + "ORDER BY activo DESC, TRIM (papellido)";
+                    + "         || snombre AS nombre,\n"
+                    + "         cu.activo,\n"
+                    + "         COUNT (DISTINCT (TRUNC (fechainicio))) trabajados,\n"
+                    + "         NVL (TO_CHAR(fechaingreso,'DD/MM/YYYY'), '') ingreso,\n"
+                    + "         NVL (TO_CHAR(fecharetiro,'DD/MM/YYYY'), '') retiro\n"
+                    + "    FROM mpersonas mp INNER JOIN cusuarios cu\n"
+                    + "         ON cu.idusuario = mp.idpersona AND cu.codperfil = 4\n"
+                    + "         LEFT OUTER JOIN mregistros mr\n"
+                    + "         ON mr.idusuario = mp.idpersona AND mr.anulado = 0 \n"
+                    + "       AND TO_CHAR (fechainicio, 'mm/yyyy') = ?\n"
+                    + " GROUP BY mp.idpersona,\n"
+                    + "         identificacion,\n"
+                    + "         papellido,\n"
+                    + "         sapellido,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         activo,\n"
+                    + "         fechaingreso,\n"
+                    + "         fecharetiro"
+                    + " ORDER BY activo DESC, TRIM (papellido) ";
             BD.callableStatement(sql);
+            BD.AsignarParametro(1, mes, 1);
 
             BD.consultar();
             rsCuenta = BD.obtenerConsulta();
             total = total1;
-
+            
             ResultSetMetaData mtd = rsCuenta.getMetaData();
 
             int totalColumnas = mtd.getColumnCount();
@@ -779,23 +811,8 @@ public class ReporteDao {
             jsonData.put("page", page);
             jsonData.put("total", total_pages);
             jsonData.put("records", total);
-            JSONArray jsonRows = new JSONArray();
-
-            int countColumn = 2;
-            JSONObject jsono;
-            JSONArray jsona;
-            while (rsCuenta.next()) {
-                jsono = new JSONObject();
-                jsona = new JSONArray();
-                jsono.put("id", rsCuenta.getString(1));
-                while (countColumn <= totalColumnas) {
-                    jsona.put(rsCuenta.getString(countColumn++));
-                }
-                jsono.put("cell", jsona);
-                jsonRows.put(jsono);
-                countColumn = 2;
-            }
-
+            JSONArray jsonRows = Utils.llenarGrilla(rsCuenta);
+ 
             jsonData.put("rows", jsonRows);
 
             return jsonData.toString();

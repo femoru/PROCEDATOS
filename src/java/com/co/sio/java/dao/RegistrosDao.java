@@ -622,7 +622,7 @@ public class RegistrosDao {
         }
     }
 
-    public String getListProduccion(int page, int rows, String sidx, String sord, int idusuario, String fechaInicial, String fechaFinal, int estado) throws Exception {
+    public String getListProduccion(int page, int rows, int idusuario, String fechaInicial, String fechaFinal, int estado, String nomina) throws Exception {
         String sql;
         String strQuery;
         String json;
@@ -687,21 +687,30 @@ public class RegistrosDao {
                     + "       INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
                     + "       INNER JOIN rlabores rl ON plc.codlabor = rl.codlabor\n"
                     + "       LEFT  JOIN rhorasextras rhe ON plc.codhoraextra = rhe.codhoraextra\n"
-                    + " WHERE mr.idusuario = ? \n"
-                    + "   AND mr.fechainicio >= TO_DATE (? , 'dd/mm/yyyy')\n"
-                    + "   AND mr.fechafin <= TO_DATE (?, 'dd/mm/yyyy') + 1\n";
-            if (estado != 3) {
+                    + " WHERE mr.idusuario = ? \n";
+            if (estado != 4) {
                 strQuery += "   AND mr.anulado = 0"
                         + "     AND mr.estado = " + estado;
+
             } else {
                 strQuery += "   AND mr.anulado <> 0 ";
             }
 
+            if (estado == 3) {
+                strQuery += "   AND mr.idnomina = ? ";
+            } else {
+                strQuery += "   AND mr.fechainicio >= TO_DATE (? , 'dd/mm/yyyy')\n"
+                        + "   AND mr.fechafin <= TO_DATE (?, 'dd/mm/yyyy') + 1\n";
+            }
+
             BD.callableStatement(strQuery);
             BD.AsignarParametro(1, Integer.toString(idusuario), 2);
-            BD.AsignarParametro(2, fechaInicial, 1);
-            BD.AsignarParametro(3, fechaFinal, 1);
-
+            if (estado == 3) {
+                BD.AsignarParametro(2, nomina, 2);
+            } else {
+                BD.AsignarParametro(2, fechaInicial, 1);
+                BD.AsignarParametro(3, fechaFinal, 1);
+            }
             BD.consultar();
             datoSql = BD.obtenerConsulta();
             total = total1;

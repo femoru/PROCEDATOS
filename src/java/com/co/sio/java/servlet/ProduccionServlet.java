@@ -32,6 +32,7 @@ public class ProduccionServlet extends HttpServlet {
             String identificacion = request.getParameter("identificacion");
             String inicial = request.getParameter("inicial");
             String fFinal = request.getParameter("fFinal");
+            String nomina = request.getParameter("nomina");
             int estado = Integer.parseInt(request.getParameter("estado"));
 
             RegistrosDao RegistrosDao;
@@ -40,7 +41,7 @@ public class ProduccionServlet extends HttpServlet {
                 idusuario = new PersonaDao().consultarxIdenditifcacion(identificacion).getIdpersona();
             }
 
-            String json = RegistrosDao.getListProduccion(intpage, limit, sidx, sord, idusuario, inicial, fFinal, estado);
+            String json = RegistrosDao.getListProduccion(intpage, limit, idusuario, inicial, fFinal, estado, nomina);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");

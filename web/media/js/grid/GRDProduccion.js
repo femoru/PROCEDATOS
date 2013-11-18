@@ -1,6 +1,11 @@
-
+var ev;
 $(document).ready(function($) {
     var now = new Date();
+    $("#nomina_enc").hide();
+    $("#nomina").load('getNominas.htm');
+    $("#nomina").change(function() {
+        refrescarGrilla();
+    })
     //var daysAgo =new Date(now.getTime()-(7*24*3600*1000));
     restriccionCoordinador();
 
@@ -16,17 +21,19 @@ $(document).ready(function($) {
     $("#dateIni").datepicker();
     $("#dateFin").datepicker();
     $("#comboEstado").change(function(e) {
+        if (e.target.value === "3") {
+            $("#dateFilter").hide();
+            $("#nomina_enc").show();
+
+        } else {
+            $("#nomina_enc").hide();
+            $("#dateFilter").show();
+        }
+        ev = e;
         refrescarGrilla();
     });
     $("#consulta").click(function() {
-        jQuery("#gridProd").jqGrid('setGridParam', {
-            url: "ProduccionServlet?inicial=" + $("#dateIni").val() + "&fFinal=" + $("#dateFin").val()
-                    + "&estado=" + $("#comboEstado").val() + "&identificacion=" + $("#documento").val(),
-            datatype: "json",
-            pager: "#pagerProd"
-        });
-        jQuery("#gridProd").trigger("reloadGrid");
-        return [true, ""];
+        refrescarGrilla();
     });
 
     jQuery('#gridProd').jqGrid(
@@ -45,7 +52,7 @@ $(document).ready(function($) {
                     groupColumnShow: [false],
                     groupText: ['<b>{0} --> Tiempo: {tiempolabor} min , Registros: {registroslabor} </b>'],
                     groupCollapse: true,
-                    groupSummary:[true] 
+                    groupSummary: [true]
                 },
                 colNames: ["Id", "Grupo - Area", "Labor", "Tipo Labor", 'Extra', "Fecha Inicio", "Fecha Fin",
                     "Observación", "Dato Labor", "Total Tiempo", "Total Registros", "Estado"],
@@ -121,8 +128,8 @@ $(document).ready(function($) {
                         editable: false,
                         edittype: "text",
                         align: "center",
-                        summaryType:'sum',
-                        summaryTpl:'<b>{0} min</b>',
+                        summaryType: 'sum',
+                        summaryTpl: '<b>{0} min</b>',
                         width: 70
                     },
                     {
@@ -132,7 +139,7 @@ $(document).ready(function($) {
                         editable: false,
                         edittype: "text",
                         align: "center",
-                        summaryType:'sum',
+                        summaryType: 'sum',
                         width: 70
                     },
                     {
@@ -214,11 +221,12 @@ function restriccionCoordinador() {
 
 function refrescarGrilla( ) {
     jQuery("#gridProd").jqGrid('setGridParam', {
-        url: "ProduccionServlet?inicial=" + $("#dateIni").val() + "&fFinal=" + $("#dateFin").val()
-                + "&estado=" + $("#comboEstado").val() + "&identificacion=" + $("#documento").val(),
-        datatype: "json",
-        pager: "#pagerProd"
-    });
-    jQuery("#gridProd").trigger("reloadGrid");
-    return [true, ""];
+            url: "ProduccionServlet?inicial=" + $("#dateIni").val() + "&fFinal=" + $("#dateFin").val()
+                    + "&estado=" + $("#comboEstado").val() + "&identificacion=" + $("#documento").val()
+                    + "&nomina=" + $("#nomina").val(),
+            datatype: "json",
+            pager: "#pagerProd"
+        });
+        jQuery("#gridProd").trigger("reloadGrid");
+        return [true, ""];
 }

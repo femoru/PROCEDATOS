@@ -96,7 +96,7 @@ public class NominaDao {
             ArrayList<NominaBeans> lista = new ArrayList<NominaBeans>();
 
 
-            String sql = "SELECT idnomina, TO_CHAR(fechainicio,'DD/MM/YYYY'), TO_CHAR(fechafin,'DD/MM/YYYY') FROM mnomina";
+            String sql = "SELECT idnomina, TO_CHAR(fechainicio,'DD/MM/YYYY'), TO_CHAR(fechafin,'DD/MM/YYYY') FROM mnomina order by fechainicio desc ";
             BD.conectar();
             BD.callableStatement(sql);
             BD.consultar();
