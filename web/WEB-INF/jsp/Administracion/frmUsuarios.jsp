@@ -91,11 +91,13 @@
                         <tr>
                             <td>Perfil </td>
                             <td>Sitio de Trabajo </td>
+                            <td>Turno </td>
                             <td>Estado </td>
                         </tr>
                         <tr>
                             <td><select id="codPerfil"></select></td>
                             <td><select id="sitio"></select></td>
+                            <td><select id="horario" ><option value="0">Diurno</option><option value="1">Nocturno</option></select></td>
                             <td><select id="estado" ><option value="1">Activo</option><option value="0">Inactivo</option></select></td>
                         </tr>
                         <tr>

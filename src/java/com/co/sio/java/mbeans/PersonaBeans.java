@@ -25,6 +25,7 @@ public class PersonaBeans extends UsuarioBeans {
     private int sitiotrabajo;
     public String fechaIngreso;
     public String fechaRetiro;
+    public int nocturno;
 
     public int getSitiotrabajo() {
         return sitiotrabajo;
@@ -182,6 +183,14 @@ public class PersonaBeans extends UsuarioBeans {
         this.fechaRetiro = fechaRetiro;
     }
 
+    public int getNocturno() {
+        return nocturno;
+    }
+
+    public void setNocturno(int nocturno) {
+        this.nocturno = nocturno;
+    }
+    
     public String getNombres() {
         return String.format("%s %s %s %s", this.getpNombre(), this.getsNombre(), this.getpApellido(), this.getsApellido());
     }

@@ -20,12 +20,13 @@ var myGrid = $('#grid1'),
         /**/contacto = $([]).add(direccion).add(email).add(telefono).add(celular),
         codPerfil = $("#codPerfil"),
         sitio = $("#sitio"),
+        horario = $("#horario"),
         estado = $("#estado"),
         usuariocliente = $("#usuariocliente"),
         fechaIngreso = $("#fechaIngreso"),
         fechaRetiro = $("#fechaRetiro"),
         salario = $("#salario"),
-        /**/contrato = $([]).add(codPerfil).add(sitio).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario);
+        /**/contrato = $([]).add(codPerfil).add(sitio).add(horario).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario);
 
 var cerrar = {text: "Cancelar", click: function() {
         $(this).dialog("close");
@@ -82,7 +83,7 @@ jQuery(document).ready(function($)
         datatype: "json",
         colNames: ["Id\t(*)", "Identificación\t(*)", "Primer Nombre\t(*)", "Segundo Nombre", "Primer Apellido\t(*)", "Segundo Apellido",
             "Fecha Nacimiento\t(*)", "Sexo\t(*)", "Direccion\t(*)", "Telefono\t(*)", "Celular\t(*)", "Correo\t(*)", "Estado Civil\t(*)", "Fecha Ingreso", "Fecha Retiro", "Nombres",
-            "Perfil\t(*)", "Estado\t(*)", "Salario", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
+            "Perfil\t(*)", "Turno(*)", "Estado\t(*)", "Salario", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
         colModel: [
             {
                 "name": "idpersona",
@@ -203,6 +204,27 @@ jQuery(document).ready(function($)
                 index: "codPerfil",
                 editable: false,
                 edittype: "text"
+            },{
+                "name": "horario",
+                index: "horario",
+                editable: false,
+                edittype: "text",
+                formatter: "select",
+                stype: "select",
+                searchoptions: {
+                    defaultValue: 0,
+                    value: {
+                        0: "Diurno",
+                        1: "Nocturno"
+                    }
+                },
+                editoptions: {
+                    value: {
+                        0: "Diurno",
+                        1: "Nocturno"
+
+                    }
+                }
             },
             {
                 "name": "estado",
@@ -484,6 +506,7 @@ function llenarCampos() {
         celular.val(rd.celular);
         codPerfil.find('option:contains("' + rd.codPerfil + '")').prop("selected", true);
         sitio.find('option:contains("' + rd.sitio + '")').prop("selected", true);
+        horario.val(rd.horario);
         estado.val(rd.estado);
         usuariocliente.val(rd.usuariocliente);
         fechaIngreso.val(rd.fechaIngreso);
@@ -518,6 +541,7 @@ function guardar(oper) {
                 celular: celular.val(),
                 codPerfil: codPerfil.val(),
                 sitio: sitio.val(),
+                horario: horario.val(),
                 estado: estado.val(),
                 usuariocliente: usuariocliente.val(),
                 fechaIngreso: fechaIngreso.val(),

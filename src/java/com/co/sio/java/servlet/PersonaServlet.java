@@ -40,13 +40,10 @@ public class PersonaServlet extends HttpServlet {
             String sidx = request.getParameter("sidx");
             String sord = request.getParameter("sord");
 
-            String search = request.getParameter("_search");
-
-            String json;
             PersonaDao daopersona = new PersonaDao();
 
 
-            json = daopersona.getListPersonas(intpage, limit, sidx, sord);
+            String json = daopersona.getListPersonas(intpage, limit, sidx, sord);
 
             response.setContentType("application/json");
             response.setCharacterEncoding("utf-8");
@@ -138,6 +135,7 @@ public class PersonaServlet extends HttpServlet {
                     personaBeans.setSitiotrabajo(Integer.parseInt(request.getParameter("sitio")));
                     personaBeans.setFechaIngreso(request.getParameter("fechaIngreso"));
                     personaBeans.setFechaRetiro(request.getParameter("fechaRetiro"));
+                    personaBeans.setNocturno(Integer.parseInt(request.getParameter("horario")));
 
                     if (oper.charAt(0) == 'a') {
                         usuariobean.setLogin(personaBeans.getIdentificacion());
