@@ -1022,7 +1022,7 @@ public class RegistrosDao {
                     + " WHERE idusuario = ?"
                     + " AND anulado = 0  "
                     + " AND (fechainicio = to_date( ? , 'DD/MM/YYYY HH24:MI' ) "
-                    + " OR fechafin = to_date( ? , 'DD/MM/YYYY HH24:MI' ))";
+                    + " AND fechafin = to_date( ? , 'DD/MM/YYYY HH24:MI' ))";
 
             BD.conectar();
             BD.callableStatement(sql);
