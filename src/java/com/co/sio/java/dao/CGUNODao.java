@@ -50,7 +50,7 @@ public class CGUNODao {
                     + "       TO_CHAR (mn.fechainicio, 'YYYYMMDD') finicio,\n"
                     + "       TO_CHAR (mn.fechafin, 'YYYYMMDD') ffin, LPAD (mn.dias, 5, 0) dias,\n"
                     + "       '0000' hinicio, '0000' hfin, LPAD ('0', 13, 0) || '+' vlrtnl,\n"
-                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (mn.observacion, 40) obsv\n"
+                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (NVL(mn.observacion,' '), 40) obsv\n"
                     + "  FROM mnovedades mn INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad\n"
                     + "       INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario\n"
                     + " WHERE rn.tiponovedad = 1 AND mn.plano = 1 AND estado = 2 AND anulado = 0 AND idnomina = ?";
