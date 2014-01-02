@@ -450,12 +450,17 @@ function cargarMeses() {
     var disable = new Array();
     var cont = 0;
     for (var i = 1; i <= 12; i++) {
-        if (i < (mes - 1) || i > mes)
+        if (i < (mes - 1) || i > mes){
             disable[cont++] = i;
+        }
     }
-
+    if(mes === 1){
+        var index = disable.indexOf(12);
+        disable.splice(index, 1);
+    }
+    
     $('#mes').monthpicker({
-        startYear: ano,
+        startYear: ano-1,
         finalYear: ano,
         pattern: 'mmm/yyyy',
         monthNames: meses,
