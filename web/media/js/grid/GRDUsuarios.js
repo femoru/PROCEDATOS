@@ -527,7 +527,7 @@ function guardar(oper) {
             data: {
                 oper: oper,
                 id: myGrid.jqGrid('getGridParam', 'selrow'),
-                identificacion: identificacion.val(),
+                identificacion: identificacion.val().trim(),
                 pnombre: pnombre.val(),
                 snombre: snombre.val(),
                 papellido: papellido.val(),

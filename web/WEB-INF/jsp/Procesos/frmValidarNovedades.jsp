@@ -65,7 +65,7 @@
                         <label>Dias SIO <input id="diasSIO" name="diasSIO" maxlength="3" size="10" class="numero dias" style="text-align: center"></label>
                         <label>Dias EPS <input id="diasEPS" name="diasEPS" maxlength="3" size="10"  class="numero dias" style="text-align: center"></label>
                     </div><br><div>
-                        <label>Valor SIO 3 dias <input id="vlrSIO" name="vlrSIO" maxlength="11" class="numero"></label>
+                        <label>Valor dias SIO<input id="vlrSIO" name="vlrSIO" maxlength="11" class="numero"></label>
                         <label>Porcentaje EPS <input id="prc" name="prc" maxlength="5" size="6" class="numero"></label>
                         <label>Valor EPS 2/3<input id="vlrEPS" name="vlrEPS" maxlength="11" class="numero"></label>
                     </div>

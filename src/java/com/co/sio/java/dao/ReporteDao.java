@@ -889,6 +889,74 @@ public class ReporteDao {
             throw new Exception(e.getMessage());
         }
     }
+    
+        public String reporteFacturacion(String labores, String fini, String ffin) throws Exception {
+        String directorio = getClass().getClassLoader().getResource("../../media/reports/").getPath();
+
+        File archivo = new File(directorio + "FACTURACION.xls");
+        try {
+            String sql = "SELECT   desarea, desgrupo, deslabor, destipolabor, NVL(deshoraextra,' '),\n"
+                    + "         identificacion,\n"
+                    + "            pnombre\n"
+                    + "         || ' '\n"
+                    + "         || snombre\n"
+                    + "         || ' '\n"
+                    + "         || papellido\n"
+                    + "         || ' '\n"
+                    + "         || sapellido AS nombres,\n"
+                    + "         SUM (TRUNC (mr.tiempolabor / 60, 2)) AS cantidad\n"
+                    + "    FROM mregistros mr INNER JOIN plaborescontratos plc\n"
+                    + "         ON plc.idlaborcontrato = mr.idlaborcontrato\n"
+                    + "         INNER JOIN mpersonas mp ON mp.idpersona = mr.idusuario\n"
+                    + "         INNER JOIN rlabores rl ON rl.codlabor = plc.codlabor\n"
+                    + "         INNER JOIN rtipolabor rtl ON rtl.codtipolabor = plc.codtipolabor\n"
+                    + "         LEFT JOIN rhorasextras rhe ON rhe.codhoraextra = plc.codhoraextra\n"
+                    + "         INNER JOIN dareasgrupos dag ON dag.idgrupo = plc.idgrupo\n"
+                    + "         INNER JOIN dclientesareas dca ON dca.idarea = dag.idarea\n"
+                    + "         INNER JOIN rareas ra ON ra.codarea = dca.codarea\n"
+                    + "   WHERE (plc.codtipolabor = 1 OR plc.codtipolabor = 2)\n"
+                    + "     AND TRUNC(fechainicio) BETWEEN TO_DATE('%s','DD/MM/YYYY')\n"
+                    + "     AND TO_DATE('%s','DD/MM/YYYY') "
+                    + "     AND mr.anulado = 0\n"
+                    + "     AND plc.idlaborcontrato IN ( %s )\n"
+                    + "GROUP BY desarea,\n"
+                    + "         desgrupo,\n"
+                    + "         deslabor,\n"
+                    + "         destipolabor,\n"
+                    + "         deshoraextra,\n"
+                    + "         identificacion,\n"
+                    + "         pnombre,\n"
+                    + "         snombre,\n"
+                    + "         papellido,\n"
+                    + "         sapellido\n"
+                    + "ORDER BY desarea";
+            sql = String.format(sql, fini, ffin, labores);
+            BD.conectar();
+            BD.callableStatement(sql);
+            BD.consultar();
+            ResultSet rs = BD.obtenerConsulta();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int countCol = rsmd.getColumnCount();
+            ArrayList<JSONArray> arrays = new ArrayList<JSONArray>();
+            JSONArray jsona;
+            while (rs.next()) {
+                jsona = new JSONArray();
+                for (int i = 1; i <= countCol; i++) {
+                    jsona.put(rs.getString(i));
+                }
+                arrays.add(jsona);
+            }
+            BD.desconectar();
+            JSONArray cab = new JSONArray("[AREA,GRUPO,LABOR,TIPO,EXTRA,IDENTIFICACION,NOMBRES,CANTIDAD,PTM,PTD,HORAS]");
+            facturacion(arrays, cab, archivo);
+
+            return archivo.getName();
+
+
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
     private FileOutputStream facturacion(ArrayList<JSONArray> arrays, JSONArray cabeceras, File nomArchivo) {
 

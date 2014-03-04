@@ -127,7 +127,12 @@ public class ReportesServlet extends HttpServlet {
                 }
                 break;
             case 4:
-                nombre = reporteDao.reporteFacturacion(labores, idnomina);
+                if (clase == 0) {
+                    nombre = reporteDao.reporteFacturacion(labores, idnomina);
+                } else {
+                    nombre = reporteDao.reporteFacturacion(labores, fini, ffin);
+                }
+                
                 break;
         }
 

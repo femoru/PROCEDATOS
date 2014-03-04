@@ -12,9 +12,10 @@ $(document).ready(function($) {
         },
         text: false
     });
-    $("#expand").mouseenter(function() {
+    /*$("#expand").mouseenter(function() {
         $("#grid").toggle("slide", {direction: 'right'});
-    }).click(function() {
+    });*/
+    $("#expand").click(function() {
         $("#grid").toggle("slide", {direction: 'right'});
     });
 

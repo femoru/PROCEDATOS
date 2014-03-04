@@ -205,7 +205,7 @@ function fechaFin(event, ui) {
     calcularDias(number);
 }
 function calcularDias(dias) {
-    var number, porc;
+    var number, porc,diasS = 2;
     if (isNaN(dias))
         number = parseInt($('#dias').val());
     else
@@ -215,11 +215,11 @@ function calcularDias(dias) {
     } else {
         porc = 100;
     }
-    if (number > 3) {
-        $("#diasSIO").val(3);
-        $("#vlrSIO").val(3 * vlrDia);
-        $("#diasEPS").val((number - 3));
-        $("#vlrEPS").val(((number - 3) * ((vlrDia * porc) / 100)).toFixed(0));
+    if (number > diasS) {
+        $("#diasSIO").val(diasS);
+        $("#vlrSIO").val(diasS * vlrDia);
+        $("#diasEPS").val((number - diasS));
+        $("#vlrEPS").val(((number - diasS) * ((vlrDia * porc) / 100)).toFixed(0));
     } else {
         $("#diasSIO").val(number);
         $("#vlrSIO").val(number * vlrDia);
