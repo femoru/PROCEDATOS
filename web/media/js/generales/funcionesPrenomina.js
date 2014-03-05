@@ -28,7 +28,24 @@ $(document).ready(function($) {
     $("#registros").hide();
     $("#novedades").hide();
     $("#prenomina").hide();
+    $("#reversar").hide();
 
+    $("#reversar").click(function(){
+        if(validacion()){
+            paso1();
+            var confirmacion = $.ajax({
+                type: "POST",
+                async: false,
+                url: "PrenominaServlet",
+                data: {
+                    oper: "rrhh",
+                    dateIni: $("#dateIni").val(),
+                    dateFin: $("#dateFin").val()
+                }
+            }).responseText;
+            paso2();
+        }
+    });
     if (sessionStorage.length > 3) {
         $("#dateIni").val(sessionStorage.getItem('fI'));
         $("#dateFin").val(sessionStorage.getItem('fF'));
@@ -64,9 +81,7 @@ $(document).ready(function($) {
     $("#dateFin").datepicker();
 
     $("#cargar").hide();
-//    $("#cargar").click(function() {
-//        cargar();
-//    });
+
 
     $("#registros").click(function() {
         loadNewPage('ValidaLabores.htm');
@@ -104,6 +119,7 @@ function limpiarPantalla() {
     $("#registros").hide();
     $("#novedades").hide();
     $("#prenomina").hide();
+    $("#reversar").hide();
     var activos = $.find(".ball");
     var imag = $.find("li img");
     for (var i = 0; i < activos.length; i++) {
@@ -135,6 +151,7 @@ function estadoNomina() {
                     if (datosnomina.estado === 3) {
                         $("#progress3").attr("onclick", "paso3()");
                         $("#novedades").fadeIn(1500);
+                        $("#reversar").fadeIn(1500);
                     }
                     if (datosnomina.estado > 3) {
                         setTimeout(function() {
@@ -151,6 +168,7 @@ function estadoNomina() {
                             $("#progress2").find("li img").attr("src", OK);
                             $("#progress2").find("li img").fadeIn(1500);
                             $("#prenomina").fadeIn(1500);
+                            $("#reversar").fadeIn(1500);
                         }, 2000);
                     }
                 }
