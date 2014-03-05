@@ -49,7 +49,7 @@ public class ConnectionServlet extends HttpServlet {
             out.println("<br>");
             out.println("<label>Conexiones iniciales: " + ControllerPool.getDs().getInitialSize() + "</label>");
             out.println("<br>");
-            out.println("<label>Version Compilacion: " + "04/03/2014" + "</label>");
+            out.println("<label>Version Compilacion: " + "05/03/2014" + "</label>");
             out.println("</div>");
             out.println("</body>");
             out.println("</html>");

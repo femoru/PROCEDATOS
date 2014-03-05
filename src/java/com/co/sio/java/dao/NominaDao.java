@@ -8,6 +8,7 @@ import com.co.sio.java.JSON.JSONArray;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.NominaBeans;
+import com.co.sio.java.utils.Utils;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -51,36 +52,34 @@ public class NominaDao {
             } else {
                 jsonData.put("total", 0);
             }
-
-
-            sql = "SELECT idnomina, "
-                    + "          TO_CHAR (fechainicio, 'dd/mm/yyyy') "
-                    + "       || ' - ' "
-                    + "       || TO_CHAR (fechafin, 'dd/mm/yyyy') rango, "
-                    + "       estado "
-                    + "  FROM mnomina";
+            sql = "SELECT mn.idnomina,mn.idnomina,TO_CHAR (mn.fechainicio, 'dd/mm/yyyy')||' - '|| TO_CHAR (mn.fechafin, 'dd/mm/yyyy') rango,"
+                    + "    SUM("
+                    + "    CASE plc.codtipolabor"
+                    + "        when 1 then  TRUNC (mr.tiempolabor / 60, 2) * mr.valor"
+                    + "        when 2 then  TRUNC (mr.tiempolabor / 60, 2) * mr.valor"
+                    + "        when 3 then  TRUNC (mr.registroslabor , 2) * mr.valor"
+                    + "        when 4 then  TRUNC (mr.registroslabor , 2) * mr.valor"
+                    + "        when 5 then  TRUNC (mr.registroslabor , 2) * mr.valor"
+                    + "    END ) as ProduccionNomina,"
+                    + "    SUM("
+                    + "    CASE plc.codtipolabor"
+                    + "        when 1 then  TRUNC (mr.tiempolabor / 60, 2) * mr.costo"
+                    + "        when 2 then  TRUNC (mr.tiempolabor / 60, 2) * mr.costo"
+                    + "        when 3 then  TRUNC (mr.registroslabor , 2) * mr.costo"
+                    + "        when 4 then  TRUNC (mr.registroslabor , 2) * mr.costo"
+                    + "        when 5 then  TRUNC (mr.registroslabor , 2) * mr.costo"
+                    + "    END ) as CostoNomina"
+                    + "    ,MN.ESTADO "
+                    + "  FROM mregistros mr "
+                    + "  INNER JOIN plaborescontratos plc ON plc.idlaborcontrato = mr.idlaborcontrato"
+                    + "  INNER JOIN mnomina mn on mn.idnomina = mr.idnomina "
+                    + " WHERE anulado = 0 group by mn.idnomina,MN.FECHAINICIO,MN.FECHAFIN,MN.ESTADO order by MN.FECHAINICIO";
             BD.callableStatement(sql);
             BD.consultar();
 
             rs = BD.obtenerConsulta();
-            ResultSetMetaData rsmt = rs.getMetaData();
-
-            int countColumns = rsmt.getColumnCount();
-
-            JSONArray jsonRows = new JSONArray();
-            JSONObject jsono;
-            JSONArray jsona;
-            while (rs.next()) {
-                jsono = new JSONObject();
-                jsona = new JSONArray();
-
-                jsono.put("id", rs.getString(1));
-                for (int i = 1; i <= countColumns; i++) {
-                    jsona.put(rs.getString(i));
-                }
-                jsono.put("cell", jsona);
-                jsonRows.put(jsono);
-            }
+          
+            JSONArray jsonRows = Utils.llenarGrilla(rs);
             jsonData.put("rows", jsonRows);
 
             return jsonData;

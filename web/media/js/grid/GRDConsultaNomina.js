@@ -11,10 +11,12 @@ $(document).ready(function() {
         height: "240",
         datatype: "json",
         rownumbers: true,
-        colNames: ["id", "Rango de Fechas", "Estado"],
+        colNames: ["id", "Rango de Fechas","Produccion","Costo", "Estado"],
         colModel: [
             {index: "id", name: "id", hidden: true},
             {index: "rango", name: "rango", width: 200, align: 'center'},
+            {index: "Produccion", name: "Produccion", width: 120, align: 'right',formatter: 'currency'},
+            {index: "Costo", name: "Costo", width: 120, align: 'right',formatter: 'currency'},
             {index: "estado", name: "estado", width: 100, align: 'center',
                 formatter: 'select',
                 editoptions: {value: "0:Creada;1:Validada;2:Revision UENP;3:Revision RRHH;4:Cerrada"}}
