@@ -33,8 +33,10 @@
 
                 <div id="dateFilter" style=" width: 80%;">
                     <label>Fecha Inicial: </label><input type="text" id="dateIni" /> - 
-                    <label>Fecha Final: </label><input type="text" id="dateFin" /></div>
-
+                    <label>Fecha Final: </label><input type="text" id="dateFin" />
+                    <input type="button" id="reversar" value="Reversar"/>
+                </div>
+                    
                 <br>
                 <div style=" width: 80%;"><input type="button" id="cargar" value="Consultar Nomina"/></div>
                 <br>
