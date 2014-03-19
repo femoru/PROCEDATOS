@@ -13,7 +13,7 @@
         <property name="sessionForm" value="true"/>
     </bean>
     
-    <bean name="/index.htm" class="com.co.sio.java.controller.UsuarioController">
+    <bean name="/control.htm" class="com.co.sio.java.controller.UsuarioController">
         <property name="formView" value="Login"/>
         <property name="sessionForm" value="true"/>
     </bean>
@@ -204,6 +204,11 @@
     
     <bean name="/RegistroES.htm" class="com.co.sio.java.controller.PersonaController">
         <property name="formView" value="Procesos/frmRegistroES"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
+    
+    <bean name="/Asistencia.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmAsistencias"/>
         <property name="sessionForm" value="true"/>
     </bean>
     

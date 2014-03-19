@@ -81,4 +81,51 @@ public class LoginDao {
             BD.desconectar();
         }
     }
+
+
+    public Object[] registraAsistencia(int idUsuario) throws Exception{
+        try {
+            String mSql;
+            Object []resultado = new Object[2];
+
+            if(asistenciaAbierta(idUsuario)){
+                mSql = "UPDATE dasistencia SET fechasalida = SYSDATE WHERE idusuario = ? AND fechasalida is null";
+                resultado[1] = "out";
+            }else{
+                mSql = "INSERT INTO dasistencia (idusuario,fechaingreso) VALUES ( ? , SYSDATE)";
+                resultado[1] = "in";
+            }
+            BD.conectar();
+            BD.callableStatement(mSql);
+            BD.AsignarParametro(1, Integer.toString(idUsuario) , 2);
+            resultado[0] = BD.registrar();
+
+            return resultado;
+
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }finally{
+            BD.desconectar();
+        }
+    }
+            
+    public boolean asistenciaAbierta(int idUsuario) throws Exception{
+        try{
+            String mSql = "SELECT idasistencia,idusuario,fechaingreso,fechasalida,tiempolaborado "
+                    + "FROM dasistencia da WHERE idusuario = ? AND fechasalida is null AND TRUNC(fechaingreso) = TRUNC(SYSDATE)";
+            BD.conectar();
+            BD.callableStatement(mSql);
+            BD.AsignarParametro(1, Integer.toString(idUsuario) , 2);
+            BD.consultar();
+            ResultSet datoSql = BD.obtenerConsulta();
+
+            return  datoSql.next();
+            
+        }catch(Exception ex){
+            throw new Exception(ex.getMessage());
+        }finally{
+            BD.desconectar();
+        }
+            
+    }
 }

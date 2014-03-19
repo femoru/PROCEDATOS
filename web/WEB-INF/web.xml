@@ -7,7 +7,7 @@
     </context-param>
     <context-param>
         <param-name>log4jConfigLocation</param-name>
-        <param-value>/WEB-INF/lib/log4j.properties</param-value> 
+        <param-value>/WEB-INF/lib/log4j.properties</param-value>
     </context-param>
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
@@ -34,5 +34,5 @@
     </session-config>
     <welcome-file-list>
         <welcome-file>redirect.jsp</welcome-file>
-    </welcome-file-list>    
+    </welcome-file-list>
 </web-app>

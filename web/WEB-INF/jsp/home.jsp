@@ -39,7 +39,7 @@
         <%
             if (null == session.getAttribute("usuario")) {
 
-                response.sendRedirect("index.htm");
+                response.sendRedirect("control.htm");
             }
         %>
         <div id="container">
@@ -48,7 +48,7 @@
                     <p>Bienvenido,<%= session.getAttribute("usuario")%></p>
                     <a title="Cerrar Sesion" href="index.htm">Cerrar Sesi&oacute;n</a>?
                 </div> 
-                <a href="http://sio.com.co/"><img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                <a href="<%= this.getServletContext().getContextPath() %>"><img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
                 <div id="topMenu">
                     <ul id="menu" ><%= session.getAttribute("menu")%></ul>
                 </div>

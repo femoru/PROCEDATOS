@@ -36,9 +36,14 @@ public class RegistrosServlet extends HttpServlet {
             String identificacion = request.getParameter("login");
             if (identificacion != null) {
                 String clave = request.getParameter("clave");
-                UsuarioBeans usuarioBeans = new LoginDao().validarLogin(identificacion, clave);
+                LoginDao dao = new LoginDao();
+                UsuarioBeans usuarioBeans = dao.validarLogin(identificacion, clave);
                 JSONObject jsono = new JSONObject();
-
+                
+                if(!dao.asistenciaAbierta(usuarioBeans.getIdusuario())){
+                    usuarioBeans.setMensaje("El usuario no ha registrado la asistencia para dia en curso");
+                }
+                
                 if (usuarioBeans.getMensaje() == null) {
                     PersonaBeans pbean = (new PersonaDao()).consultar(usuarioBeans.getIdusuario());
 
@@ -132,7 +137,6 @@ public class RegistrosServlet extends HttpServlet {
             response.getWriter().close();
         } catch (Exception ex) {
             Logger.getLogger("Error").warn("Error al cargar", ex);
-            ex.printStackTrace();
         }
 
     }
@@ -411,7 +415,6 @@ public class RegistrosServlet extends HttpServlet {
             }
         } catch (Exception ex) {
             Logger.getLogger("Error").warn("Error", ex);
-            ex.printStackTrace();
         }
     }
 }

@@ -21,7 +21,7 @@
         <%
             if (null == session.getAttribute("usuario")) {
 
-                response.sendRedirect("index.htm");
+                response.sendRedirect("control.htm");
             }
         %>
 

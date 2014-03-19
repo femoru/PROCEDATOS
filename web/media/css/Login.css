@@ -45,7 +45,6 @@
     border-radius: 20px;
     font-weight: bold;
     text-shadow: 1px 1px 0px white;
-
     background: #e4f1f6; 
     background: -moz-linear-gradient(top, #e4f1f6 0%, #cfe6ef 100%);
     background: -webkit-linear-gradient(top, #e4f1f6 0%,#cfe6ef 100%); 
@@ -86,11 +85,14 @@
     top: 5px;
 }
 .titulo{
-    text-shadow: 0px 0px 0px #0040FF,-3px 1px 0px #000000;
+    text-shadow: 2px 2px 0.1em #AAAAFF;
     font-family: sans-serif;
-    font-size: 20px;
+    font-size: 30px;
     font-style: italic;
     text-align: center;   
+}
+.titulo p{
+    margin: 10px;
 }
 #container #footermain{
     position: absolute;
