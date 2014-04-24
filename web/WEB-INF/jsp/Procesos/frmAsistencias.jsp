@@ -37,7 +37,7 @@
     <body>
         <header>
             <div id="top">
-                <a href="<%= this.getServletContext().getContextPath() %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
             </div>
         </header>
         <section>

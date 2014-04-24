@@ -26,7 +26,8 @@ var myGrid = $('#grid1'),
         fechaIngreso = $("#fechaIngreso"),
         fechaRetiro = $("#fechaRetiro"),
         salario = $("#salario"),
-        /**/contrato = $([]).add(codPerfil).add(sitio).add(horario).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario);
+        auxilioT = $("#auxilioT"),
+        /**/contrato = $([]).add(codPerfil).add(sitio).add(horario).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario).add(auxilioT);
 
 var cerrar = {text: "Cancelar", click: function() {
         $(this).dialog("close");
@@ -83,7 +84,7 @@ jQuery(document).ready(function($)
         datatype: "json",
         colNames: ["Id\t(*)", "Identificación\t(*)", "Primer Nombre\t(*)", "Segundo Nombre", "Primer Apellido\t(*)", "Segundo Apellido",
             "Fecha Nacimiento\t(*)", "Sexo\t(*)", "Direccion\t(*)", "Telefono\t(*)", "Celular\t(*)", "Correo\t(*)", "Estado Civil\t(*)", "Fecha Ingreso", "Fecha Retiro", "Nombres",
-            "Perfil\t(*)", "Turno(*)", "Estado\t(*)", "Salario", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
+            "Perfil\t(*)", "Turno(*)", "Estado\t(*)", "Salario","Aux Transporte", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
         colModel: [
             {
                 "name": "idpersona",
@@ -275,6 +276,31 @@ jQuery(document).ready(function($)
                 index: "salario",
                 editable: true,
                 edittype: "text",
+                hidden: true
+            },
+            {
+                name: "auxilioT",
+                index: "auxilioT",
+                editable: true,
+                align: "center",
+                edittype: "select",
+                formatter: "select",
+                stype: "select",
+                searchoptions: {
+                    defaultValue: 1,
+                    value: {
+                        1: "Activo",
+                        0: "Inactivo"
+
+                    }
+                },
+                editoptions: {
+                    value: {
+                        1: "Activo",
+                        0: "Inactivo"
+
+                    }
+                },
                 hidden: true
             },
             {
@@ -512,6 +538,7 @@ function llenarCampos() {
         fechaIngreso.val(rd.fechaIngreso);
         fechaRetiro.val(rd.fechaRetiro);
         salario.val(rd.salario);
+        auxilioT.val(rd.auxilioT);
         return true;
     } else {
         return false;
@@ -546,7 +573,8 @@ function guardar(oper) {
                 usuariocliente: usuariocliente.val(),
                 fechaIngreso: fechaIngreso.val(),
                 fechaRetiro: fechaRetiro.val(),
-                salario: salario.val()
+                salario: salario.val(),
+                auxilioT: auxilioT.val()                
             },
             success: function(data) {
                 guarda = true;

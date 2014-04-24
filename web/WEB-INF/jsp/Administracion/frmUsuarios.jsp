@@ -112,6 +112,12 @@
                             <td><input id="fechaRetiro" class="datepicker" placeholder="Fecha Retiro"/></td>
                             <td><input id="salario"  class="numero requerido" placeholder="Salario" maxlength="9"/></td>
                         </tr>
+                        <tr>
+                            <td>Aplica Aux Transporte </td>
+                        </tr>
+                        <tr>
+                            <td><select id="auxilioT" ><option value="1">SI</option><option value="0">NO</option></select></td>
+                        </tr>
                     </table>
 
                 </div>

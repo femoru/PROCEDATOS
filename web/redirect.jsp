@@ -44,7 +44,7 @@ servlet but should be the only JSP outside of WEB-INF.
     <body>
         <header>
             <div id="top">
-                <a href="<%= this.getServletContext().getContextPath() %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
             </div>
         </header>
         <section>
@@ -52,10 +52,10 @@ servlet but should be the only JSP outside of WEB-INF.
                 <a class="button" href="Asistencia.htm"><img src="media/images/folder-clock-icon.png"/> Asistencia</a>
             </article>
             <article>
-                <a class="button" href="control.htm"><img src="media/images/folder-public-icon.png"/> Control</a>
+                <a class="button" href="control.htm"><img src="media/images/folder-public-icon.png"/> Registros</a>
             </article>
             <article>
-                <a class="button" href="RegistroES.htm"><img src="media/images/contacts-icon.png"/> Registrar</a>
+                <a class="button" href="RegistroES.htm"><img src="media/images/contacts-icon.png"/> Labores</a>
             </article>
         </section>
         <footer>

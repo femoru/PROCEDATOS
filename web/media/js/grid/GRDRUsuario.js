@@ -26,30 +26,23 @@ myGrid.jqGrid({
     loadonce: true,
     datatype: "json",
     rownumbers: true,
-    colNames: ['Identificacion', 'Nombre', 'Estado', 'Dias con registros', 'Fecha de Ingreso', 'Fecha de Retiro'],
+    colNames: ['Identificacion', 'Nombre', 'Estado', 'Dias con Registros', 'Fecha de Ingreso', 'Fecha de Retiro','Turno', 'Sitio de Trabajo','Auxilio Transporte'],
     colModel: [
         {name: 'identificacion', index: 'identificacion', width: 100},
         {name: 'nombre', index: 'nombre', width: 200},
         {name: 'estado', index: 'estado', width: 100, align: "center", edittype: "select", formatter: "select", stype: "select",
-            searchoptions: {
-                defaultValue: 1,
-                value: {
-                    1: "ACTIVO",
-                    0: "INACTIVO"
-
-                }
-            },
-            editoptions: {
-                value: {
-                    1: "ACTIVO",
-                    0: "INACTIVO"
-
-                }
-            }
+            searchoptions: {defaultValue: 1, value: { 1: "ACTIVO", 0: "INACTIVO"}},
+            editoptions: {value: {1: "ACTIVO",0: "INACTIVO"}}
         },
-        {name: 'diasRegistros', index: 'diasRegistros', width: 100, sorttype: 'number', searchoptions: {sopt: ['eq', 'lt', 'le', 'cn', 'gt', 'ge', 'nc']}},
-        {name: 'fechaIngreso', index: 'fechaRetiro', formatter: 'date', formatoptions: {srcformat: 'd/m/y', newformat: 'd/m/Y'}, sorttype: 'date', width: 100},
-        {name: 'fechaRetiro', index: 'fechaRetiro', formatter: 'date', formatoptions: {srcformat: 'd/m/y', newformat: 'd/m/Y'}, sorttype: 'date', width: 100}
+        {name: 'diasRegistros', index: 'diasRegistros', align: "center", width: 60, sorttype: 'number', 
+            searchoptions: {sopt: ['eq', 'lt', 'le', 'cn', 'gt', 'ge', 'nc']}},
+        {name: 'fechaIngreso', index: 'fechaIngreso', formatter: 'date',align: "center", 
+            formatoptions: {srcformat: 'd/m/y', newformat: 'd/m/Y'}, sorttype: 'date', width: 60},
+        {name: 'fechaRetiro', index: 'fechaRetiro', formatter: 'date', align: "center", 
+            formatoptions: {srcformat: 'd/m/y', newformat: 'd/m/Y'}, sorttype: 'date', width: 60},
+        {name: 'nocturno', index: 'nocturno', align: "center", width: 100},
+        {name: 'sitio', index: 'sitio', align: "center", width: 100},
+        {name: 'auxilio', index: 'auxilio', align: "center", width: 100}
     ],
     pager: "#pagerAux",
     multiSort: true,

@@ -37,7 +37,7 @@ public class UsuarioController extends SimpleFormController {
                 return new ModelAndView("Login", "frmlogin", usuarioBeans);
             }
         } else {
-            return new ModelAndView("redirect:index.htm");
+            return new ModelAndView("redirect:control.htm");
         }
     }
 }

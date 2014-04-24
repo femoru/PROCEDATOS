@@ -341,8 +341,11 @@ public class PrenominaDao {
 
                 if (col.equals("NOMBRES")) {
                     jsono.put("width", "200");
-
-                } else {
+                    
+                }else if (col.contains("FECHA")){
+                    jsono.put("width", "80");
+                    jsono.put("align", "center");
+                }else {
                     jsono.put("width", "80");
                     jsono.put("align", "right");
                     jsono.put("formatter", "currency");

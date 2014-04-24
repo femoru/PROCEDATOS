@@ -46,9 +46,9 @@
             <div id="top">
                 <div id="topContact">
                     <p>Bienvenido,<%= session.getAttribute("usuario")%></p>
-                    <a title="Cerrar Sesion" href="index.htm">Cerrar Sesi&oacute;n</a>?
+                    <a title="Cerrar Sesion" href="control.htm">Cerrar Sesi&oacute;n</a>?
                 </div> 
-                <a href="<%= this.getServletContext().getContextPath() %>"><img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                    <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
                 <div id="topMenu">
                     <ul id="menu" ><%= session.getAttribute("menu")%></ul>
                 </div>

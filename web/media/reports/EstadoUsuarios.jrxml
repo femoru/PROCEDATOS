@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Estado Usuarios" pageWidth="612" pageHeight="792" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1fa506a4-8a47-45db-bb46-ed324cea272a">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Estado Usuarios" pageWidth="864" pageHeight="612" orientation="Landscape" columnWidth="864" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isIgnorePagination="true" uuid="1fa506a4-8a47-45db-bb46-ed324cea272a">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="39"/>
 	<property name="ireport.y" value="0"/>
 	<queryString>
 		<![CDATA[SELECT   mp.idpersona, identificacion,
-            papellido
-         || ' '
-         || sapellido
-         || ' '
-         || pnombre
-         || ' '
-         || snombre AS nombreS,
-         DECODE (cu.activo, 1, 'ACTIVO', 'INACTIVO') AS estado,
-         COUNT (DISTINCT (TRUNC (fechainicio))) trabajados,
-         NVL (TO_CHAR (fechaingreso, 'DD/MM/YYYY'), '') ingreso,
-         NVL (TO_CHAR (fecharetiro, 'DD/MM/YYYY'), '') retiro
-    FROM mpersonas mp INNER JOIN cusuarios cu
-         ON cu.idusuario = mp.idpersona AND cu.codperfil = 4
-         LEFT OUTER JOIN mregistros mr
-         ON mr.idusuario = mp.idpersona
-       AND mr.anulado = 0
-       AND TO_CHAR (fechainicio, 'mm/yyyy') = '10/2013'
-GROUP BY mp.idpersona,
-         identificacion,
-         papellido,
-         sapellido,
-         pnombre,
-         snombre,
-         activo,
-         fechaingreso,
-         fecharetiro
-ORDER BY activo DESC, TRIM (papellido)]]>
+	papellido
+          || ' '
+          || sapellido
+          || ' '
+          || pnombre
+          || ' '
+          || snombre AS nombres,
+          DECODE (cu.activo, 1, 'ACTIVO', 'INACTIVO') AS estado,
+          COUNT (DISTINCT (TRUNC (fechainicio))) trabajados,
+          NVL (TO_CHAR(fechaingreso,'DD/MM/YYYY'), ' ') ingreso,
+          NVL (TO_CHAR(fecharetiro,'DD/MM/YYYY'), 'VIGENTE') retiro,
+          decode(nocturno,1,'NOCTURNO','DIURNO') nocturno,RST.DESSITIO,
+          decode(auxilioT,1,'APLICA','NO APLICA') auxilio 
+     FROM mpersonas mp INNER JOIN cusuarios cu
+          ON cu.idusuario = mp.idpersona AND cu.codperfil = 4
+          LEFT OUTER JOIN mregistros mr
+          ON mr.idusuario = mp.idpersona AND mr.anulado = 0 
+       	AND TO_CHAR (fechainicio, 'mm/yyyy') = '10/2013'
+          INNER JOIN RSITIOTRABAJO rst 
+          ON MP.SITIOTRABAJO = RST.CODSITIO 
+ GROUP BY mp.idpersona,
+          identificacion,
+          papellido,
+          sapellido,
+          pnombre,
+          snombre,
+          activo,
+          fechaingreso,
+          fecharetiro, 
+          nocturno,
+          RST.DESSITIO, 
+          auxilioT
+ ORDER BY activo DESC, TRIM (papellido)]]>
 	</queryString>
 	<field name="IDPERSONA" class="java.math.BigDecimal"/>
 	<field name="IDENTIFICACION" class="java.lang.String"/>
@@ -40,101 +46,140 @@ ORDER BY activo DESC, TRIM (papellido)]]>
 	<field name="TRABAJADOS" class="java.math.BigDecimal"/>
 	<field name="INGRESO" class="java.lang.String"/>
 	<field name="RETIRO" class="java.lang.String"/>
+	<field name="NOCTURNO" class="java.lang.String"/>
+	<field name="DESSITIO" class="java.lang.String"/>
+	<field name="AUXILIO" class="java.lang.String"/>
 	<title>
 		<band height="60" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="74a71b24-cb61-4e63-974d-23405aeb9520" x="0" y="40" width="100" height="20"/>
+				<reportElement x="0" y="40" width="100" height="20" uuid="74a71b24-cb61-4e63-974d-23405aeb9520"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[IDENTIFICACION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="82c1b319-5789-46c0-be88-b53eee38bd83" x="352" y="40" width="60" height="20"/>
+				<reportElement x="352" y="40" width="60" height="20" uuid="82c1b319-5789-46c0-be88-b53eee38bd83"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[ESTADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="fcd3f1be-7ed7-4a03-9b70-1a96c580bca7" x="100" y="40" width="252" height="20"/>
+				<reportElement x="100" y="40" width="252" height="20" uuid="fcd3f1be-7ed7-4a03-9b70-1a96c580bca7"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="da7a2019-464c-402b-bff2-d87949e1e1ac" x="0" y="0" width="612" height="20"/>
+				<reportElement x="0" y="0" width="864" height="20" uuid="da7a2019-464c-402b-bff2-d87949e1e1ac"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<text><![CDATA[SOLUCIONES INTEGRALES DE OFICINA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7697e478-f3a6-42c9-b38f-4c7f870ddf9f" x="0" y="20" width="612" height="20"/>
+				<reportElement x="0" y="20" width="864" height="20" uuid="7697e478-f3a6-42c9-b38f-4c7f870ddf9f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[Reporte de Estado de Usuarios]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a71a021f-1fd3-462e-9619-4fa6991647d5" x="412" y="40" width="80" height="20"/>
+				<reportElement x="412" y="40" width="70" height="20" uuid="a71a021f-1fd3-462e-9619-4fa6991647d5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TRABAJADOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2feb6252-7000-4847-aa5e-82fefc9a20e7" x="492" y="40" width="60" height="20"/>
+				<reportElement x="482" y="40" width="60" height="20" uuid="2feb6252-7000-4847-aa5e-82fefc9a20e7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[INGRESO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d19db9ac-bee2-434c-9614-e974e8255ea2" x="552" y="40" width="60" height="20"/>
+				<reportElement x="542" y="40" width="60" height="20" uuid="d19db9ac-bee2-434c-9614-e974e8255ea2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[RETIRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="757" y="40" width="107" height="20" uuid="92c4cec3-1057-405b-8987-5065b5ec494c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SITIO DE TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="602" y="40" width="75" height="20" uuid="242ba872-d6bb-466d-a1c6-b81433d34912"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="677" y="40" width="80" height="20" uuid="3eacf822-ea4e-4f35-abcf-b501b1016810"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUXILIO]]></text>
 			</staticText>
 		</band>
 	</title>
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement uuid="45f821ed-c709-4a36-836d-400a92c8ab11" x="0" y="0" width="100" height="15"/>
+				<reportElement x="0" y="0" width="100" height="15" uuid="45f821ed-c709-4a36-836d-400a92c8ab11"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IDENTIFICACION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6e3e79b0-27a2-43dd-a67d-8f77447471b6" x="100" y="0" width="252" height="15"/>
+				<reportElement x="100" y="0" width="252" height="15" uuid="6e3e79b0-27a2-43dd-a67d-8f77447471b6"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NOMBRES}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="fee66b26-48aa-43aa-ab6c-9e311ba0cafd" x="352" y="0" width="60" height="15"/>
+				<reportElement x="352" y="0" width="60" height="15" uuid="fee66b26-48aa-43aa-ab6c-9e311ba0cafd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ESTADO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="178370e2-c8ae-469e-947b-f1cdf78d41c6" x="412" y="0" width="80" height="15"/>
+				<reportElement x="412" y="0" width="70" height="15" uuid="178370e2-c8ae-469e-947b-f1cdf78d41c6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{TRABAJADOS}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="de891941-faa7-4b22-bc92-f499183d8118" x="492" y="0" width="60" height="15"/>
+				<reportElement x="482" y="0" width="60" height="15" uuid="de891941-faa7-4b22-bc92-f499183d8118"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{INGRESO}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f4b96de1-5ad1-4a60-9b5b-6c42d0722a55" x="552" y="0" width="60" height="15"/>
+				<reportElement x="542" y="0" width="60" height="15" uuid="f4b96de1-5ad1-4a60-9b5b-6c42d0722a55"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{RETIRO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="757" y="0" width="107" height="15" uuid="96294f5c-5cb6-41d5-806a-b7efd3f956df"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DESSITIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="602" y="0" width="75" height="15" uuid="4b713d81-d09a-4de6-8d41-d9421dd197ef"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NOCTURNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="677" y="0" width="80" height="15" uuid="9272cdcd-a9e6-49a0-8781-fb4145781ee7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{AUXILIO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

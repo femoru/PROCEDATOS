@@ -66,7 +66,7 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("home.htm");
                 } else {
                     Logger.getLogger("ACCESO").info(MessageFormat.format("Fallo al iniciar sesion: \"{0}\" - \"{1}\"", request.getParameter("login"), usuarioBeans.getMensaje()));
-                    request.getRequestDispatcher("index.htm").forward(request, response);
+                    request.getRequestDispatcher("control.htm").forward(request, response);
                 }
             }
         } catch (Exception ex) {

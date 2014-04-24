@@ -157,8 +157,8 @@ public class PersonaDao {
         try {
             BD.conectar();
             String sql = "INSERT INTO mpersonas (identificacion, pnombre, snombre, papellido, sapellido, "
-                    + "fechanacimiento, sexo, direccion, telefono, celular, email, codestadocivil, salario, idusuario, sitiotrabajo,fechaingreso,fecharetiro,nocturno) "
-                    + "VALUES (?,?,?,?,?,to_date(?, 'dd/MM/yyyy'),?,?,?,?,?,?,?,?,?,to_date(?, 'dd/MM/yyyy'),to_date(?, 'dd/MM/yyyy') ,? )";
+                    + "fechanacimiento, sexo, direccion, telefono, celular, email, codestadocivil, salario, idusuario, sitiotrabajo,fechaingreso,fecharetiro,nocturno,auxilioT) "
+                    + "VALUES (?,?,?,?,?,to_date(?, 'dd/MM/yyyy'),?,?,?,?,?,?,?,?,?,to_date(?, 'dd/MM/yyyy'),to_date(?, 'dd/MM/yyyy') ,?,? )";
             BD.callableStatement(sql);
             BD.AsignarParametro(1, persona.getIdentificacion(), 1);
             BD.AsignarParametro(2, persona.getpNombre().toUpperCase(), 1);
@@ -178,6 +178,7 @@ public class PersonaDao {
             BD.AsignarParametro(16, persona.getFechaIngreso(), 1);
             BD.AsignarParametro(17, persona.getFechaRetiro(), 1);
             BD.AsignarParametro(18, Integer.toString(persona.getNocturno()), 2);
+            BD.AsignarParametro(19, Integer.toString(persona.getAplicaAuxilio()), 2);
             return BD.registrar();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -207,7 +208,8 @@ public class PersonaDao {
                     + "sitiotrabajo = ?,"
                     + "fechaingreso = TO_DATE(?,'dd/mm/yyyy'), "
                     + "fecharetiro = TO_DATE(?,'dd/mm/yyyy'), "
-                    + "nocturno = ? "
+                    + "nocturno = ?, "
+                    + "auxilioT = ? "
                     + "WHERE idpersona = ? ";
             BD.conectar();
             BD.callableStatement(sql);
@@ -229,7 +231,8 @@ public class PersonaDao {
             BD.AsignarParametro(16, persona.getFechaIngreso(), 1);
             BD.AsignarParametro(17, persona.getFechaRetiro(), 1);
             BD.AsignarParametro(18, Integer.toString(persona.getNocturno()), 2);
-            BD.AsignarParametro(19, Integer.toString(persona.getIdpersona()), 2);
+            BD.AsignarParametro(19, Integer.toString(persona.getAplicaAuxilio()), 2);
+            BD.AsignarParametro(20, Integer.toString(persona.getIdpersona()), 2);
 
             return BD.registrar();
         } catch (Exception e) {
@@ -316,7 +319,7 @@ public class PersonaDao {
                     + "mp.direccion, mp.telefono, mp.celular, mp.email, rce.desestadocivil, "
                     + "to_char(fechaingreso,'dd/mm/yyyy') fechaingreso, "
                     + "to_char(fecharetiro,'dd/mm/yyyy') fecharetiro, mp.nocturno, cu.activo, "
-                    + "cper.desperfil, salario, cu.usuariosos, rst.dessitio "
+                    + "cper.desperfil, salario, auxiliot, cu.usuariosos, rst.dessitio "
                     + "FROM mpersonas mp "
                     + "INNER JOIN cusuarios cu ON mp.idpersona =cu.idusuario "
                     + "INNER JOIN cperfiles cper ON cu.codperfil = cper.codperfil "
@@ -376,7 +379,7 @@ public class PersonaDao {
                 json = json + ",\"" + datoSql.getInt("nocturno") + "\"";
                 json = json + ",\"" + datoSql.getInt("activo") + "\"";
                 json = json + ",\"" + datoSql.getInt("salario") + "\"";
-
+                json = json + ",\"" + datoSql.getInt("auxilioT") + "\"";
                 usuario = datoSql.getString("usuariosos") == null ? "" : datoSql.getString("usuariosos") + " ";
 
                 json = json + ",\"" + usuario + "\"";

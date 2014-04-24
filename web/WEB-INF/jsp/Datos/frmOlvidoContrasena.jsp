@@ -39,7 +39,7 @@
         <div id="top">
             <a href="http://sio.com.co/"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
             <div id="topContact">
-                <a title="Cerrar Sesion" href="index.htm">Regresar a login.</a>
+                <a title="Cerrar Sesion" href="control.htm">Regresar a login.</a>
             </div>
         </div>
         <br>

@@ -518,16 +518,22 @@ public class NovedadesServlet extends HttpServlet {
 
     private void adicional(NovedadBeans beans) throws Exception {
         Calendar calMes = Calendar.getInstance();
-
         Calendar inicio = Calendar.getInstance();
         Calendar fin = Calendar.getInstance();
+        calMes.clear();
+        inicio.clear();
+        fin.clear();
+        
         inicio.setTime(sdf.parse(beans.getFechainicio()));
         fin.setTime(sdf.parse(beans.getFechafin()));
         calMes.setTime(sdf.parse(beans.getFechainicio()));
         if (calMes.getActualMaximum(Calendar.DATE) == 31) {
             calMes.set(Calendar.DATE, 31);
-            if (calMes.after(inicio) && (calMes.before(fin) || calMes.equals(fin))) {
+            
+            if ((calMes.after(inicio)  || calMes.get(Calendar.DATE) == inicio.get(Calendar.DATE)) && 
+                (calMes.before(fin) || calMes.get(Calendar.DATE) == inicio.get(Calendar.DATE) )) {
                 beans.setAdicional(1);
+                System.out.println("Ingresa Adicional");
             } else {
                 beans.setAdicional(0);
             }

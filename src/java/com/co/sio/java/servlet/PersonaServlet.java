@@ -136,6 +136,7 @@ public class PersonaServlet extends HttpServlet {
                     personaBeans.setFechaIngreso(request.getParameter("fechaIngreso"));
                     personaBeans.setFechaRetiro(request.getParameter("fechaRetiro"));
                     personaBeans.setNocturno(Integer.parseInt(request.getParameter("horario")));
+                    personaBeans.setAplicaAuxilio(Integer.parseInt(request.getParameter("auxilioT")));
 
                     if (oper.charAt(0) == 'a') {
                         usuariobean.setLogin(personaBeans.getIdentificacion());
