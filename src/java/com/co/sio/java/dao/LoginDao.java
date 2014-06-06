@@ -89,7 +89,8 @@ public class LoginDao {
             Object []resultado = new Object[2];
 
             if(asistenciaAbierta(idUsuario)){
-                mSql = "UPDATE dasistencia SET fechasalida = SYSDATE WHERE idusuario = ? AND fechasalida is null";
+                mSql = "UPDATE dasistencia SET fechasalida = SYSDATE WHERE idusuario = ? "
+                        + " AND fechasalida is null AND TRUNC(fechaingreso) = TRUNC(SYSDATE)";
                 resultado[1] = "out";
             }else{
                 mSql = "INSERT INTO dasistencia (idusuario,fechaingreso) VALUES ( ? , SYSDATE)";
@@ -111,8 +112,17 @@ public class LoginDao {
             
     public boolean asistenciaAbierta(int idUsuario) throws Exception{
         try{
-            String mSql = "SELECT idasistencia,idusuario,fechaingreso,fechasalida,tiempolaborado "
-                    + "FROM dasistencia da WHERE idusuario = ? AND fechasalida is null AND TRUNC(fechaingreso) = TRUNC(SYSDATE)";
+            String mSql="UPDATE dasistencia SET fechasalida = TRUNC(fechaingreso) + 1 "
+                    + "WHERE idusuario = ? AND fechasalida is null "
+                    + "AND TRUNC(fechaingreso) <> TRUNC(SYSDATE)";
+             BD.conectar();
+            BD.callableStatement(mSql);
+            BD.AsignarParametro(1, Integer.toString(idUsuario) , 2);
+            BD.registrar();
+                    
+                    
+            mSql = "SELECT idasistencia,idusuario,fechaingreso,fechasalida,tiempolaborado "
+            + "FROM dasistencia da WHERE idusuario = ? AND fechasalida is null AND TRUNC(fechaingreso) = TRUNC(SYSDATE)";
             BD.conectar();
             BD.callableStatement(mSql);
             BD.AsignarParametro(1, Integer.toString(idUsuario) , 2);
