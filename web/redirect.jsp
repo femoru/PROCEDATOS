@@ -6,6 +6,7 @@ This JSP is here to provide a redirect to the dispatcher
 servlet but should be the only JSP outside of WEB-INF.
 --%>
 <%@page import="com.co.sio.java.db.ControllerPool"%>
+
 <%  ControllerPool.getDs(); //response.sendRedirect("control.htm");%>
 <!DOCTYPE html>
 <html>
@@ -39,12 +40,42 @@ servlet but should be the only JSP outside of WEB-INF.
                 vertical-align: middle;
                 font-size: 1.2em;
             }
+            #reloj{
+                display: block;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                color: white;
+                font-size: 1.2em;
+            }
         </style>
+        <script src="media/js/jquery/jquery-1.9.1.js" ></script>
+        <script language="JavaScript">
+            
+            function mueveReloj(){
+
+                var hora;
+                $.ajax({
+                    url:'ArchivosPlanosServlet',
+                    type:'get',
+                    success:function(data){
+                        hora = "Hora servidor : " + data.fecha + " " + data.hora;
+                        $('#reloj').text(hora);
+                    },error:function(data){
+                        console.log(JSON.stringify(data));
+                    }
+                });
+                setTimeout("mueveReloj()",1000);
+            }
+        </script> 
     </head>
-    <body>
+    <body onload="mueveReloj();">
         <header>
             <div id="top">
                 <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                <div style="float: right">
+                    <span id="reloj"></span>
+                </div>
             </div>
         </header>
         <section>

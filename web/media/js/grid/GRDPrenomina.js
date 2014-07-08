@@ -114,12 +114,13 @@ jQuery(document).ready(function($) {
         position: "first",
         id: "btn_terminar",
         onClickButton: function() {
-            terminarMod(0, datosnomina.id);
+            terminarMod(0);
 
             if (confirm('¿Esta seguro que desea finalizar la revision?')) {
                 $.ajax({
                     type: 'POST',
                     url: 'PrenominaServlet',
+                    async:false,
                     data: {
                         oper: 'updNomina',
                         nomina: sessionStorage.getItem('nm'),
@@ -170,7 +171,7 @@ jQuery(document).ready(function($) {
      */
 });
 
-function terminarMod(u, n) {
+function terminarMod(u) {
     $.ajax({
         url: "PrenominaServlet",
         type: "POST",
@@ -178,7 +179,9 @@ function terminarMod(u, n) {
         data: {
             oper: "modificar",
             usuario: u,
-            nomina: n
+            nomina: sessionStorage.getItem('nm'),
+            finicial:sessionStorage.getItem('fI'),
+            ffinal:sessionStorage.getItem('fF')
         },
         success: function(data) {
             console.log("complete");

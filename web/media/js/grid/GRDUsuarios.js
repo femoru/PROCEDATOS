@@ -214,7 +214,7 @@ jQuery(document).ready(function($)
                 stype: "select",
                 searchoptions: {
                     defaultValue: 0,
-                    value: {
+                   value: {
                         0: "Diurno",
                         1: "Nocturno"
                     }

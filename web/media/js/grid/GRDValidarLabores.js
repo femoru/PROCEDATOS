@@ -514,8 +514,7 @@ $(document).ready(function($) {
             });
             jQuery('#gridLbr').setColProp('registros', {
                 editrules: {
-                    number: true,
-                    required: true
+                    number: true
                 }
             });
             jQuery('#gridLbr').setColProp('dato', {

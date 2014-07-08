@@ -4,6 +4,7 @@
  */
 package com.co.sio.java.servlet;
 
+import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.dao.ArchivoGuiaDao;
 import com.co.sio.java.dao.ArchivosPlanosDao;
 import com.co.sio.java.dao.ContratosDao;
@@ -40,6 +41,15 @@ public class ArchivosPlanosServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try{
+            JSONObject json = new ArchivosPlanosDao().consultarHora();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            response.getWriter().print(json);
+            response.getWriter().close();
+        } catch (Exception ex) {
+            Logger.getLogger(UsuarioServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

@@ -4,9 +4,12 @@
  */
 package com.co.sio.java.dao;
 
+import com.co.sio.java.JSON.JSONException;
+import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.ArchivoPlanoBeans;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author fmoctezuma
@@ -121,4 +124,26 @@ public class ArchivosPlanosDao {
             BD.desconectar();
         }
     }
+    
+    public JSONObject consultarHora(){
+        try {
+            String sql = "SELECT TO_CHAR(SYSDATE,'dd/mm/yyyy') fecha,TO_CHAR(SYSDATE,'hh24:mi:ss') hora from DUAL";
+                BD.conectar();
+                BD.callableStatement(sql);
+                BD.consultar();
+                ResultSet datoSql = BD.obtenerConsulta();
+                JSONObject json = new JSONObject();
+                if (datoSql.next()) {
+                    json.put("fecha", datoSql.getString("fecha"));
+                    json.put("hora", datoSql.getString("hora"));
+                }
+                return json; 
+        } catch (SQLException ex) {
+            return null;
+        } catch (JSONException ex) {
+            return null;
+        } finally {
+            BD.desconectar();
+        }
+    } 
 }
