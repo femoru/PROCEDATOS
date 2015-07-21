@@ -25,7 +25,7 @@ public class ControllerPool {
     private static BasicDataSource ds;
     private SQLException exception;
     private boolean oldStateOfAutoCommit = false;
-    private int oldStateOfTransactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
+    private final int oldStateOfTransactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
 
     static {//Genera el pool de conexiones solo una vez
         ds = null;
@@ -77,12 +77,6 @@ public class ControllerPool {
             }
 
             return true;
-
-        } catch (SQLException ex) {
-
-            this.myError = "SQLException " + ex.getMessage();
-            logger.log(Level.SEVERE, "loginAction", ex);
-            return false;
 
         } catch (Exception ex) {
 
@@ -230,11 +224,13 @@ public class ControllerPool {
      * @param parametro posicion del parametro dentro del SQL
      * @param valor valor del parametro
      * @param tipo identifica el tipo de parametro a asignar
-     * @param 1 String
-     * @param 2 int
-     * @param 3 Date formato "yyyy-MM-dd"
-     * @param 4 Date formato "dd/MM/yyyy"
-     * @param 5 double
+     * <br/> 1 String
+     * <br/> 2 int
+     * <br/> 3 Date formato "yyyy-MM-dd"
+     * <br/> 4 Date formato "dd/MM/yyyy"
+     * <br/> 5 double
+     * @throws java.sql.SQLException
+     * @throws java.text.ParseException
      */
     public void AsignarParametro(int parametro, String valor, int tipo) throws SQLException, ParseException {
 
