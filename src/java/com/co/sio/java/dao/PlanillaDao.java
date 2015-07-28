@@ -509,16 +509,14 @@ public class PlanillaDao {
             mensajeError += mensajeError.length() > 0 ? "\n" : "";
             mensajeError += "Hoja: " + hoja.getSheetName() + "\n";
 
-            mensajeError += String.join("\t| ",
-                    "LINEA ",
-                    "DATO\t\t\t\t\t\t",
-                    "CAUSA\n");
+            mensajeError += "LINEA " + "\t| "
+                    + "DATO\t\t\t\t\t\t" + "\t| "
+                    + "CAUSA\n";
 
             Date finicio = sdf.parse(hoja.getRow(8).getCell(10).toString());
             Date ffin = sdf.parse(hoja.getRow(8).getCell(13).toString());
-            String observacion = String.join(" - ",
-                    hoja.getRow(0).getCell(13).getStringCellValue(),
-                    hoja.getRow(5).getCell(3).getStringCellValue());
+            String observacion = hoja.getRow(0).getCell(13).getStringCellValue() + " - "
+                    + hoja.getRow(5).getCell(3).getStringCellValue();
 
             for (int i = 11; i < filas; i++) {
                 fila = hoja.getRow(i);
@@ -534,40 +532,35 @@ public class PlanillaDao {
                  */
                 ub = usuarioDao.consultar(Long.toString(identificacion));
                 if (ub == null) {
-                    mensajeError += String.join("\t| ",
-                            Integer.toString(i + 1),
-                            Long.toString(identificacion) + "\t- " + fila.getCell(2).getStringCellValue(),
-                            "No de cedula no encontrado\n");
+                    mensajeError += Integer.toString(i + 1) + "\t| "
+                            + Long.toString(identificacion) + "\t- " + fila.getCell(2).getStringCellValue() + "\t| "
+                            + "No de cedula no encontrado\n";
                     error = true;
                 }
                 /**
                  * Validaciones de la labor
                  */
                 if (idlaborcontrato == null || idlaborcontrato.isEmpty()) {
-                    mensajeError += String.join("\t| ",
-                            Integer.toString(i + 1),
-                            idlaborcontrato + "\t",
-                            "Codigo de labor no encontrado\n");
+                    mensajeError += Integer.toString(i + 1) + "\t| "
+                            + idlaborcontrato + "\t" + "\t| "
+                            + "Codigo de labor no encontrado\n";
                     error = true;
                 } else {
                     lb = laboresDao.consultar(Integer.parseInt(idlaborcontrato));
                     if (lb == null) {
-                        mensajeError += String.join("\t| ",
-                                Integer.toString(i + 1),
-                                idlaborcontrato + "\t",
-                                "Codigo de labor no encontrado\n");
+                        mensajeError += Integer.toString(i + 1) + "\t| "
+                                + idlaborcontrato + "\t" + "\t| "
+                                + "Codigo de labor no encontrado\n";
                         error = true;
                     } else if (lb.getActivo() == 0) {
-                        mensajeError += String.join("\t| ",
-                                Integer.toString(i + 1),
-                                idlaborcontrato + "\t",
-                                "Labor inactiva en el sistema\n");
+                        mensajeError += Integer.toString(i + 1) + "\t| "
+                                + idlaborcontrato + "\t" + "\t| "
+                                + "Labor inactiva en el sistema\n";
                         error = true;
                     } else if (lb.getHoraextra() != 0) {
-                        mensajeError += String.join("\t| ",
-                                Integer.toString(i + 1),
-                                idlaborcontrato + "\t",
-                                "Codigo de Labor pertenece a labor extra\n");
+                        mensajeError += Integer.toString(i + 1) + "\t| "
+                                + idlaborcontrato + "\t" + "\t| "
+                                + "Codigo de Labor pertenece a labor extra\n";
                         error = true;
                     }
                 }//Fin validaciones por registro
@@ -671,17 +664,21 @@ public class PlanillaDao {
                         || (acumFestNoct != totalFestNocturnas)) {
                     error = true;
                     mensajeError += "\nValores totales no coinciden\n";
-                    mensajeError += String.join(" ", "Minutos \t|", "Diurnas", "   Nocturnas", " Festivas", "Festivas Nocturnas\n");
-                    mensajeError += String.join("\t| ", "Totales ",
-                            Long.toString(totalDiurnas),
-                            Long.toString(totalNocturnas),
-                            Long.toString(totalFestivas),
-                            Long.toString(totalFestNocturnas) + "\n");
-                    mensajeError += String.join("\t| ", "Registro",
-                            Integer.toString(acumDiurnos),
-                            Integer.toString(acumNocturno),
-                            Integer.toString(acumFestivos),
-                            Integer.toString(acumFestNoct) + "\n");
+                    mensajeError += "Minutos \t|" + " "
+                            + "Diurnas" + " "
+                            + "   Nocturnas" + " "
+                            + " Festivas" + " "
+                            + "Festivas Nocturnas\n";
+                    mensajeError += "Totales "
+                            + Long.toString(totalDiurnas) + "\t| "
+                            + Long.toString(totalNocturnas) + "\t| "
+                            + Long.toString(totalFestivas) + "\t| "
+                            + Long.toString(totalFestNocturnas) + "\n";
+                    mensajeError += "Registro" + "\t| "
+                            + Integer.toString(acumDiurnos) + "\t| "
+                            + Integer.toString(acumNocturno) + "\t| "
+                            + Integer.toString(acumFestivos) + "\t| "
+                            + Integer.toString(acumFestNoct) + "\n";
 
                 }
             }
@@ -713,7 +710,7 @@ public class PlanillaDao {
                 }
             }
         }
-        
+
         /**
          * respuesta
          */

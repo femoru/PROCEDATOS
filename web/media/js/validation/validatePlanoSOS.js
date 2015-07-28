@@ -42,7 +42,7 @@ function mostrarRespuesta(data) {
             text: ['Nuevos', data[2].nuevos].join(": ")
         }).appendTo('#respuesta');
         $('<p>', {
-            text: ['Errores', data[2].nuevos].join(": ")
+            text: ['Errores', data[2].errores].join(": ")
         }).appendTo('#respuesta');
         $('<p>', {
             text: ['Actualizados', data[2].actualizados].join(": ")

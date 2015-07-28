@@ -237,12 +237,16 @@ public class PlanillaServlet extends HttpServlet {
         } catch (Exception e) {
             System.out.println(e.getClass());
             for (int i = 0; i < 4; i++) {
-                System.out.println(String.join(" - ",
-                        "LINE: " + Integer.toString(e.getStackTrace()[i].getLineNumber()),
-                        "CLASS: " + e.getStackTrace()[i].getClassName(),
-                        "METHOD: " + e.getStackTrace()[i].getMethodName(),
-                        "CAUSE: " + e.getLocalizedMessage()
-                ));
+
+                System.out.println(
+                        "LINE: " + Integer.toString(e.getStackTrace()[i].getLineNumber())
+                        + " - "
+                        + "CLASS: " + e.getStackTrace()[i].getClassName()
+                        + " - "
+                        + "METHOD: " + e.getStackTrace()[i].getMethodName()
+                        + " - "
+                        + "CAUSE: " + e.getLocalizedMessage()
+                );
             }
             Logger.getLogger("ERROR").warn("Error de Aplicativo Planillas", e);
         }
@@ -286,9 +290,7 @@ public class PlanillaServlet extends HttpServlet {
                 JSONObject datos = dao.subirPlano(part.getInputStream());
                 boolean respPlano = !datos.getBoolean("error");
                 resp.put(0, respPlano);
-                resp.put(1, String.join(" ",
-                        respPlano ? "Archivo" : "Error procesando",
-                        respPlano ? "Procesado" : ""));
+                resp.put(1, respPlano ? "Archivo procesado" : "Error procesando");
                 resp.put(2, datos);
                 return resp;
             } catch (IOException ex) {
