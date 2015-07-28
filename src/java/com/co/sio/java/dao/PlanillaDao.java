@@ -5,6 +5,7 @@
 package com.co.sio.java.dao;
 
 import com.co.sio.java.JSON.JSONArray;
+import com.co.sio.java.JSON.JSONException;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.db.ControllerPool;
 import com.co.sio.java.mbeans.LaborBeans;
@@ -12,7 +13,20 @@ import com.co.sio.java.mbeans.PlanillaBeans;
 import com.co.sio.java.mbeans.ReferenciasBeans;
 import com.co.sio.java.mbeans.RegistroBeans;
 import com.co.sio.java.mbeans.UsuarioBeans;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  *
@@ -20,8 +34,8 @@ import java.sql.ResultSet;
  */
 public class PlanillaDao {
 
-    private ControllerPool BD;
-    private RegistrosDao registrosDao;
+    private final ControllerPool BD;
+    private final RegistrosDao registrosDao;
 
     public PlanillaDao() {
         BD = new ControllerPool();
@@ -57,7 +71,9 @@ public class PlanillaDao {
             BD.AsignarParametro(12, Integer.toString(beans.getCosto()), 2);
 
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -66,7 +82,6 @@ public class PlanillaDao {
 
     public String getListPlanilla(int idpersona, int idlabor, String mes, int page, int rows) throws Exception {
         String sql;
-
 
         int total = 0;
         int total1 = 0;
@@ -96,7 +111,6 @@ public class PlanillaDao {
                 total = Integer.parseInt(rsCuenta.getString(1));
                 total1 = total;
             }
-
 
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
@@ -158,7 +172,13 @@ public class PlanillaDao {
 
             return jsonData.toString();
 
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (ParseException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (NumberFormatException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (JSONException ex) {
             throw new Exception(ex.getMessage());
         } finally {
             BD.desconectar();
@@ -192,7 +212,9 @@ public class PlanillaDao {
             BD.AsignarParametro(9, Integer.toString(beans.getIdplanilla()), 2);
 
             return BD.actualizar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -202,15 +224,15 @@ public class PlanillaDao {
     public boolean eliminar(int idplanilla) throws Exception {
         try {
 
-
             String sql = "DELETE FROM tplanilla WHERE idplanilla = ?";
             BD.conectar();
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(idplanilla), 2);
 
-
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -281,7 +303,9 @@ public class PlanillaDao {
                 total = rsCuenta.getInt(1);
             }
             return total;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -317,7 +341,9 @@ public class PlanillaDao {
             }
 
             return beans;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -369,14 +395,12 @@ public class PlanillaDao {
 
             datoSql = BD.obtenerConsulta();
 
-
             ReferenciasBeans referenciasBeans = new ReferenciasBeans();
             referenciasBeans.setCodigo(0);
             String observacion = "REGISTRO POR PLANILLA INGRESO " + ingresado;
             RegistroBeans registroDiurno;
             RegistroBeans registroTarde;
             boolean registro;
-
 
             while (datoSql.next()) {
                 registroDiurno = new RegistroBeans();
@@ -404,7 +428,6 @@ public class PlanillaDao {
                 registroTarde.setValor(datoSql.getInt("valor"));
                 registroTarde.setCosto(datoSql.getInt("costo"));
                 registroTarde.setAnulado(referenciasBeans);
-
 
                 if (!existeRegistro(idusuario, registroDiurno) && !existeRegistro(idusuario, registroTarde)) {
                     registro = false;
@@ -447,11 +470,275 @@ public class PlanillaDao {
             return true;
         }
         idRegistroIgual = registrosDao.consultarIgual(registroBeans);
-        if (idRegistroIgual != 0) {
-            return true;
+        return idRegistroIgual != 0;
+    }
+
+    public JSONObject subirPlano(InputStream in) throws IOException, ParseException, Exception {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat sdfr = new SimpleDateFormat("dd/MM/yyyy");
+        POIFSFileSystem fs = new POIFSFileSystem(in);
+        HSSFWorkbook wb = new HSSFWorkbook(fs);
+        HSSFSheet hoja;
+        HSSFRow fila;
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ArrayList<RegistroBeans> registros = new ArrayList<RegistroBeans>();
+        LaboresDao laboresDao = new LaboresDao();
+        UsuarioDao usuarioDao = new UsuarioDao();
+
+        UsuarioBeans ub;
+        RegistroBeans rb;
+        LaborBeans lb = null;
+        boolean error = false;
+
+        ReferenciasBeans anulado = new ReferenciasBeans();
+        anulado.setCodigo(0);
+
+        int nuevos = 0, actualizados = 0, procesados = 0, cantRegistros = 0, errores = 0;
+        String mensajeError = "", observacionArchivo = "";
+        Date fechaIni = null, fechaFin = null;
+
+        for (int j = 0; j < wb.getNumberOfSheets(); j++) {
+            hoja = wb.getSheetAt(j);
+
+            int filas = hoja.getPhysicalNumberOfRows();
+            int acumDiurnos = 0, acumNocturno = 0, acumFestivos = 0, acumFestNoct = 0,
+                    ultimaFila = 0;
+
+            mensajeError += mensajeError.length() > 0 ? "\n" : "";
+            mensajeError += "Hoja: " + hoja.getSheetName() + "\n";
+
+            mensajeError += String.join("\t| ",
+                    "LINEA ",
+                    "DATO\t\t\t\t\t\t",
+                    "CAUSA\n");
+
+            Date finicio = sdf.parse(hoja.getRow(8).getCell(10).toString());
+            Date ffin = sdf.parse(hoja.getRow(8).getCell(13).toString());
+            String observacion = String.join(" - ",
+                    hoja.getRow(0).getCell(13).getStringCellValue(),
+                    hoja.getRow(5).getCell(3).getStringCellValue());
+
+            for (int i = 11; i < filas; i++) {
+                fila = hoja.getRow(i);
+                if (fila.getCell(0).getCellType() != HSSFCell.CELL_TYPE_NUMERIC) {
+                    ultimaFila = i;
+                    break;
+                }//Ultimo registro 
+
+                long identificacion = (long) fila.getCell(0).getNumericCellValue();
+                String idlaborcontrato = fila.getCell(3).getStringCellValue();
+                /**
+                 * Validaciones de usuario
+                 */
+                ub = usuarioDao.consultar(Long.toString(identificacion));
+                if (ub == null) {
+                    mensajeError += String.join("\t| ",
+                            Integer.toString(i + 1),
+                            Long.toString(identificacion) + "\t- " + fila.getCell(2).getStringCellValue(),
+                            "No de cedula no encontrado\n");
+                    error = true;
+                }
+                /**
+                 * Validaciones de la labor
+                 */
+                if (idlaborcontrato == null || idlaborcontrato.isEmpty()) {
+                    mensajeError += String.join("\t| ",
+                            Integer.toString(i + 1),
+                            idlaborcontrato + "\t",
+                            "Codigo de labor no encontrado\n");
+                    error = true;
+                } else {
+                    lb = laboresDao.consultar(Integer.parseInt(idlaborcontrato));
+                    if (lb == null) {
+                        mensajeError += String.join("\t| ",
+                                Integer.toString(i + 1),
+                                idlaborcontrato + "\t",
+                                "Codigo de labor no encontrado\n");
+                        error = true;
+                    } else if (lb.getActivo() == 0) {
+                        mensajeError += String.join("\t| ",
+                                Integer.toString(i + 1),
+                                idlaborcontrato + "\t",
+                                "Labor inactiva en el sistema\n");
+                        error = true;
+                    } else if (lb.getHoraextra() != 0) {
+                        mensajeError += String.join("\t| ",
+                                Integer.toString(i + 1),
+                                idlaborcontrato + "\t",
+                                "Codigo de Labor pertenece a labor extra\n");
+                        error = true;
+                    }
+                }//Fin validaciones por registro
+
+                int minutosDiurnos = conversionMinutos(getTiempo(fila.getCell(6)));
+                int minutosNocturno = conversionMinutos(getTiempo(fila.getCell(7)));
+                int minutosFestivo = conversionMinutos(getTiempo(fila.getCell(8)));
+                int minutosFestNoct = conversionMinutos(getTiempo(fila.getCell(9)));
+
+                /**
+                 * Crear el registro de la labor
+                 */
+                if (lb != null && ub != null && minutosDiurnos > 0 && !error) {
+                    rb = new RegistroBeans();
+                    rb.setUsuario(ub);
+                    rb.setLabor(lb);
+                    rb.setFechaInicio(sdfr.format(finicio));
+                    rb.setFechaFin(sdfr.format(ffin));
+                    rb.setEstado(2);
+                    rb.setAnulado(anulado);
+                    rb.setObservacion(observacion);
+                    rb.setRegistroslabor(0);
+                    rb.setTiempolabor(minutosDiurnos);
+                    rb.setValor(Integer.parseInt(lb.getValor()));
+                    rb.setCosto(Integer.parseInt(lb.getCosto()));
+
+                    registros.add(rb);
+
+                    if (minutosNocturno > 0) {
+                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                lb.getGrupo().getIdgrupo(),
+                                lb.getLabor(),
+                                lb.getTipolabor(), 5);
+                        rb = rb.clone();
+                        rb.setLabor(lb);
+                        rb.setTiempolabor(minutosNocturno);
+                        rb.setCosto(Integer.parseInt(lb.getCosto()));
+                        rb.setValor(Integer.parseInt(lb.getValor()));
+
+                        registros.add(rb);
+                    }
+                    if (minutosFestivo > 0) {
+                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                lb.getGrupo().getIdgrupo(),
+                                lb.getLabor(),
+                                lb.getTipolabor(), 9);
+                        rb = rb.clone();
+                        rb.setLabor(lb);
+                        rb.setTiempolabor(minutosFestivo);
+                        rb.setCosto(Integer.parseInt(lb.getCosto()));
+                        rb.setValor(Integer.parseInt(lb.getValor()));
+
+                        registros.add(rb);
+                    }
+                    if (minutosFestNoct > 0) {
+                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                lb.getGrupo().getIdgrupo(),
+                                lb.getLabor(),
+                                lb.getTipolabor(), 10);
+                        rb = rb.clone();
+                        rb.setLabor(lb);
+                        rb.setTiempolabor(minutosFestNoct);
+                        rb.setCosto(Integer.parseInt(lb.getCosto()));
+                        rb.setValor(Integer.parseInt(lb.getValor()));
+
+                        registros.add(rb);
+                    }
+
+                    acumDiurnos += minutosDiurnos;
+                    acumNocturno += minutosNocturno;
+                    acumFestivos += minutosFestivo;
+                    acumFestNoct += minutosFestNoct;
+
+                    procesados++;
+                }
+            }//Final for
+
+            if (!error) {
+                for (RegistroBeans registro : registros) {
+
+                }
+            }
+
+            int filaTotales = ultimaFila + 2;
+
+            /**
+             * Datos del plano
+             */
+            long totalDiurnas = conversionMinutos(hoja.getRow(filaTotales).getCell(6).getNumericCellValue());
+            long totalNocturnas = conversionMinutos(hoja.getRow(filaTotales).getCell(7).getNumericCellValue());
+            long totalFestivas = conversionMinutos(hoja.getRow(filaTotales).getCell(8).getNumericCellValue());
+            long totalFestNocturnas = conversionMinutos(hoja.getRow(filaTotales).getCell(9).getNumericCellValue());
+
+            /**
+             * Validacion totales
+             */
+            if (!error) {
+                if ((acumDiurnos != totalDiurnas)
+                        || (acumNocturno != totalNocturnas)
+                        || (acumFestivos != totalFestivas)
+                        || (acumFestNoct != totalFestNocturnas)) {
+                    error = true;
+                    mensajeError += "\nValores totales no coinciden\n";
+                    mensajeError += String.join(" ", "Minutos \t|", "Diurnas", "   Nocturnas", " Festivas", "Festivas Nocturnas\n");
+                    mensajeError += String.join("\t| ", "Totales ",
+                            Long.toString(totalDiurnas),
+                            Long.toString(totalNocturnas),
+                            Long.toString(totalFestivas),
+                            Long.toString(totalFestNocturnas) + "\n");
+                    mensajeError += String.join("\t| ", "Registro",
+                            Integer.toString(acumDiurnos),
+                            Integer.toString(acumNocturno),
+                            Integer.toString(acumFestivos),
+                            Integer.toString(acumFestNoct) + "\n");
+
+                }
+            }
+            cantRegistros += ultimaFila - 11;
+            if (observacionArchivo.length() > 0) {
+                observacionArchivo += "\n";
+            }
+            observacionArchivo += observacion;
+            if (fechaIni == null) {
+                fechaIni = finicio;
+                fechaFin = ffin;
+            } else if (ffin.compareTo(fechaFin) > 0) {
+                fechaFin = ffin;
+
+            }
+
+        }//Fin Recorrido por hojas
+        if (!error) {
+            for (RegistroBeans registro : registros) {
+                int resultado = registrosDao.guardarRegistro(registro);
+                if (resultado != 0) {
+                    if (resultado > 0) {
+                        nuevos++;
+                    } else {
+                        actualizados++;
+                    }
+                } else {
+                    errores++;
+                }
+            }
         }
+        
+        /**
+         * respuesta
+         */
+        params.put("error", error);
+        params.put("errormessage", error ? mensajeError : "");
+        params.put("observacion", observacionArchivo);
+        params.put("fechainicio", sdf.format(fechaIni));
+        params.put("fechafin", sdf.format(fechaFin));
+        params.put("registros", cantRegistros);
+        params.put("procesados", procesados);
+        params.put("nuevos", nuevos);
+        params.put("errores", errores);
+        params.put("actualizados", actualizados);
 
+        return new JSONObject(params);
+    }
 
-        return false;
+    private int conversionMinutos(double tiempo) {
+        return (int) Math.round(tiempo * 24 * 60);
+    }
+
+    private double getTiempo(HSSFCell celda) {
+        if (celda.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+            return celda.getNumericCellValue();
+        }
+        return 0;
     }
 }

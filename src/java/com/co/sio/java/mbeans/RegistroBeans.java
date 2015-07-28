@@ -8,7 +8,7 @@ package com.co.sio.java.mbeans;
  *
  * @author fmoctezuma
  */
-public class RegistroBeans {
+public class RegistroBeans implements Cloneable {
 
     private int idregistro;
     private UsuarioBeans usuario;
@@ -150,4 +150,24 @@ public class RegistroBeans {
     public String toString() {
         return String.format("RegistroBeans{idregistro=%s, usuario=%s, labor=%s, fechaInicio=%s, fechaFin=%s, estado=%s, anulado=%s, Observacion=%s, datoLabor=%s, tiempolabor=%s, registroslabor=%s, idnomina=%s, valor=%s, costo=%s, mesFacturar = %s%s", idregistro, usuario, labor, fechaInicio, fechaFin, estado, anulado, Observacion, datoLabor, tiempolabor, registroslabor, idnomina, valor, costo, mesFacturar, '}');
     }
+
+    @Override
+    public RegistroBeans clone() throws CloneNotSupportedException {
+        super.clone();
+        RegistroBeans bean = new RegistroBeans();
+        bean.setUsuario(this.usuario);
+        bean.setLabor(this.labor);
+        bean.setFechaInicio(this.fechaInicio);
+        bean.setFechaFin(this.fechaFin);
+        bean.setEstado(this.estado);
+        bean.setAnulado(this.anulado);
+        bean.setObservacion(this.Observacion);
+        bean.setRegistroslabor(this.registroslabor);
+        bean.setTiempolabor(this.tiempolabor);
+        bean.setValor(this.valor);
+        bean.setCosto(this.costo);
+
+        return bean;
+    }
+
 }

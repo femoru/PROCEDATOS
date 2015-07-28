@@ -5,6 +5,7 @@
 package com.co.sio.java.servlet;
 
 import com.co.sio.java.JSON.JSONArray;
+import com.co.sio.java.JSON.JSONException;
 import com.co.sio.java.JSON.JSONObject;
 import com.co.sio.java.dao.LaboresDao;
 import com.co.sio.java.dao.PersonaDao;
@@ -21,10 +22,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.catalina.core.ApplicationPart;
 import org.apache.log4j.Logger;
 
 /**
@@ -32,6 +35,7 @@ import org.apache.log4j.Logger;
  * @author fmoctezuma
  */
 @WebServlet(name = "PlanillaServlet", urlPatterns = {"/PlanillaServlet"})
+@MultipartConfig()
 public class PlanillaServlet extends HttpServlet {
 
     @Override
@@ -80,7 +84,6 @@ public class PlanillaServlet extends HttpServlet {
                     PersonaBeans personaBeans = new PersonaDao().consultarxIdenditifcacion(cedula.trim());
                     boolean existe = personaBeans.getIdpersona() != 0;
 
-
                     int perfil = 0;
                     if (existe) {
                         UsuarioBeans usuarioBeans = new UsuarioDao().consultar(personaBeans.getIdpersona());
@@ -103,7 +106,6 @@ public class PlanillaServlet extends HttpServlet {
                         jsono.put("nombre", personaBeans.getNombres());
                     }
 
-
                     response.setContentType("application/json");
                     response.setCharacterEncoding("utf-8");
                     response.getWriter().println(jsono.toString());
@@ -125,7 +127,7 @@ public class PlanillaServlet extends HttpServlet {
                     usuarioBeans.setIdusuario(idusuario);
                     beans.setLabor(laborBeans);
                     beans.setUsuario(usuarioBeans);
-                    
+
                     UsuarioLaboresDao dao = new UsuarioLaboresDao();
                     beans = dao.consultar(beans);
 
@@ -155,19 +157,24 @@ public class PlanillaServlet extends HttpServlet {
                     response.getWriter().println(jsona.toString());
                 }
                 break;
+                case 'p': {
+                    ApplicationPart p = (ApplicationPart) request.getPart("consolidado");
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("utf-8");
+                    response.getWriter().println(verificarPlano(p).toString());
+                }
+                break;
                 default: {
 
                     int idlabor = Integer.parseInt(request.getParameter("labor"));
                     int idusuario = Integer.parseInt(request.getParameter("idusuario"));
                     LaborBeans laborBeans = new LaboresDao().consultar(idlabor);
 
-
                     String fecha = request.getParameter("dia") + request.getParameter("mes");
                     String hInicioD = acomodarHoras(request.getParameter("hInicioD"));
                     String hDescD = acomodarHoras(request.getParameter("hDescD"));
                     String hReinicioD = acomodarHoras(request.getParameter("hReinicioD"));
                     String hFinalD = acomodarHoras(request.getParameter("hFinalD"));
-
 
                     int registros = Integer.parseInt(request.getParameter("registros"));
 
@@ -185,13 +192,12 @@ public class PlanillaServlet extends HttpServlet {
                     planillaBeans.setValor(Integer.parseInt(laborBeans.getValor()));
                     planillaBeans.setCosto(Integer.parseInt(laborBeans.getCosto()));
                     JSONArray jsona = new JSONArray();
-                    boolean resp = false;
+                    boolean resp;
                     boolean existen;
 
                     if (oper.charAt(0) == 'a') {
 
-
-                        existen = planillaDao.consultarRango(planillaBeans) > 0 ? true : false;
+                        existen = planillaDao.consultarRango(planillaBeans) > 0;
                         if (existen) {
                             jsona.put(false);
                             jsona.put("Existen registros que se cruzan con las horas ingresadas");
@@ -207,7 +213,7 @@ public class PlanillaServlet extends HttpServlet {
                     } else if (oper.charAt(0) == 'e') {
                         int idplanilla = Integer.parseInt(request.getParameter("id"));
                         planillaBeans.setIdplanilla(idplanilla);
-                        existen = planillaDao.consultarRango(planillaBeans) > 0 ? true : false;
+                        existen = planillaDao.consultarRango(planillaBeans) > 0;
                         if (existen) {
                             jsona.put(false);
                             jsona.put("Existen registros que se cruzan con las horas ingresadas");
@@ -229,7 +235,15 @@ public class PlanillaServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getClass());
+            for (int i = 0; i < 4; i++) {
+                System.out.println(String.join(" - ",
+                        "LINE: " + Integer.toString(e.getStackTrace()[i].getLineNumber()),
+                        "CLASS: " + e.getStackTrace()[i].getClassName(),
+                        "METHOD: " + e.getStackTrace()[i].getMethodName(),
+                        "CAUSE: " + e.getLocalizedMessage()
+                ));
+            }
             Logger.getLogger("ERROR").warn("Error de Aplicativo Planillas", e);
         }
     }
@@ -255,5 +269,38 @@ public class PlanillaServlet extends HttpServlet {
         cadena.insert(2, signo);
 
         return cadena.toString();
+    }
+
+    private JSONArray verificarPlano(ApplicationPart part) throws JSONException, Exception {
+        JSONArray resp = new JSONArray();
+        if (part.getSize() > 0) {
+            String filename = part.getSubmittedFileName();
+            String extension = filename.substring(filename.indexOf("."), filename.length());
+            if (!extension.equals(".xls")) {
+                resp.put(0, false);
+                resp.put(1, "Extension inapropiada para el archivo");
+                return resp;
+            }
+            try {
+                PlanillaDao dao = new PlanillaDao();
+                JSONObject datos = dao.subirPlano(part.getInputStream());
+                boolean respPlano = !datos.getBoolean("error");
+                resp.put(0, respPlano);
+                resp.put(1, String.join(" ",
+                        respPlano ? "Archivo" : "Error procesando",
+                        respPlano ? "Procesado" : ""));
+                resp.put(2, datos);
+                return resp;
+            } catch (IOException ex) {
+                resp.put(0, false);
+                resp.put(1, "Error al leer el archivo");
+                return resp;
+            }
+        } else {
+            resp.put(0, false);
+            resp.put(1, "Tamaño inapropiado para el archivo");
+            return resp;
+        }
+
     }
 }

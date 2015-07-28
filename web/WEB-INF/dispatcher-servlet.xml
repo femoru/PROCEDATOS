@@ -216,6 +216,10 @@
         <property name="formView" value="Procesos/frmIngresoPlanillas"/>
         <property name="sessionForm" value="true"/>
     </bean>
+    <bean name="/PlanoSOS.htm" class="com.co.sio.java.controller.PersonaController">
+        <property name="formView" value="Procesos/frmIngresoPlanoSOS"/>
+        <property name="sessionForm" value="true"/>
+    </bean>
    
     
     <bean name="/Solicitudes.htm" class="com.co.sio.java.controller.PersonaController">

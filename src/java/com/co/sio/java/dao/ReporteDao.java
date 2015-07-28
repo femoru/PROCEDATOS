@@ -1004,8 +1004,8 @@ public class ReporteDao {
                 int ptms = cantidad >= 161 ? 1 : 0;
 
                 double restanteptms = ptms > 0 ? cantidad - 192 : cantidad;
-                int ptds = (int) ((restanteptms < 0 ? 0 : restanteptms) / 8.5);
-                double restanteptds = ptds * 8.5;
+                int ptds = (int) ((restanteptms < 0 ? 0 : restanteptms) / 7.5);
+                double restanteptds = ptds * 7.5;
                 double horas = restanteptms >= 0 ? restanteptms - restanteptds : 0;
                 horas = Math.round(horas * 100.0) / 100.0;
 

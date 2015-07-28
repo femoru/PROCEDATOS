@@ -10,6 +10,8 @@ import com.co.sio.java.mbeans.ReferenciasBeans;
 import com.co.sio.java.mbeans.RegistroBeans;
 import com.co.sio.java.mbeans.UsuarioBeans;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
 
 /**
  *
@@ -17,7 +19,7 @@ import java.sql.ResultSet;
  */
 public class RegistrosDao {
 
-    private ControllerPool BD;
+    private final ControllerPool BD;
 
     public RegistrosDao() {
         BD = new ControllerPool();
@@ -62,10 +64,10 @@ public class RegistrosDao {
             BD.AsignarParametro(10, registroBeans.getLabor().getValor(), 2);
             BD.AsignarParametro(11, Integer.toString(registroBeans.getIdregistro()), 2);
 
-
-
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -280,7 +282,9 @@ public class RegistrosDao {
             BD.AsignarParametro(13, Integer.toString(registroBeans.getTiempolabor()), 2);
 
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -300,7 +304,9 @@ public class RegistrosDao {
             BD.AsignarParametro(4, Integer.toString(registroBeans.getCosto()), 2);
 
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -326,7 +332,9 @@ public class RegistrosDao {
                 BD.AsignarParametro(3, Integer.toString(registroBeans.getTiempolabor()), 2);
                 BD.AsignarParametro(4, Integer.toString(registroBeans.getIdregistro()), 2);
                 return BD.registrar();
-            } catch (Exception e) {
+            } catch (SQLException e) {
+                throw new Exception(e.getMessage());
+            } catch (ParseException e) {
                 throw new Exception(e.getMessage());
             } finally {
                 BD.desconectar();
@@ -442,7 +450,11 @@ public class RegistrosDao {
             json = json + "]\n";
             json = json + "}";
             return json;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
+            throw new Exception(e.getMessage());
+        } catch (NumberFormatException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -478,9 +490,10 @@ public class RegistrosDao {
                 siguiente = datoSql.next();
             }
 
-
             return 1;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -516,9 +529,10 @@ public class RegistrosDao {
                 siguiente = datoSql.next();
             }
 
-
             return 1;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -527,8 +541,6 @@ public class RegistrosDao {
 
     public boolean validarTodos(String fecha, int idgrupo, int sitio, int filtro) throws Exception {
         try {
-
-
 
             String sql = "UPDATE (SELECT estado, anulado, mr.idlaborcontrato "
                     + "          FROM mregistros mr INNER JOIN plaborescontratos pl "
@@ -540,7 +552,6 @@ public class RegistrosDao {
             } else {
                 sql += "pl.idgrupo = ? ";
             }
-
 
             sql += "           AND TO_CHAR (fechainicio, 'DD/MM/YYYY') = ? "
                     + "           AND DECODE (pl.datolabor, "
@@ -561,7 +572,9 @@ public class RegistrosDao {
             }
             BD.AsignarParametro(2, fecha, 1);
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -574,8 +587,6 @@ public class RegistrosDao {
             ResultSet datoSql;
             String esta = "";
             int Cantidad;
-
-
 
             String sql = "SELECT COUNT(*) AS valor FROM mregistros mr ";
             if (filtro != 0) {
@@ -765,7 +776,9 @@ public class RegistrosDao {
             BD.AsignarParametro(3, registroBeans.getFechaInicio(), 1);
             BD.AsignarParametro(4, registroBeans.getFechaFin(), 1);
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -779,7 +792,9 @@ public class RegistrosDao {
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(idregistro), 1);
             return BD.registrar();
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -802,7 +817,9 @@ public class RegistrosDao {
             }
 
             return imagenes;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -825,7 +842,9 @@ public class RegistrosDao {
             }
 
             return imagenes;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -842,7 +861,9 @@ public class RegistrosDao {
             BD.AsignarParametro(2, registroBeans.getDatoLabor(), 1);
 
             return BD.registrar();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (ParseException ex) {
             throw new Exception(ex.getMessage());
         } finally {
             BD.desconectar();
@@ -854,7 +875,6 @@ public class RegistrosDao {
         String sql;
         String strQuery;
         String json;
-
 
         int total = 0;
         int total1 = 0;
@@ -881,7 +901,6 @@ public class RegistrosDao {
                 total = Integer.parseInt(rsCuenta.getString(1));
                 total1 = total;
             }
-
 
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
@@ -924,7 +943,11 @@ public class RegistrosDao {
             json = json + "}";
 
             return json;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
+            throw new Exception(e.getMessage());
+        } catch (NumberFormatException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -944,7 +967,9 @@ public class RegistrosDao {
             BD.AsignarParametro(3, datolaborAnt, 1);
 
             return BD.registrar();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (ParseException ex) {
             throw new Exception(ex.getMessage());
         } finally {
             BD.desconectar();
@@ -975,7 +1000,9 @@ public class RegistrosDao {
                 id = datoSql.getInt(1);
             }
             return id;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -1000,14 +1027,15 @@ public class RegistrosDao {
             BD.AsignarParametro(3, beans.getFechaInicio(), 1);
             BD.AsignarParametro(4, beans.getFechaFin(), 1);
 
-
             BD.consultar();
             ResultSet datoSql = BD.obtenerConsulta();
             if (datoSql.next()) {
                 id = datoSql.getInt(1);
             }
             return id;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -1030,14 +1058,15 @@ public class RegistrosDao {
             BD.AsignarParametro(2, beans.getFechaInicio(), 1);
             BD.AsignarParametro(3, beans.getFechaFin(), 1);
 
-
             BD.consultar();
             ResultSet datoSql = BD.obtenerConsulta();
             if (datoSql.next()) {
                 id = datoSql.getInt(1);
             }
             return id;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -1079,7 +1108,6 @@ public class RegistrosDao {
         String strQuery;
         String json;
 
-
         int total = 0;
         int total1 = 0;
         int total_pages;
@@ -1106,7 +1134,6 @@ public class RegistrosDao {
                 total = Integer.parseInt(rsCuenta.getString(1));
                 total1 = total;
             }
-
 
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
@@ -1177,7 +1204,11 @@ public class RegistrosDao {
             json = json + "]\n";
             json = json + "}";
             return json;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
+            throw new Exception(e.getMessage());
+        } catch (NumberFormatException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
@@ -1194,7 +1225,9 @@ public class RegistrosDao {
             BD.AsignarParametro(2, dato, 1);
 
             BD.registrar();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (ParseException ex) {
             throw new Exception(ex.getMessage());
         } finally {
             BD.desconectar();
@@ -1316,10 +1349,48 @@ public class RegistrosDao {
             json = json + "]\n";
             json = json + "}";
             return json;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
+            throw new Exception(e.getMessage());
+        } catch (NumberFormatException e) {
             throw new Exception(e.getMessage());
         } finally {
             BD.desconectar();
+        }
+    }
+
+    public int guardarRegistro(RegistroBeans beans) throws Exception {
+        try {
+            String sql = "SELECT idregistro "
+                    + " FROM mregistros "
+                    + " WHERE idusuario = ? "
+                    + " AND IDLABORCONTRATO = ? "
+                    + " AND anulado = 0 "
+                    + " AND fechainicio = to_date( ? , 'DD/MM/YYYY HH24:MI' ) "
+                    + " AND fechafin = to_date( ? , 'DD/MM/YYYY HH24:MI' )";
+
+            BD.conectar();
+            BD.callableStatement(sql);
+            BD.AsignarParametro(1, Integer.toString(beans.getUsuario().getIdusuario()), 2);
+            BD.AsignarParametro(2, Integer.toString(beans.getLabor().getIdlaborcontrato()), 1);
+            BD.AsignarParametro(3, beans.getFechaInicio(), 1);
+            BD.AsignarParametro(4, beans.getFechaFin(), 1);
+
+            BD.consultar();
+            ResultSet datoSql = BD.obtenerConsulta();
+            if (datoSql.next()) {
+                beans.setIdregistro(datoSql.getInt(1));
+                BD.desconectar();
+                return actualizar(beans) ? -1 : 0;
+            } else {
+                BD.desconectar();
+                return insertar(beans) ? 1 : 0;
+            }
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        } catch (ParseException e) {
+            throw new Exception(e.getMessage());
         }
     }
 }

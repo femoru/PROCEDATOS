@@ -189,7 +189,7 @@ public class UsuarioDao {
     public String getListUsuario(int page, int rows, String sidx, String sord) throws Exception {
         String sql;
         String strQuery;
-       
+
         int total = 0;
         int total1 = 0;
         int total_pages;
@@ -212,7 +212,6 @@ public class UsuarioDao {
                 total1 = total;
             }
 
-
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
                 total_pages = (int) (d);
@@ -220,7 +219,6 @@ public class UsuarioDao {
                 total_pages = 0;
             }
 
-        
             strQuery = "SELECT cu.idusuario n1, cu.idusuario n2, cu.login, mp.pnombre||' '|| mp.papellido||' '|| "
                     + "nvl(mp.snombre,' ') ||' '|| nvl(mp.sapellido,' ') NOMBRES "
                     + "FROM cusuarios cu, mpersonas mp "
@@ -256,7 +254,6 @@ public class UsuarioDao {
         int total1 = 0;
         int total_pages;
 
-
         ResultSet rsCuenta;
         ResultSet datoSql;
 
@@ -274,7 +271,6 @@ public class UsuarioDao {
                 total = Integer.parseInt(rsCuenta.getString("valor"));
                 total1 = total;
             }
-
 
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
@@ -329,7 +325,7 @@ public class UsuarioDao {
     public String getListUsuario(int page, int rows, int grupo, String fecha) throws Exception {
         String sql;
         String strQuery;
-        
+
         int total = 0;
         int total1 = 0;
         int total_pages;
@@ -351,7 +347,6 @@ public class UsuarioDao {
                 total = Integer.parseInt(rsCuenta.getString("valor"));
                 total1 = total;
             }
-
 
             if (total > 0) {
                 double d = Math.ceil((double) (total) / (double) (rows));
@@ -382,7 +377,6 @@ public class UsuarioDao {
             datoSql = BD.obtenerConsulta();
             total = total1;
 
-
             JSONObject jsonData = new JSONObject();
 
             jsonData.put("page", page);
@@ -398,6 +392,43 @@ public class UsuarioDao {
         } finally {
             BD.desconectar();
         }
+    }
+
+    public UsuarioBeans consultar(String identificacion) throws Exception {
+        UsuarioBeans usuariobean = null;
+        try {
+            String sql;
+            ResultSet datoSql;
+            BD.conectar();
+            sql = "SELECT c.idusuario, c.login, c.clave, c.activo, c.idusuariodigita, "
+                    + "c.codperfil "
+                    + "FROM cusuarios c "
+                    + "WHERE login = ?";
+            BD.callableStatement(sql);
+            BD.AsignarParametro(1, identificacion, 1);
+
+            if (!BD.consultar()) {
+                throw new Exception("Error Realizando La Consulta: " + identificacion + "-" + sql);
+            } else {
+                datoSql = BD.obtenerConsulta();
+                if (datoSql.next()) {
+                    usuariobean = new UsuarioBeans();
+                    usuariobean.setIdusuario(datoSql.getInt("idusuario"));
+                    usuariobean.setLogin(datoSql.getString("login"));
+                    usuariobean.setClave(datoSql.getString("clave"));
+                    usuariobean.setActivo(datoSql.getInt("activo"));
+                    usuariobean.setIdUsuarioDigita(datoSql.getInt("idusuariodigita"));
+                    PerfilBeans perfilbean = new PerfilBeans();
+                    perfilbean.setCod_perfil(datoSql.getInt("codperfil"));
+                    usuariobean.setPerfil(perfilbean);
+                }
+            }
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        } finally {
+            BD.desconectar();
+        }
+        return usuariobean;
     }
 
     public UsuarioBeans consultar(int idusuario) throws Exception {
