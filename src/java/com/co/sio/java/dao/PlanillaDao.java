@@ -606,7 +606,7 @@ public class PlanillaDao {
                         lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
                                 lb.getGrupo().getIdgrupo(),
                                 lb.getLabor(),
-                                lb.getTipolabor(), 9);
+                                lb.getTipolabor(), 4);
                         rb = rb.clone();
                         rb.setLabor(lb);
                         rb.setTiempolabor(minutosFestivo);
