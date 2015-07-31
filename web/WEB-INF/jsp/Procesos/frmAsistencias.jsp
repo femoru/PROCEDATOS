@@ -21,13 +21,18 @@
                 height: 100%;
             }
             section{
-                min-height: calc(100% - (135px + 6em));
+                min-height: 80%;
                 height: auto !important;
             }
             section article {
                 width: 30%;
                 padding: 1em;
                 margin: auto;
+            }
+            footer{
+                position: fixed;
+                bottom: 0px;
+                width: 100%;
             }
         </style>
         <script src="media/js/include.js"></script>
@@ -37,7 +42,7 @@
     <body>
         <header>
             <div id="top">
-                <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
+                <a href="<%= (this.getServletContext().getContextPath().equals("") ? "/" : this.getServletContext().getContextPath())%>"><img src="media/images/logo.png" alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
             </div>
         </header>
         <section>

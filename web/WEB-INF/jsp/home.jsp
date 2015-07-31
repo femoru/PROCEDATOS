@@ -44,11 +44,13 @@
         %>
         <div id="container">
             <div id="top">
+                <a href="<%= (this.getServletContext().getContextPath().equals("") ? "/" : this.getServletContext().getContextPath())%>">
+                    <img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/>
+                </a>	
                 <div id="topContact">
-                    <p>Bienvenido,<%= session.getAttribute("usuario")%></p>
-                    <a title="Cerrar Sesion" href="control.htm">Cerrar Sesi&oacute;n</a>?
+                    <p>Bienvenido, <%= session.getAttribute("usuario")%></p>
+                    <a title="Cerrar Sesion" href="control.htm">Cerrar Sesi&oacute;n</a>
                 </div> 
-                    <a href="<%= (this.getServletContext().getContextPath().equals("")?"/":this.getServletContext().getContextPath()) %>"><img src="media/images/logo.png"  alt="Soluciones Integrales de Oficina" border="0"  class="logo" title="Soluciones Integrales de Oficina"/></a>	
                 <div id="topMenu">
                     <ul id="menu" ><%= session.getAttribute("menu")%></ul>
                 </div>

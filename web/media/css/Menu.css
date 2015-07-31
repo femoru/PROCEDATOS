@@ -1,10 +1,6 @@
 #menu{
-    background: url(../../media/images/gradient.png) repeat-x; 
-    border-image: none;
-    border: solid #7E7E7E;  
-    border-width: 0;
-    font-weight: normal;
-    text-align: center;
+    border: 0px solid #7E7E7E;
+    background: none;
 }
 
 #menu li {

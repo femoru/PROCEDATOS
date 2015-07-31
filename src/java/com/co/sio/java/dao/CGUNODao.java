@@ -83,7 +83,7 @@ public class CGUNODao {
                     + "       TO_CHAR (mn.fechainicio, 'YYYYMMDD') finicio,\n"
                     + "       TO_CHAR (mn.fechafin, 'YYYYMMDD') ffin, LPAD (mn.dias, 5, 0) dias,\n"
                     + "       LPAD (mn.vlreps, 11, 0) || '00+' vlrtnl,\n"
-                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (mn.observacion, 40) obsv,\n"
+                    + "       LPAD ('0', 13, 0) || '+' vlrbase, RPAD (NVL(mn.observacion,' '), 40) obsv,\n"
                     + "       ' ' serie, RPAD (mn.nroincapacidad, 6, ' ') nroinc, 'A' tipoinc,\n"
                     + "       RPAD (mn.coddiagnostico, 6, ' ') coddx, mn.claseincapacidad clsinc,\n"
                     + "       RPAD (NVL (TO_CHAR (mn.fechaaccidente, 'YYYYMMDD'), ' '), 8) facc,\n"
@@ -96,7 +96,7 @@ public class CGUNODao {
                     + "  FROM mnovedades mn INNER JOIN rnovedades rn ON rn.codnovedad = mn.codnovedad\n"
                     + "       INNER JOIN mpersonas mp ON mp.idpersona = mn.idusuario\n"
                     + " WHERE rn.tiponovedad = 2 AND mn.plano = 1 AND estado = 2 AND anulado = 0 AND idnomina = ?"
-                    + " ORDER BY mn.idnovedad";
+                    + " ORDER BY mn.fechainicio";
             BD.conectar();
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(idnomina), 2);
@@ -124,8 +124,6 @@ public class CGUNODao {
                             }
                         }
                     }
-
-
                 }
                 incapacidades.add(jsona);
             }
@@ -152,7 +150,6 @@ public class CGUNODao {
             BD.conectar();
 
             List<CGUNORegistroBeans> registros = new ArrayList<CGUNORegistroBeans>();
-
 
             String sql = "SELECT codhoraextra, to_char(codconcepto,'009') codconcepto "
                     + "  FROM rhorasextras";
