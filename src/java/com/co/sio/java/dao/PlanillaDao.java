@@ -589,44 +589,68 @@ public class PlanillaDao {
 
                     registros.add(rb);
 
+                    int codlabor = lb.getLabor();
                     if (minutosNocturno > 0) {
-                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
-                                lb.getGrupo().getIdgrupo(),
-                                lb.getLabor(),
-                                lb.getTipolabor(), 5);
-                        rb = rb.clone();
-                        rb.setLabor(lb);
-                        rb.setTiempolabor(minutosNocturno);
-                        rb.setCosto(Integer.parseInt(lb.getCosto()));
-                        rb.setValor(Integer.parseInt(lb.getValor()));
-
-                        registros.add(rb);
+                        try {
+                            lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                    lb.getGrupo().getIdgrupo(),
+                                    lb.getLabor(),
+                                    lb.getTipolabor(), 5);
+                            rb = rb.clone();
+                            rb.setLabor(lb);
+                            rb.setTiempolabor(minutosNocturno);
+                            rb.setCosto(Integer.parseInt(lb.getCosto()));
+                            rb.setValor(Integer.parseInt(lb.getValor()));
+                            registros.add(rb);
+                        } catch (Exception e) {
+                            System.out.println(codlabor + " - 5");
+                            error = true;
+                            ReferenciasBeans labor = new ReferenciasDao().consultar(codlabor, "RLABORES");
+                            mensajeError += "Falta parametrizar labor nocturna de " + labor.getDescripcion() + "\n";
+                            //throw e;
+                        }
                     }
                     if (minutosFestivo > 0) {
-                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
-                                lb.getGrupo().getIdgrupo(),
-                                lb.getLabor(),
-                                lb.getTipolabor(), 4);
-                        rb = rb.clone();
-                        rb.setLabor(lb);
-                        rb.setTiempolabor(minutosFestivo);
-                        rb.setCosto(Integer.parseInt(lb.getCosto()));
-                        rb.setValor(Integer.parseInt(lb.getValor()));
+                        try {
+                            lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                    lb.getGrupo().getIdgrupo(),
+                                    lb.getLabor(),
+                                    lb.getTipolabor(), 4);
+                            rb = rb.clone();
+                            rb.setLabor(lb);
+                            rb.setTiempolabor(minutosFestivo);
+                            rb.setCosto(Integer.parseInt(lb.getCosto()));
+                            rb.setValor(Integer.parseInt(lb.getValor()));
 
-                        registros.add(rb);
+                            registros.add(rb);
+                        } catch (Exception e) {
+                            System.out.println(codlabor + " - 4");
+                            error = true;
+                            ReferenciasBeans labor = new ReferenciasDao().consultar(codlabor, "RLABORES");
+                            mensajeError += "Falta parametrizar labor festiva de " + labor.getDescripcion() + "\n";
+                            //throw e;
+                        }
                     }
                     if (minutosFestNoct > 0) {
-                        lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
-                                lb.getGrupo().getIdgrupo(),
-                                lb.getLabor(),
-                                lb.getTipolabor(), 10);
-                        rb = rb.clone();
-                        rb.setLabor(lb);
-                        rb.setTiempolabor(minutosFestNoct);
-                        rb.setCosto(Integer.parseInt(lb.getCosto()));
-                        rb.setValor(Integer.parseInt(lb.getValor()));
+                        try {
+                            lb = laboresDao.consultar(lb.getContrato().getIdcontrato(),
+                                    lb.getGrupo().getIdgrupo(),
+                                    lb.getLabor(),
+                                    lb.getTipolabor(), 10);
+                            rb = rb.clone();
+                            rb.setLabor(lb);
+                            rb.setTiempolabor(minutosFestNoct);
+                            rb.setCosto(Integer.parseInt(lb.getCosto()));
+                            rb.setValor(Integer.parseInt(lb.getValor()));
 
-                        registros.add(rb);
+                            registros.add(rb);
+                        } catch (Exception e) {
+                            System.out.println(codlabor + " - 10");
+                            error = true;
+                            ReferenciasBeans labor = new ReferenciasDao().consultar(codlabor, "RLABORES");
+                            mensajeError += "Falta parametrizar labor festiva nocturna de " + labor.getDescripcion() + "\n";
+                            //throw e;
+                        }
                     }
 
                     acumDiurnos += minutosDiurnos;
@@ -637,12 +661,6 @@ public class PlanillaDao {
                     procesados++;
                 }
             }//Final for
-
-            if (!error) {
-                for (RegistroBeans registro : registros) {
-
-                }
-            }
 
             int filaTotales = ultimaFila + 2;
 
