@@ -573,7 +573,7 @@ public class PlanillaDao {
                 /**
                  * Crear el registro de la labor
                  */
-                if (lb != null && ub != null && minutosDiurnos > 0 && !error) {
+                if (lb != null && ub != null  && !error) {
                     rb = new RegistroBeans();
                     rb.setUsuario(ub);
                     rb.setLabor(lb);
@@ -583,12 +583,16 @@ public class PlanillaDao {
                     rb.setAnulado(anulado);
                     rb.setObservacion(observacion);
                     rb.setRegistroslabor(0);
-                    rb.setTiempolabor(minutosDiurnos);
-                    rb.setValor(Integer.parseInt(lb.getValor()));
-                    rb.setCosto(Integer.parseInt(lb.getCosto()));
+                    
+                    if (minutosDiurnos > 0) {
 
-                    registros.add(rb);
+                        rb.setTiempolabor(minutosDiurnos);
+                        rb.setValor(Integer.parseInt(lb.getValor()));
+                        rb.setCosto(Integer.parseInt(lb.getCosto()));
 
+                        registros.add(rb);
+                    }
+                    
                     int codlabor = lb.getLabor();
                     if (minutosNocturno > 0) {
                         try {
@@ -601,6 +605,7 @@ public class PlanillaDao {
                             rb.setTiempolabor(minutosNocturno);
                             rb.setCosto(Integer.parseInt(lb.getCosto()));
                             rb.setValor(Integer.parseInt(lb.getValor()));
+                           
                             registros.add(rb);
                         } catch (Exception e) {
                             System.out.println(codlabor + " - 5");
@@ -621,7 +626,7 @@ public class PlanillaDao {
                             rb.setTiempolabor(minutosFestivo);
                             rb.setCosto(Integer.parseInt(lb.getCosto()));
                             rb.setValor(Integer.parseInt(lb.getValor()));
-
+                            System.out.println(identificacion + ";" + minutosFestivo);
                             registros.add(rb);
                         } catch (Exception e) {
                             System.out.println(codlabor + " - 4");
@@ -667,15 +672,16 @@ public class PlanillaDao {
             /**
              * Datos del plano
              */
-            long totalDiurnas = conversionMinutos(hoja.getRow(filaTotales).getCell(6).getNumericCellValue());
-            long totalNocturnas = conversionMinutos(hoja.getRow(filaTotales).getCell(7).getNumericCellValue());
-            long totalFestivas = conversionMinutos(hoja.getRow(filaTotales).getCell(8).getNumericCellValue());
-            long totalFestNocturnas = conversionMinutos(hoja.getRow(filaTotales).getCell(9).getNumericCellValue());
+            long totalDiurnas = conversionMinutos(getTiempo(hoja.getRow(filaTotales).getCell(6)));
+            long totalNocturnas = conversionMinutos(getTiempo(hoja.getRow(filaTotales).getCell(7)));
+            long totalFestivas = conversionMinutos(getTiempo(hoja.getRow(filaTotales).getCell(8)));
+            long totalFestNocturnas = conversionMinutos(getTiempo(hoja.getRow(filaTotales).getCell(9)));
 
             /**
              * Validacion totales
              */
             if (!error) {
+                System.out.println(acumFestivos);
                 if ((acumDiurnos != totalDiurnas)
                         || (acumNocturno != totalNocturnas)
                         || (acumFestivos != totalFestivas)
@@ -747,12 +753,18 @@ public class PlanillaDao {
     }
 
     private int conversionMinutos(double tiempo) {
-        return (int) Math.round(tiempo * 24 * 60);
+        return (int) Math.round(tiempo);
     }
 
     private double getTiempo(HSSFCell celda) {
         if (celda.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-            return celda.getNumericCellValue();
+            double valor = celda.getNumericCellValue() * 24 * 60;
+            if (celda.getColumnIndex() == 8) {
+                //System.out.println((int) celda.getRow().getCell(0).getNumericCellValue() + ";" + valor);
+            }
+            return valor;
+        } else if (celda.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+            return celda.getNumericCellValue() * 24 * 60;
         }
         return 0;
     }
