@@ -66,8 +66,8 @@ public class UsuarioDao {
     public boolean insertar(UsuarioBeans usuario) throws Exception {
         try {
             BD.conectar();
-            String sql = " INSERT INTO cusuarios(idusuario,login,clave,activo,idusuariodigita,codperfil,usuariosos) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ? )";
+            String sql = " INSERT INTO cusuarios(idusuario,login,clave,activo,idusuariodigita,codperfil,usuariosos,incluidonomina) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ? )";
             BD.callableStatement(sql);
             BD.AsignarParametro(1, Integer.toString(usuario.getIdusuario()), 2);
             BD.AsignarParametro(2, usuario.getLogin(), 1);
@@ -76,6 +76,8 @@ public class UsuarioDao {
             BD.AsignarParametro(5, Integer.toString(usuario.getIdUsuarioDigita()), 2);
             BD.AsignarParametro(6, Integer.toString(usuario.getPerfil().getCod_perfil()), 2);
             BD.AsignarParametro(7, usuario.getUsuariosos().toUpperCase(), 1);
+            BD.AsignarParametro(8, Integer.toString(usuario.getIncluidonomina()), 2);
+            
             return BD.registrar();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -127,7 +129,8 @@ public class UsuarioDao {
                     + "idusuariodigita = ?, "
                     + "fechadigita = SYSDATE, "
                     + "login = ?, "
-                    + "usuariosos = ? "
+                    + "usuariosos = ?,"
+                    + "incluidonomina = ? "
                     + "WHERE idusuario = ?";
 
             BD.conectar();
@@ -144,7 +147,8 @@ public class UsuarioDao {
                 BD.AsignarParametro(3, Integer.toString(usuario.getIdUsuarioDigita()), 2);
                 BD.AsignarParametro(4, usuario.getLogin(), 1);
                 BD.AsignarParametro(5, (usuario.getUsuariosos() == null ? "" : usuario.getUsuariosos().toUpperCase()), 1);
-                BD.AsignarParametro(6, Integer.toString(usuario.getIdusuario()), 1);
+                BD.AsignarParametro(6, Integer.toString(usuario.getIncluidonomina()), 2);
+                BD.AsignarParametro(7, Integer.toString(usuario.getIdusuario()), 1);
             }
             return BD.registrar();
         } catch (Exception e) {
@@ -439,7 +443,7 @@ public class UsuarioDao {
             BD.conectar();
 
             sql = "SELECT c.idusuario, c.login, c.clave, c.activo, c.idusuariodigita, "
-                    + "c.codperfil "
+                    + "c.codperfil, c.incluidonomina "
                     + "FROM cusuarios c "
                     + "WHERE idusuario = ?";
             BD.callableStatement(sql);
@@ -454,6 +458,7 @@ public class UsuarioDao {
                     usuariobean.setLogin(datoSql.getString("login"));
                     usuariobean.setClave(datoSql.getString("clave"));
                     usuariobean.setActivo(datoSql.getInt("activo"));
+                    usuariobean.setIncluidonomina(datoSql.getInt("incluidonomina"));
                     usuariobean.setIdUsuarioDigita(datoSql.getInt("idusuariodigita"));
                     PerfilBeans perfilbean = new PerfilBeans();
                     perfilbean.setCod_perfil(datoSql.getInt("codperfil"));

@@ -137,15 +137,16 @@ public class PersonaServlet extends HttpServlet {
                     personaBeans.setFechaRetiro(request.getParameter("fechaRetiro"));
                     personaBeans.setNocturno(Integer.parseInt(request.getParameter("horario")));
                     personaBeans.setAplicaAuxilio(Integer.parseInt(request.getParameter("auxilioT")));
-
-                    if (oper.charAt(0) == 'a') {
+                   if (oper.charAt(0) == 'a') {
                         usuariobean.setLogin(personaBeans.getIdentificacion());
                         usuariobean.setClave(personaBeans.getIdentificacion());
                         usuariobean.setActivo(Integer.parseInt(request.getParameter("estado")));
+                        usuariobean.setIncluidonomina(Integer.parseInt(request.getParameter("incluidoNomina")));
                     } else if (oper.charAt(0) == 'e') {
                         personaBeans.setIdpersona(Integer.parseInt(request.getParameter("id")));
                         usuariobean = daousuario.consultar(Integer.parseInt(request.getParameter("id")));//request.getParameter("idpersona")
                         usuariobean.setActivo(Integer.parseInt(request.getParameter("estado")));
+                        usuariobean.setIncluidonomina(Integer.parseInt(request.getParameter("incluidoNomina")));
                     }
 
                     HttpSession sesion = request.getSession();

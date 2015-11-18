@@ -21,7 +21,8 @@ public class UsuarioBeans extends PerfilBeans {
     private String imagen;
     private String usuariosos;
     private String mensaje;
-
+    private int incluidonomina;
+    
     public String getUsuariosos() {
         return usuariosos;
     }
@@ -109,4 +110,13 @@ public class UsuarioBeans extends PerfilBeans {
     public void setFechaUltimoAcceso(String fechaUltimoAcceso) {
         this.fechaUltimoAcceso = fechaUltimoAcceso;
     }
+
+    public int getIncluidonomina() {
+        return incluidonomina;
+    }
+
+    public void setIncluidonomina(int incluidonomina) {
+        this.incluidonomina = incluidonomina;
+    }
+    
 }

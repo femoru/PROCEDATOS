@@ -114,9 +114,11 @@
                         </tr>
                         <tr>
                             <td>Aplica Aux Transporte </td>
+                            <td>Entra en nomina </td>
                         </tr>
                         <tr>
                             <td><select id="auxilioT" ><option value="1">SI</option><option value="0">NO</option></select></td>
+                            <td><select id="incluidoNomina" ><option value="1">SI</option><option value="0">NO</option></select></td>
                         </tr>
                     </table>
 

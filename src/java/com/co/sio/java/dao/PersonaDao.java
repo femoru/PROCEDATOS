@@ -319,7 +319,7 @@ public class PersonaDao {
                     + "mp.direccion, mp.telefono, mp.celular, mp.email, rce.desestadocivil, "
                     + "to_char(fechaingreso,'dd/mm/yyyy') fechaingreso, "
                     + "to_char(fecharetiro,'dd/mm/yyyy') fecharetiro, mp.nocturno, cu.activo, "
-                    + "cper.desperfil, salario, auxiliot, cu.usuariosos, rst.dessitio "
+                    + "cper.desperfil, salario, auxiliot,incluidonomina, cu.usuariosos, rst.dessitio "
                     + "FROM mpersonas mp "
                     + "INNER JOIN cusuarios cu ON mp.idpersona =cu.idusuario "
                     + "INNER JOIN cperfiles cper ON cu.codperfil = cper.codperfil "
@@ -380,6 +380,7 @@ public class PersonaDao {
                 json = json + ",\"" + datoSql.getInt("activo") + "\"";
                 json = json + ",\"" + datoSql.getInt("salario") + "\"";
                 json = json + ",\"" + datoSql.getInt("auxilioT") + "\"";
+                json = json + ",\"" + datoSql.getInt("incluidonomina") + "\"";
                 usuario = datoSql.getString("usuariosos") == null ? "" : datoSql.getString("usuariosos") + " ";
 
                 json = json + ",\"" + usuario + "\"";

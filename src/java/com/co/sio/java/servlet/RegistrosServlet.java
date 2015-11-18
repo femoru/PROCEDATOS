@@ -39,11 +39,11 @@ public class RegistrosServlet extends HttpServlet {
                 LoginDao dao = new LoginDao();
                 UsuarioBeans usuarioBeans = dao.validarLogin(identificacion, clave);
                 JSONObject jsono = new JSONObject();
-                
-                if(!dao.asistenciaAbierta(usuarioBeans.getIdusuario())){
+
+                if (!dao.asistenciaAbierta(usuarioBeans.getIdusuario())) {
                     usuarioBeans.setMensaje("El usuario no ha registrado la asistencia para dia en curso");
                 }
-                
+
                 if (usuarioBeans.getMensaje() == null) {
                     PersonaBeans pbean = (new PersonaDao()).consultar(usuarioBeans.getIdusuario());
 
@@ -93,7 +93,6 @@ public class RegistrosServlet extends HttpServlet {
 
                 String nomina = request.getParameter("nomina");
 
-
                 if (id == null && nomina == null) {
                     String fecha = request.getParameter("fecha");
 
@@ -124,8 +123,6 @@ public class RegistrosServlet extends HttpServlet {
                         json = registrodao.getListRegistros(intpage, limit, id, nomina);
                     }
                 }
-
-
 
             }
             response.setContentType("application/json");
@@ -192,46 +189,49 @@ public class RegistrosServlet extends HttpServlet {
                 }
                 break;
                 case 'e': {//editar registro grilla
-                    LaborBeans labor = new LaboresDao().consultar(Integer.parseInt(request.getParameter("labor")));
-                    registroBeans = registrosDao.consultar(request.getParameter("id"));
-                    //Log
-                    Logger.getLogger("REGISTROS").info(String.format("%s va a actualizar el registro \n%s", userName, registroBeans.toString()));
-                    if (labor != null) {
-                        registroBeans.setLabor(labor);
+                    String idlabor = request.getParameter("labor");
+                    if (idlabor == null) {
+                        modificarHora(registrosDao,request);
                     } else {
-                        labor = registroBeans.getLabor();
-                    }
-                    
-                    Date inicio = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("inicio"));
-                    Date fin = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("fin"));
-                    
-                    if(fin.compareTo(inicio) < 0){
-                        Calendar cFin = Calendar.getInstance();
-                        cFin.setTime(fin);
-                        cFin.set(Calendar.DATE, cFin.get(Calendar.DATE)+1);
-                        fin = cFin.getTime();
-                    }
-                    
-                    
-                    registroBeans.setFechaInicio(sdf.format(inicio));
-                    registroBeans.setFechaFin(sdf.format(fin));
-                    registroBeans.setValor(Integer.parseInt(labor.getValor()));
-                    registroBeans.setCosto(Integer.parseInt(labor.getCosto()));
+                        LaborBeans labor = new LaboresDao().consultar(Integer.parseInt(idlabor));
+                        registroBeans = registrosDao.consultar(request.getParameter("id"));
+                        //Log
+                        Logger.getLogger("REGISTROS").info(String.format("%s va a actualizar el registro \n%s", userName, registroBeans.toString()));
+                        if (labor != null) {
+                            registroBeans.setLabor(labor);
+                        } else {
+                            labor = registroBeans.getLabor();
+                        }
 
-                    registroBeans.setDatoLabor(request.getParameter("dato") == null ? "" : request.getParameter("dato"));
-                    registroBeans.setObservacion(request.getParameter("observacion"));
-                    registroBeans.setRegistroslabor(Integer.parseInt(request.getParameter("registros")));
-                    registroBeans.setMesFacturar(request.getParameter("mesFacturar"));
+                        Date inicio = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("inicio"));
+                        Date fin = sdf.parse(request.getParameter("fechas") + " " + request.getParameter("fin"));
 
-                    if (registrosDao.actualizar(registroBeans)) {
-                        Logger.getLogger("REGISTROS").info(String.format("%s actualizo el registro \n%s", userName, registroBeans.toString()));
-                    }
-                    registrosDao.horasLaboradas(registroBeans.getIdregistro());
-                    if (registroBeans.getLabor().getTipolabor() == 4) {
-                        registrosDao.imagenesProcesadas(registroBeans);
-                    } else {
-                    }
+                        if (fin.compareTo(inicio) < 0) {
+                            Calendar cFin = Calendar.getInstance();
+                            cFin.setTime(fin);
+                            cFin.set(Calendar.DATE, cFin.get(Calendar.DATE) + 1);
+                            fin = cFin.getTime();
+                        }
 
+                        registroBeans.setFechaInicio(sdf.format(inicio));
+                        registroBeans.setFechaFin(sdf.format(fin));
+                        registroBeans.setValor(Integer.parseInt(labor.getValor()));
+                        registroBeans.setCosto(Integer.parseInt(labor.getCosto()));
+
+                        registroBeans.setDatoLabor(request.getParameter("dato") == null ? "" : request.getParameter("dato"));
+                        registroBeans.setObservacion(request.getParameter("observacion"));
+                        registroBeans.setRegistroslabor(Integer.parseInt(request.getParameter("registros")));
+                        registroBeans.setMesFacturar(request.getParameter("mesFacturar"));
+
+                        if (registrosDao.actualizar(registroBeans)) {
+                            Logger.getLogger("REGISTROS").info(String.format("%s actualizo el registro \n%s", userName, registroBeans.toString()));
+                        }
+                        registrosDao.horasLaboradas(registroBeans.getIdregistro());
+                        if (registroBeans.getLabor().getTipolabor() == 4) {
+                            registrosDao.imagenesProcesadas(registroBeans);
+                        } else {
+                        }
+                    }
                 }
                 break;
                 case 'i': {//entrada registro auxiliar
@@ -338,7 +338,6 @@ public class RegistrosServlet extends HttpServlet {
                             respuesta = 3;
                         }
 
-
                         registroBeans = registrosDao.consultar(Integer.parseInt(idusuario));
                         if (registroBeans.getIdregistro() != 0 && registroBeans.getFechaFin() == null) {
                             sdf.applyPattern("dd/MM/yyyy");
@@ -388,7 +387,6 @@ public class RegistrosServlet extends HttpServlet {
                         response.getWriter().print("false");
                     }
 
-
                 }
                 break;
                 case 'c': {
@@ -415,6 +413,15 @@ public class RegistrosServlet extends HttpServlet {
             }
         } catch (Exception ex) {
             Logger.getLogger("Error").warn("Error", ex);
+        }
+    }
+
+    private void modificarHora(RegistrosDao registrosDao, HttpServletRequest request) throws Exception {
+        RegistroBeans consulta = registrosDao.consultar(request.getParameter("id"));
+        if(consulta != null){
+            consulta.setTiempolabor(Integer.parseInt(request.getParameter("tiempo")));
+            
+            registrosDao.actualizarHoras(consulta);
         }
     }
 }

@@ -34,6 +34,7 @@ public class ControllerPool {
             ds = (BasicDataSource) ctx.lookup("java:comp/env/jdbc/myoracle");
             ctx.close();
         } catch (NamingException ex) {
+            
             logger.log(Level.SEVERE, "loginAction", ex);
         }
     }

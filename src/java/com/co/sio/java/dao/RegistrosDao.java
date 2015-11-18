@@ -1393,4 +1393,26 @@ public class RegistrosDao {
             throw new Exception(e.getMessage());
         }
     }
+    
+    public boolean actualizarHoras(RegistroBeans registro) throws Exception{
+        try{
+        String sql = "UPDATE mregistros SET "
+                + "tiempolabor = ? "
+                + "where idregistro = ? ";
+        
+        BD.conectar();
+        BD.callableStatement(sql);
+        BD.AsignarParametro(1, Integer.toString(registro.getTiempolabor()), 2);
+        BD.AsignarParametro(2, Integer.toString(registro.getIdregistro()), 2);
+        
+        return BD.registrar();
+        } catch (SQLException ex) {
+            throw new Exception(ex.getMessage());
+        } catch (ParseException ex) {
+            throw new Exception(ex.getMessage());
+        } finally {
+            BD.desconectar();
+
+        }
+    }
 }

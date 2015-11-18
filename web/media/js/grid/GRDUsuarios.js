@@ -27,7 +27,8 @@ var myGrid = $('#grid1'),
         fechaRetiro = $("#fechaRetiro"),
         salario = $("#salario"),
         auxilioT = $("#auxilioT"),
-        /**/contrato = $([]).add(codPerfil).add(sitio).add(horario).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario).add(auxilioT);
+        incluidoNomina = $("#incluidoNomina"),
+        /**/contrato = $([]).add(codPerfil).add(sitio).add(horario).add(estado).add(usuariocliente).add(fechaIngreso).add(fechaRetiro).add(salario).add(auxilioT).add(incluidoNomina);
 
 var cerrar = {text: "Cancelar", click: function() {
         $(this).dialog("close");
@@ -84,7 +85,7 @@ jQuery(document).ready(function($)
         datatype: "json",
         colNames: ["Id\t(*)", "Identificación\t(*)", "Primer Nombre\t(*)", "Segundo Nombre", "Primer Apellido\t(*)", "Segundo Apellido",
             "Fecha Nacimiento\t(*)", "Sexo\t(*)", "Direccion\t(*)", "Telefono\t(*)", "Celular\t(*)", "Correo\t(*)", "Estado Civil\t(*)", "Fecha Ingreso", "Fecha Retiro", "Nombres",
-            "Perfil\t(*)", "Turno(*)", "Estado\t(*)", "Salario","Aux Transporte", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
+            "Perfil\t(*)", "Turno(*)", "Estado\t(*)", "Salario","Aux Transporte","Incluido en nomina", "Usuario Cliente", "Contraseña", "Sitio de Trabajo"],
         colModel: [
             {
                 "name": "idpersona",
@@ -299,6 +300,30 @@ jQuery(document).ready(function($)
                         1: "Activo",
                         0: "Inactivo"
 
+                    }
+                },
+                hidden: true
+            },
+            {
+                name: "incluidoNomina",
+                index: "incluidoNomina",
+                editable: true,
+                align: "center",
+                edittype: "select",
+                formatter: "select",
+                stype: "select",
+                searchoptions: {
+                    defaultValue: 1,
+                    value: {
+                        1: "Activo",
+                        0: "Inactivo"
+
+                    }
+                },
+                editoptions: {
+                    value: {
+                        1: "Activo",
+                        0: "Inactivo"
                     }
                 },
                 hidden: true
@@ -539,6 +564,7 @@ function llenarCampos() {
         fechaRetiro.val(rd.fechaRetiro);
         salario.val(rd.salario);
         auxilioT.val(rd.auxilioT);
+        incluidoNomina.val(rd.incluidoNomina);
         return true;
     } else {
         return false;
@@ -574,7 +600,8 @@ function guardar(oper) {
                 fechaIngreso: fechaIngreso.val(),
                 fechaRetiro: fechaRetiro.val(),
                 salario: salario.val(),
-                auxilioT: auxilioT.val()                
+                auxilioT: auxilioT.val(),
+                incluidoNomina: incluidoNomina.val()
             },
             success: function(data) {
                 guarda = true;

@@ -4,7 +4,7 @@
  */
 var lastSel, selIdUsuario, rdb_flt, rdb_filtro, rdb_fechas, editMode;
 var now = new Date();
-$(document).ready(function($) {
+$(document).ready(function ($) {
 
     $("#expand").button({
         icons: {
@@ -13,18 +13,18 @@ $(document).ready(function($) {
         text: false
     });
     /*$("#expand").mouseenter(function() {
-        $("#grid").toggle("slide", {direction: 'right'});
-    });*/
-    $("#expand").click(function() {
+     $("#grid").toggle("slide", {direction: 'right'});
+     });*/
+    $("#expand").click(function () {
         $("#grid").toggle("slide", {direction: 'right'});
     });
 
-    $(document).bind("contextmenu", function(e) {
+    $(document).bind("contextmenu", function (e) {
         return false;
     });
     $("#dateMon").monthpicker({
         selectedMonth: $.datepicker.formatDate("mm", new Date())
-    }).val($.datepicker.formatDate("mm/yy", new Date())).bind('monthpicker-click-month', function() {
+    }).val($.datepicker.formatDate("mm/yy", new Date())).bind('monthpicker-click-month', function () {
         prepararGrid();
         refrescarGrilla();
     });
@@ -37,11 +37,11 @@ $(document).ready(function($) {
     }
 
     $("#grupo").load("getGrupoCoordinador.htm");
-    $("#grupo").change(function(e) {
+    $("#grupo").change(function (e) {
         prepararGrid();
         refrescarGrilla();
     });
-    $("#vTodos").click(function() {
+    $("#vTodos").click(function () {
         if (confirm("Esta seguro que desea validar todas las labores")) {
             var confirmacion = $.ajax({
                 type: "POST",
@@ -66,19 +66,19 @@ $(document).ready(function($) {
         refrescarGrilla();
     });
     rdb_filtro = $("input[name='rdio']").val();
-    $("input[name='rdio']").change(function(e) {
+    $("input[name='rdio']").change(function (e) {
         rdb_filtro = $(e.target).val();
         prepararGrid();
         refrescarGrilla();
     });
     rdb_fechas = $("input[name='fechas']").val();
-    $("input[name='fechas']").change(function(e) {
+    $("input[name='fechas']").change(function (e) {
         rdb_fechas = $(e.target).val();
         prepararGrid();
         refrescarGrilla();
     });
     rdb_flt = $("input[name='flt']:checked").val();
-    $("input[name='flt']").change(function(e) {
+    $("input[name='flt']").change(function (e) {
         rdb_flt = $(e.target).val();
         if (rdb_flt === "1") {
             $("#flt_grp").hide();
@@ -91,7 +91,7 @@ $(document).ready(function($) {
         refrescarGrilla();
     });
     $("#sitio").load("getSitioTrabajo.htm");
-    $("#sitio").change(function(e) {
+    $("#sitio").change(function (e) {
         prepararGrid();
         refrescarGrilla();
     });
@@ -101,7 +101,7 @@ $(document).ready(function($) {
     $("#dateIni").datepicker({
         maxDate: 0,
         dateFormat: 'dd/mm/yy',
-        onSelect: function() {
+        onSelect: function () {
             prepararGrid();
             refrescarGrilla();
         },
@@ -176,32 +176,6 @@ $(document).ready(function($) {
         } else {
             alert('verifique la hora de finalización');
         }
-    }
-
-    function refrescarGrilla() {
-//refresca validar labores
-        jQuery("#gridLbr").jqGrid('setGridParam', {
-            datatype: "json"
-        });
-        jQuery("#gridLbr").trigger("reloadGrid");
-        //refresca novedades
-        jQuery("#gridJust").jqGrid('setGridParam', {
-            url: "UsuarioServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val(),
-            datatype: "json"
-        });
-        jQuery("#gridJust").trigger("reloadGrid");
-        //refresca ausentes
-        var gr = $("#grupo").val();
-        var today = $.datepicker.formatDate('dd/mm/yy', new Date());
-        if (today !== $("#dateIni").val()) {
-            gr = 0;
-        }
-        jQuery("#gridAux").jqGrid('setGridParam', {
-            url: "UsuarioServlet?grupo=" + gr,
-            datatype: "json"
-        });
-        jQuery("#gridAux").trigger("reloadGrid");
-        return [true, ""];
     }
 
     function validacionHora() {
@@ -342,7 +316,7 @@ $(document).ready(function($) {
                     date: true,
                     required: true},
                 editoptions: {
-                    dataInit: function(element) {
+                    dataInit: function (element) {
                         $(element).datepicker({dateFormat: "dd/mm/yy", maxDate: 0}
                         );
                     }
@@ -439,7 +413,7 @@ $(document).ready(function($) {
                 width: 120
             }
         ],
-        subGridRowExpanded: function(subgrid_id, row_id) {
+        subGridRowExpanded: function (subgrid_id, row_id) {
 
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id + "_t";
@@ -483,20 +457,30 @@ $(document).ready(function($) {
                 closeAfterAdd: true}
             );
         },
-        subGridRowColapsed: function(subgrid_id, row_id) {
+        subGridRowColapsed: function (subgrid_id, row_id) {
 //// this function is called before removing the data
             var subgrid_table_id;
             subgrid_table_id = subgrid_id + "_t";
             jQuery("#" + subgrid_table_id).remove();
         },
-        ondblClickRow: function(id) {
+        ondblClickRow: function (rowid) {
+            if (rowid && rowid !== lastSel) {
+                jQuery('#gridLbr').restoreRow(lastSel, function () {
+                    editMode = false;
+                });
+                lastSel = rowid;
+            }
+
             if (rdb_filtro === "0" && !editMode) {
-                validarLabores(id);
+                validarLabores(rowid);
+            }
+            if (rdb_filtro === "2" && !editMode) {
+                modificarHora(rowid);
             }
         },
-        onRightClickRow: function(rowid, iRow, iCol, e) {
+        onRightClickRow: function (rowid, iRow, iCol, e) {
             if (rowid && rowid !== lastSel) {
-                jQuery('#gridLbr').restoreRow(lastSel, function() {
+                jQuery('#gridLbr').restoreRow(lastSel, function () {
                     editMode = false;
                 });
                 lastSel = rowid;
@@ -522,18 +506,18 @@ $(document).ready(function($) {
                     required: true
                 }
             });
-            jQuery('#gridLbr').editRow(rowid, true, function() {
+            jQuery('#gridLbr').editRow(rowid, true, function () {
                 editMode = true;
             }, refrescarGrilla);
         },
-        onSelectRow: function(id) {
+        onSelectRow: function (id) {
 
-            jQuery('#gridLbr').restoreRow(lastSel, function() {
+            jQuery('#gridLbr').restoreRow(lastSel, function () {
                 editMode = false;
             });
         },
-        loadComplete: function(data) {
-            setTimeout(function() {
+        loadComplete: function (data) {
+            setTimeout(function () {
                 if (data.rows) {
                     for (var i = 0; i < data.rows.length; i++) {
                         if (data.rows[i].tipo !== "HORAS") {
@@ -547,7 +531,7 @@ $(document).ready(function($) {
                 }
             }, 1);
             if (this.p.datatype === 'json') {
-                setTimeout(function() {
+                setTimeout(function () {
 
                     $('#gridLbr').trigger("reloadGrid", [{
                             page: 1
@@ -558,7 +542,7 @@ $(document).ready(function($) {
         postData: {
             oper: "oper"
         },
-        loadError: function(xhr, status, err) {
+        loadError: function (xhr, status, err) {
             try {
                 jQuery.jgrid.info_dialog(jQuery.jgrid.errors.errcap,
                         '<div class="ui-state-error">' + xhr.responseText + err + 'Val</div>',
@@ -590,7 +574,7 @@ $(document).ready(function($) {
 
             },
     {//Edit
-        beforeInitData: function() {
+        beforeInitData: function () {
             jQuery('#gridLbr').setColProp('auxiliar', {
                 editable: true,
                 edittype: "text",
@@ -615,12 +599,12 @@ $(document).ready(function($) {
                 editable: true
             });
         },
-        onInitializeForm: function() {
+        onInitializeForm: function () {
             resp = 0;
             $("#tr_validar").hide();
             $("#tr_labor > td.DataTD > select").attr("name", "labor");
             $("#tr_labor > td.DataTD > select").attr("id", "labor");
-            $("#labor").load("getLaboresUsuarios.htm?usuario=" + $("#idusuario").val(), function() {
+            $("#labor").load("getLaboresUsuarios.htm?usuario=" + $("#idusuario").val(), function () {
                 var myGrid = $('#gridLbr'),
                         selRowId = myGrid.jqGrid('getGridParam', 'selrow'),
                         rowData = myGrid.jqGrid('getRowData', selRowId);
@@ -636,7 +620,7 @@ $(document).ready(function($) {
                     $("#tr_registros").show();
                 }
             });
-            $("#labor").change(function(e) {
+            $("#labor").change(function (e) {
                 laborvalida(e);
                 if ($("#labor :selected").text().indexOf("REGISTROS") < 0) {
                     $("#tr_registros").hide();
@@ -645,7 +629,7 @@ $(document).ready(function($) {
                 }
             });
             $("#labor").show();
-            $("#inicio, #fin").change(function() {
+            $("#inicio, #fin").change(function () {
                 var fecha = validacionHora();
                 if (fecha.length > 0) {
                     $("#FormError").show().find("td").text(fecha[1]);
@@ -654,7 +638,7 @@ $(document).ready(function($) {
                 }
             });
         },
-        beforeSubmit: function(postdata, formid) {
+        beforeSubmit: function (postdata, formid) {
 
             if ($("#auxiliar").val() === "0") {
                 return[false, "Seleccione un auxiliar"];
@@ -685,7 +669,7 @@ $(document).ready(function($) {
         recreateForm: true
     },
     {//Add
-        beforeInitData: function(formid) {
+        beforeInitData: function (formid) {
             jQuery('#gridLbr').setColProp('auxiliar', {
                 editable: true,
                 edittype: "select",
@@ -693,7 +677,7 @@ $(document).ready(function($) {
                     dataUrl: "getUsuariosSitio.htm?sitio=" + $("#sitio").val(),
                     dataEvents: [{
                             type: 'change',
-                            fn: function(e) {
+                            fn: function (e) {
                                 var aux = $(e.target).val();
                                 $("#labor").load("getLaboresUsuarios.htm?usuario=" + aux);
                                 $("#tr_labor").show();
@@ -715,7 +699,7 @@ $(document).ready(function($) {
                 editable: true
             });
         },
-        afterShowForm: function(formid) {
+        afterShowForm: function (formid) {
             resp = 0;
             $("#tr_dato").hide();
             $("#tr_registros").hide();
@@ -723,7 +707,7 @@ $(document).ready(function($) {
             $("#tr_labor > td.DataTD > select").attr("name", "labor");
             $("#tr_labor > td.DataTD > select").attr("id", "labor");
             $("#tr_validar").hide();
-            $("#labor").change(function(e) {
+            $("#labor").change(function (e) {
                 laborvalida(e);
                 if ($("#labor :selected").text().indexOf("REGISTROS") < 0) {
                     $("#tr_registros").hide();
@@ -731,7 +715,7 @@ $(document).ready(function($) {
                     $("#tr_registros").show();
                 }
             });
-            $("#inicio, #fin").change(function() {
+            $("#inicio, #fin").change(function () {
                 var fecha = validacionHora();
                 if (fecha.length > 0) {
                     $("#FormError").show().find("td").text(fecha[1]);
@@ -740,7 +724,7 @@ $(document).ready(function($) {
                 }
             });
         },
-        beforeSubmit: function(postdata, formid) {
+        beforeSubmit: function (postdata, formid) {
 
             if ($("#auxiliar").val() === "0") {
                 return[false, "Seleccione un auxiliar"];
@@ -770,16 +754,16 @@ $(document).ready(function($) {
         recreateForm: true
     },
     {
-        beforeInitData: function(formid) {
+        beforeInitData: function (formid) {
 
             var html = "<label>Causa: </label><select id=\"anulacion\"></select>";
             $($(".DelTable").find("td")[3]).html(html);
             $("#anulacion").load("getAnulaciones.htm");
         },
-        onclickSubmit: function(options) {
+        onclickSubmit: function (options) {
             options.delData.anulado = $("#anulacion").val();
         },
-        beforeSubmit: function() {
+        beforeSubmit: function () {
 
             if ($("#anulacion").val() === "-1") {
                 return [false, "Seleccione una causa de anulacion para continuar"];
@@ -888,4 +872,51 @@ function prepararGrid() {
 
         }
     });
+}
+function refrescarGrilla() {
+//refresca validar labores
+    jQuery("#gridLbr").jqGrid('setGridParam', {
+        datatype: "json"
+    });
+    jQuery("#gridLbr").trigger("reloadGrid");
+    //refresca novedades
+    jQuery("#gridJust").jqGrid('setGridParam', {
+        url: "UsuarioServlet?grupo=" + $("#grupo").val() + "&fecha=" + $("#dateIni").val(),
+        datatype: "json"
+    });
+    jQuery("#gridJust").trigger("reloadGrid");
+    //refresca ausentes
+    var gr = $("#grupo").val();
+    var today = $.datepicker.formatDate('dd/mm/yy', new Date());
+    if (today !== $("#dateIni").val()) {
+        gr = 0;
+    }
+    jQuery("#gridAux").jqGrid('setGridParam', {
+        url: "UsuarioServlet?grupo=" + gr,
+        datatype: "json"
+    });
+    jQuery("#gridAux").trigger("reloadGrid");
+    return [true, ""];
+}
+
+function modificarHora(rowid) {
+
+    var params = {
+        editable: false
+    };
+    $('#gridLbr').setColProp('auxiliar', params);
+    $('#gridLbr').setColProp('labor', params);
+    $('#gridLbr').setColProp('fechas', params);
+    $('#gridLbr').setColProp('inicio', params);
+    $('#gridLbr').setColProp('fin', params);
+    $('#gridLbr').setColProp('registros', params);
+    $('#gridLbr').setColProp('dato', params);
+    
+    $('#gridLbr').setColProp('tiempo', {editable: true});
+
+
+    $('#gridLbr').editRow(rowid, true, function () {
+        editMode = true;
+    }, refrescarGrilla);
+
 }
